@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Film, Loader2, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getPosterUrl } from '@/lib/tmdb/images';
@@ -69,31 +70,60 @@ export function TitleCard({
   // Check if jump to episode is available (need trackedTitleId and profileId)
   const canJumpToEpisode = currentEpisode && trackedTitleId && profileId && onJumpToEpisode;
 
+  // Link to show detail page (only for TV shows)
+  const showDetailUrl = mediaType === 'tv' ? `/app/show/${tmdbId}` : null;
+
   return (
     <div className="bg-card rounded-lg overflow-hidden border">
-      {/* Poster - 2:3 aspect ratio */}
-      <div className="aspect-[2/3] relative bg-muted">
-        {posterUrl ? (
-          <Image
-            src={posterUrl}
-            alt={title}
-            fill
-            className="object-cover"
-            unoptimized
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Film className="h-12 w-12 text-muted-foreground" />
-          </div>
-        )}
-      </div>
+      {/* Poster - 2:3 aspect ratio, clickable for TV shows */}
+      {showDetailUrl ? (
+        <Link href={showDetailUrl} className="block aspect-[2/3] relative bg-muted hover:opacity-90 transition-opacity">
+          {posterUrl ? (
+            <Image
+              src={posterUrl}
+              alt={title}
+              fill
+              className="object-cover"
+              unoptimized
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Film className="h-12 w-12 text-muted-foreground" />
+            </div>
+          )}
+        </Link>
+      ) : (
+        <div className="aspect-[2/3] relative bg-muted">
+          {posterUrl ? (
+            <Image
+              src={posterUrl}
+              alt={title}
+              fill
+              className="object-cover"
+              unoptimized
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Film className="h-12 w-12 text-muted-foreground" />
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Info */}
       <div className="p-4 space-y-3">
-        {/* Title - truncate with ellipsis */}
-        <h3 className="font-semibold line-clamp-1" title={title}>
-          {title}
-        </h3>
+        {/* Title - truncate with ellipsis, clickable for TV shows */}
+        {showDetailUrl ? (
+          <Link href={showDetailUrl} className="block">
+            <h3 className="font-semibold line-clamp-1 hover:text-primary transition-colors" title={title}>
+              {title}
+            </h3>
+          </Link>
+        ) : (
+          <h3 className="font-semibold line-clamp-1" title={title}>
+            {title}
+          </h3>
+        )}
 
         {/* Episode info for TV shows */}
         {currentEpisode && (
