@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import { Loader2, Film, X, Calendar, Plus } from 'lucide-react';
+import { Loader2, Film, X, Calendar, Plus, ChevronUp, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
@@ -51,6 +51,9 @@ export function ScheduleClient() {
   // Add to schedule dialog state
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [addDialogWeekday, setAddDialogWeekday] = useState<number>(0);
+
+  // Track reordering state (to prevent double clicks)
+  const [isReordering, setIsReordering] = useState(false);
 
   // Fetch schedule and enrich with TMDB data
   const fetchSchedule = useCallback(async () => {
@@ -193,6 +196,80 @@ export function ScheduleClient() {
     return schedule[weekday].map((entry) => entry.tracked_title_id);
   }, [schedule]);
 
+  // Handle move up within day
+  const handleMoveUp = useCallback(async (entry: EnrichedScheduleEntry, index: number) => {
+    if (index === 0 || isReordering) return;
+
+    setIsReordering(true);
+    const dayEntries = schedule[entry.weekday];
+    const prevEntry = dayEntries[index - 1];
+
+    // Optimistic update - swap entries in UI
+    setSchedule((prev) => {
+      const updated = { ...prev };
+      const dayEntriesCopy = [...updated[entry.weekday]];
+      [dayEntriesCopy[index - 1], dayEntriesCopy[index]] = [dayEntriesCopy[index], dayEntriesCopy[index - 1]];
+      updated[entry.weekday] = dayEntriesCopy;
+      return updated;
+    });
+
+    try {
+      // Update the entry being moved to the previous position's slot_order
+      const response = await fetch(`/api/schedule/${entry.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slotOrder: prevEntry.slot_order }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to reorder');
+      }
+    } catch (err) {
+      console.error('Error reordering:', err);
+      // Rollback on error - refetch schedule
+      fetchSchedule();
+    } finally {
+      setIsReordering(false);
+    }
+  }, [schedule, isReordering, fetchSchedule]);
+
+  // Handle move down within day
+  const handleMoveDown = useCallback(async (entry: EnrichedScheduleEntry, index: number) => {
+    const dayEntries = schedule[entry.weekday];
+    if (index === dayEntries.length - 1 || isReordering) return;
+
+    setIsReordering(true);
+    const nextEntry = dayEntries[index + 1];
+
+    // Optimistic update - swap entries in UI
+    setSchedule((prev) => {
+      const updated = { ...prev };
+      const dayEntriesCopy = [...updated[entry.weekday]];
+      [dayEntriesCopy[index], dayEntriesCopy[index + 1]] = [dayEntriesCopy[index + 1], dayEntriesCopy[index]];
+      updated[entry.weekday] = dayEntriesCopy;
+      return updated;
+    });
+
+    try {
+      // Update the entry being moved to the next position's slot_order
+      const response = await fetch(`/api/schedule/${entry.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slotOrder: nextEntry.slot_order }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to reorder');
+      }
+    } catch (err) {
+      console.error('Error reordering:', err);
+      // Rollback on error - refetch schedule
+      fetchSchedule();
+    } finally {
+      setIsReordering(false);
+    }
+  }, [schedule, isReordering, fetchSchedule]);
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -230,6 +307,9 @@ export function ScheduleClient() {
                 entries={schedule[index]}
                 onRemove={handleRemoveClick}
                 onAdd={() => handleAddClick(index)}
+                onMoveUp={handleMoveUp}
+                onMoveDown={handleMoveDown}
+                isReordering={isReordering}
               />
             ))}
           </div>
@@ -245,6 +325,9 @@ export function ScheduleClient() {
                     entries={schedule[index]}
                     onRemove={handleRemoveClick}
                     onAdd={() => handleAddClick(index)}
+                    onMoveUp={handleMoveUp}
+                    onMoveDown={handleMoveDown}
+                    isReordering={isReordering}
                   />
                 </div>
               ))}
@@ -305,9 +388,12 @@ interface DayColumnProps {
   entries: EnrichedScheduleEntry[];
   onRemove: (entry: EnrichedScheduleEntry) => void;
   onAdd: () => void;
+  onMoveUp: (entry: EnrichedScheduleEntry, index: number) => void;
+  onMoveDown: (entry: EnrichedScheduleEntry, index: number) => void;
+  isReordering: boolean;
 }
 
-function DayColumn({ dayName, dayIndex, entries, onRemove, onAdd }: DayColumnProps) {
+function DayColumn({ dayName, dayIndex, entries, onRemove, onAdd, onMoveUp, onMoveDown, isReordering }: DayColumnProps) {
   return (
     <div className="bg-card rounded-lg border overflow-hidden">
       {/* Day Header */}
@@ -323,11 +409,16 @@ function DayColumn({ dayName, dayIndex, entries, onRemove, onAdd }: DayColumnPro
             <p>No shows scheduled</p>
           </div>
         ) : (
-          entries.map((entry) => (
+          entries.map((entry, index) => (
             <ScheduleEntryCard
               key={entry.id}
               entry={entry}
+              index={index}
+              totalEntries={entries.length}
               onRemove={() => onRemove(entry)}
+              onMoveUp={() => onMoveUp(entry, index)}
+              onMoveDown={() => onMoveDown(entry, index)}
+              isReordering={isReordering}
             />
           ))
         )}
@@ -350,14 +441,45 @@ function DayColumn({ dayName, dayIndex, entries, onRemove, onAdd }: DayColumnPro
 // Schedule Entry Card Component
 interface ScheduleEntryCardProps {
   entry: EnrichedScheduleEntry;
+  index: number;
+  totalEntries: number;
   onRemove: () => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+  isReordering: boolean;
 }
 
-function ScheduleEntryCard({ entry, onRemove }: ScheduleEntryCardProps) {
+function ScheduleEntryCard({ entry, index, totalEntries, onRemove, onMoveUp, onMoveDown, isReordering }: ScheduleEntryCardProps) {
   const posterUrl = getPosterUrl(entry.posterPath, 'small');
+  const isFirst = index === 0;
+  const isLast = index === totalEntries - 1;
 
   return (
     <div className="flex items-center gap-2 p-2 bg-background rounded border hover:border-primary/50 transition-colors group">
+      {/* Reorder Buttons */}
+      <div className="flex flex-col gap-0.5 flex-shrink-0">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-5 w-5"
+          onClick={onMoveUp}
+          disabled={isFirst || isReordering}
+          title="Move up"
+        >
+          <ChevronUp className="h-3 w-3" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-5 w-5"
+          onClick={onMoveDown}
+          disabled={isLast || isReordering}
+          title="Move down"
+        >
+          <ChevronDown className="h-3 w-3" />
+        </Button>
+      </div>
+
       {/* Poster Thumbnail */}
       <div className="w-10 h-14 relative flex-shrink-0 bg-muted rounded overflow-hidden">
         {posterUrl ? (
