@@ -9,29 +9,30 @@ See: .planning/PROJECT.md (updated 2026-01-18)
 
 ## Current Position
 
-Phase: 1 of 10 (Foundation) — COMPLETE
-Plan: 3 of 3 in Phase 1
-Status: Phase complete, ready for Phase 2
-Last activity: 2026-01-19 — Completed 01-03-PLAN.md (Phase 1 complete)
+Phase: 2 of 10 (Data Model)
+Plan: 1 of 5 in current phase
+Status: In progress
+Last activity: 2026-01-19 — Completed 02-01-PLAN.md
 
-Progress: ██░░░░░░░░ 10%
+Progress: ██░░░░░░░░ 13%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: 3.3 min
-- Total execution time: 10 min
+- Total plans completed: 4
+- Average duration: 3.0 min
+- Total execution time: 12 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Foundation | 3 | 10 min | 3.3 min |
+| 2. Data Model | 1 | 2 min | 2.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (3 min), 01-02 (3 min), 01-03 (4 min)
-- Trend: —
+- Last 5 plans: 01-01 (3 min), 01-02 (3 min), 01-03 (4 min), 02-01 (2 min)
+- Trend: ↓ faster
 
 ## Accumulated Context
 
@@ -48,6 +49,8 @@ Recent decisions affecting current work:
 | 01-02 | Cookie-based sessions | SSR-compatible, middleware refresh |
 | 01-03 | Route groups: (marketing) public, /app protected | Clear URL structure |
 | 01-03 | Auth check in layout with redirect | Protects all /app/* routes |
+| 02-01 | UUID primary keys with gen_random_uuid() | Supabase convention |
+| 02-01 | ON DELETE CASCADE on all foreign keys | Clean household deletion |
 
 ### Deferred Issues
 
@@ -60,5 +63,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 01-03-PLAN.md (Phase 1 complete)
+Stopped at: Completed 02-01-PLAN.md
 Resume file: None
