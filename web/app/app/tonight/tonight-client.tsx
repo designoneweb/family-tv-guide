@@ -190,6 +190,69 @@ export function TonightClient() {
     }
   };
 
+  /**
+   * Handle jumping to a specific episode
+   * Fetches the new episode title and updates local state
+   */
+  const handleJumpToEpisode = async (
+    entry: EnrichedScheduleEntry,
+    newSeason: number,
+    newEpisode: number
+  ) => {
+    const trackedTitleId = entry.trackedTitleId;
+
+    try {
+      // Fetch the new episode info to update the UI
+      const newEpisodeResponse = await fetch(
+        `/api/tmdb/tv/${entry.tmdbId}/season/${newSeason}/episode/${newEpisode}`
+      );
+
+      let newEpisodeTitle = `Episode ${newEpisode}`;
+      let newStillPath: string | null = null;
+
+      if (newEpisodeResponse.ok) {
+        const newEpisodeDetails = await newEpisodeResponse.json();
+        newEpisodeTitle = newEpisodeDetails.name || newEpisodeTitle;
+        newStillPath = newEpisodeDetails.still_path || null;
+      }
+
+      // Update local state with new episode info
+      setEntries((prevEntries) =>
+        prevEntries.map((e) =>
+          e.trackedTitleId === trackedTitleId
+            ? {
+                ...e,
+                currentEpisode: {
+                  season: newSeason,
+                  episode: newEpisode,
+                  title: newEpisodeTitle,
+                  stillPath: newStillPath,
+                },
+              }
+            : e
+        )
+      );
+    } catch (err) {
+      console.error('Failed to fetch episode info after jump:', err);
+      // Still update the state with basic info even if fetch fails
+      setEntries((prevEntries) =>
+        prevEntries.map((e) =>
+          e.trackedTitleId === trackedTitleId
+            ? {
+                ...e,
+                currentEpisode: {
+                  season: newSeason,
+                  episode: newEpisode,
+                  title: `Episode ${newEpisode}`,
+                  stillPath: null,
+                },
+              }
+            : e
+        )
+      );
+    }
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -248,6 +311,12 @@ export function TonightClient() {
               trackedTitleId={entry.trackedTitleId}
               onMarkWatched={entry.currentEpisode ? () => handleMarkWatched(entry) : undefined}
               isAdvancing={advancingIds.has(entry.trackedTitleId)}
+              profileId={activeProfileId || undefined}
+              onJumpToEpisode={
+                entry.currentEpisode
+                  ? (newSeason, newEpisode) => handleJumpToEpisode(entry, newSeason, newEpisode)
+                  : undefined
+              }
             />
           ))}
         </div>

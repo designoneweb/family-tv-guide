@@ -1,10 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import { Film, Loader2, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getPosterUrl } from '@/lib/tmdb/images';
 import { ProviderLogos, type Provider } from '@/components/provider-logos';
+import { JumpToEpisodeDialog } from '@/components/jump-to-episode-dialog';
 
 export interface CurrentEpisode {
   season: number;
@@ -28,6 +30,8 @@ export interface TitleCardProps {
   onMarkWatched?: () => void;
   trackedTitleId?: string;
   isAdvancing?: boolean;
+  profileId?: string;
+  onJumpToEpisode?: (newSeason: number, newEpisode: number) => void;
 }
 
 /**
@@ -35,6 +39,7 @@ export interface TitleCardProps {
  * Handles poster image, title, year, media type badge, and add/remove actions.
  */
 export function TitleCard({
+  tmdbId,
   mediaType,
   title,
   posterPath,
@@ -46,9 +51,23 @@ export function TitleCard({
   isLoading = false,
   currentEpisode,
   onMarkWatched,
+  trackedTitleId,
   isAdvancing = false,
+  profileId,
+  onJumpToEpisode,
 }: TitleCardProps) {
+  const [jumpDialogOpen, setJumpDialogOpen] = useState(false);
   const posterUrl = getPosterUrl(posterPath);
+
+  // Handle successful jump to episode
+  const handleJumpSuccess = (newSeason: number, newEpisode: number) => {
+    if (onJumpToEpisode) {
+      onJumpToEpisode(newSeason, newEpisode);
+    }
+  };
+
+  // Check if jump to episode is available (need trackedTitleId and profileId)
+  const canJumpToEpisode = currentEpisode && trackedTitleId && profileId && onJumpToEpisode;
 
   return (
     <div className="bg-card rounded-lg overflow-hidden border">
@@ -78,9 +97,19 @@ export function TitleCard({
 
         {/* Episode info for TV shows */}
         {currentEpisode && (
-          <p className="text-sm text-muted-foreground line-clamp-1" title={`S${currentEpisode.season}E${currentEpisode.episode}: ${currentEpisode.title}`}>
-            S{currentEpisode.season}E{currentEpisode.episode}: {currentEpisode.title}
-          </p>
+          canJumpToEpisode ? (
+            <button
+              onClick={() => setJumpDialogOpen(true)}
+              className="text-sm text-muted-foreground line-clamp-1 text-left hover:text-primary hover:underline cursor-pointer transition-colors"
+              title="Click to change episode"
+            >
+              S{currentEpisode.season}E{currentEpisode.episode}: {currentEpisode.title}
+            </button>
+          ) : (
+            <p className="text-sm text-muted-foreground line-clamp-1" title={`S${currentEpisode.season}E${currentEpisode.episode}: ${currentEpisode.title}`}>
+              S{currentEpisode.season}E{currentEpisode.episode}: {currentEpisode.title}
+            </p>
+          )
         )}
 
         {/* Year and media type row */}
@@ -154,6 +183,20 @@ export function TitleCard({
           ) : null}
         </div>
       </div>
+
+      {/* Jump to Episode Dialog */}
+      {canJumpToEpisode && trackedTitleId && profileId && currentEpisode && (
+        <JumpToEpisodeDialog
+          open={jumpDialogOpen}
+          onOpenChange={setJumpDialogOpen}
+          trackedTitleId={trackedTitleId}
+          tmdbId={tmdbId}
+          profileId={profileId}
+          currentSeason={currentEpisode.season}
+          currentEpisode={currentEpisode.episode}
+          onSuccess={handleJumpSuccess}
+        />
+      )}
     </div>
   );
 }
