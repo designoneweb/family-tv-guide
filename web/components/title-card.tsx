@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Film, Loader2, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { getPosterUrl } from '@/lib/tmdb/images';
+import { getPosterUrl, getStillUrl } from '@/lib/tmdb/images';
 import { ProviderLogos, type Provider } from '@/components/provider-logos';
 import { JumpToEpisodeDialog } from '@/components/jump-to-episode-dialog';
 
@@ -60,6 +60,16 @@ export function TitleCard({
   const [jumpDialogOpen, setJumpDialogOpen] = useState(false);
   const posterUrl = getPosterUrl(posterPath);
 
+  // Get episode still URL if current episode has a still
+  const episodeStillUrl = currentEpisode?.stillPath
+    ? getStillUrl(currentEpisode.stillPath, 'large')
+    : null;
+
+  // Determine which image to use: episode still (16:9) or poster (2:3)
+  const useEpisodeStill = mediaType === 'tv' && currentEpisode && episodeStillUrl;
+  const displayImageUrl = useEpisodeStill ? episodeStillUrl : posterUrl;
+  const aspectRatioClass = useEpisodeStill ? 'aspect-video' : 'aspect-[2/3]';
+
   // Handle successful jump to episode
   const handleJumpSuccess = (newSeason: number, newEpisode: number) => {
     if (onJumpToEpisode) {
@@ -70,18 +80,28 @@ export function TitleCard({
   // Check if jump to episode is available (need trackedTitleId and profileId)
   const canJumpToEpisode = currentEpisode && trackedTitleId && profileId && onJumpToEpisode;
 
+  // Determine image link destination:
+  // - TV with currentEpisode: link to episode detail page
+  // - TV without currentEpisode: link to show detail page
+  // - Movie: no link (null)
+  const imageUrl = mediaType === 'tv'
+    ? currentEpisode
+      ? `/app/show/${tmdbId}/season/${currentEpisode.season}/episode/${currentEpisode.episode}`
+      : `/app/show/${tmdbId}`
+    : null;
+
   // Link to show detail page (only for TV shows)
   const showDetailUrl = mediaType === 'tv' ? `/app/show/${tmdbId}` : null;
 
   return (
     <div className="bg-card rounded-lg overflow-hidden border">
-      {/* Poster - 2:3 aspect ratio, clickable for TV shows */}
-      {showDetailUrl ? (
-        <Link href={showDetailUrl} className="block aspect-[2/3] relative bg-muted hover:opacity-90 transition-opacity">
-          {posterUrl ? (
+      {/* Image - 16:9 for episode stills, 2:3 for posters, clickable for TV shows */}
+      {imageUrl ? (
+        <Link href={imageUrl} className={`block ${aspectRatioClass} relative bg-muted hover:opacity-90 transition-opacity`}>
+          {displayImageUrl ? (
             <Image
-              src={posterUrl}
-              alt={title}
+              src={displayImageUrl}
+              alt={currentEpisode ? `${title} - S${currentEpisode.season}E${currentEpisode.episode}` : title}
               fill
               className="object-cover"
               unoptimized
@@ -93,10 +113,10 @@ export function TitleCard({
           )}
         </Link>
       ) : (
-        <div className="aspect-[2/3] relative bg-muted">
-          {posterUrl ? (
+        <div className={`${aspectRatioClass} relative bg-muted`}>
+          {displayImageUrl ? (
             <Image
-              src={posterUrl}
+              src={displayImageUrl}
               alt={title}
               fill
               className="object-cover"
