@@ -4,7 +4,7 @@
  */
 
 import { tmdbFetch, TMDBError } from './client';
-import type { TMDBTVDetails, TMDBMovieDetails, TMDBSeason, TMDBEpisode } from './types';
+import type { TMDBTVDetails, TMDBMovieDetails, TMDBSeason, TMDBEpisode, TMDBEpisodeCredits } from './types';
 
 /**
  * Fetch full TV show details by TMDB ID
@@ -91,6 +91,35 @@ export async function getTVEpisode(
   try {
     return await tmdbFetch<TMDBEpisode>(
       `/tv/${seriesId}/season/${seasonNumber}/episode/${episodeNumber}`,
+      {
+        language: 'en-US',
+      }
+    );
+  } catch (error) {
+    if (error instanceof TMDBError && error.statusCode === 404) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+/**
+ * Fetch TV episode credits by series ID, season number, and episode number
+ *
+ * @param seriesId - The TMDB series ID
+ * @param seasonNumber - The season number (1-indexed)
+ * @param episodeNumber - The episode number (1-indexed)
+ * @returns Episode credits or null if not found
+ * @throws TMDBError for API errors other than 404
+ */
+export async function getEpisodeCredits(
+  seriesId: number,
+  seasonNumber: number,
+  episodeNumber: number
+): Promise<TMDBEpisodeCredits | null> {
+  try {
+    return await tmdbFetch<TMDBEpisodeCredits>(
+      `/tv/${seriesId}/season/${seasonNumber}/episode/${episodeNumber}/credits`,
       {
         language: 'en-US',
       }

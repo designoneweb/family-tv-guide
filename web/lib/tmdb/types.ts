@@ -190,3 +190,51 @@ export interface TMDBSeason {
   season_number: number;
   episodes: TMDBEpisode[];
 }
+
+// ============================================================================
+// CREDITS TYPES
+// ============================================================================
+
+/**
+ * Cast member from episode credits
+ */
+export interface TMDBCastMember {
+  id: number;
+  name: string;
+  character: string;
+  profile_path: string | null;
+  order: number;
+  known_for_department: string;
+}
+
+/**
+ * Crew member from episode credits
+ */
+export interface TMDBCrewMember {
+  id: number;
+  name: string;
+  job: string;
+  department: string;
+  profile_path: string | null;
+}
+
+/**
+ * Guest star from episode credits
+ */
+export interface TMDBGuestStar {
+  id: number;
+  name: string;
+  character: string;
+  profile_path: string | null;
+  order: number;
+}
+
+/**
+ * Episode credits from /tv/{series_id}/season/{season_number}/episode/{episode_number}/credits
+ */
+export interface TMDBEpisodeCredits {
+  id: number;
+  cast: TMDBCastMember[];
+  crew: TMDBCrewMember[];
+  guest_stars: TMDBGuestStar[];
+}

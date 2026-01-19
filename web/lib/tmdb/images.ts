@@ -17,6 +17,7 @@ export const TMDB_IMAGE_SIZES = {
   backdrop: { small: 'w300', medium: 'w780', large: 'w1280' },
   still: { small: 'w185', medium: 'w300', large: 'w300' },
   logo: { small: 'w92', medium: 'w154', large: 'w300' },
+  profile: { small: 'w45', medium: 'w185', large: 'h632' },
 } as const;
 
 type ImageType = keyof typeof TMDB_IMAGE_SIZES;
@@ -97,4 +98,19 @@ export function getStillUrl(
  */
 export function getProviderLogoUrl(path: string | null): string | null {
   return getTMDBImageUrl(path, 'logo', 'small');
+}
+
+/**
+ * Get profile image URL
+ * Convenience wrapper defaulting to medium size
+ *
+ * @param path - The profile_path from TMDB
+ * @param size - Size variant (default: medium)
+ * @returns Full image URL or null
+ */
+export function getProfileUrl(
+  path: string | null,
+  size: ImageSize = 'medium'
+): string | null {
+  return getTMDBImageUrl(path, 'profile', size);
 }
