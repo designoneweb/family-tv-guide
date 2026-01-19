@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import { Loader2, Film, X, Calendar } from 'lucide-react';
+import { Loader2, Film, X, Calendar, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useProfile } from '@/lib/contexts/profile-context';
 import { getPosterUrl } from '@/lib/tmdb/images';
-import { getTVDetails, getMovieDetails } from '@/lib/tmdb/details';
+import { AddToScheduleDialog } from '@/components/add-to-schedule-dialog';
 import type { ScheduleEntry, MediaType } from '@/lib/database.types';
 
 // Day names for display
@@ -47,6 +47,10 @@ export function ScheduleClient() {
   // Delete confirmation state
   const [deleteTarget, setDeleteTarget] = useState<EnrichedScheduleEntry | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Add to schedule dialog state
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [addDialogWeekday, setAddDialogWeekday] = useState<number>(0);
 
   // Fetch schedule and enrich with TMDB data
   const fetchSchedule = useCallback(async () => {
@@ -173,6 +177,22 @@ export function ScheduleClient() {
     setDeleteTarget(null);
   }, []);
 
+  // Handle add button click
+  const handleAddClick = useCallback((weekday: number) => {
+    setAddDialogWeekday(weekday);
+    setAddDialogOpen(true);
+  }, []);
+
+  // Handle add dialog success
+  const handleAddSuccess = useCallback(() => {
+    fetchSchedule();
+  }, [fetchSchedule]);
+
+  // Get existing title IDs for a specific day
+  const getExistingTitleIds = useCallback((weekday: number) => {
+    return schedule[weekday].map((entry) => entry.tracked_title_id);
+  }, [schedule]);
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -209,6 +229,7 @@ export function ScheduleClient() {
                 dayIndex={index}
                 entries={schedule[index]}
                 onRemove={handleRemoveClick}
+                onAdd={() => handleAddClick(index)}
               />
             ))}
           </div>
@@ -223,6 +244,7 @@ export function ScheduleClient() {
                     dayIndex={index}
                     entries={schedule[index]}
                     onRemove={handleRemoveClick}
+                    onAdd={() => handleAddClick(index)}
                   />
                 </div>
               ))}
@@ -260,6 +282,18 @@ export function ScheduleClient() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Add to Schedule Dialog */}
+      {activeProfileId && (
+        <AddToScheduleDialog
+          open={addDialogOpen}
+          onOpenChange={setAddDialogOpen}
+          weekday={addDialogWeekday}
+          profileId={activeProfileId}
+          existingTitleIds={getExistingTitleIds(addDialogWeekday)}
+          onAdded={handleAddSuccess}
+        />
+      )}
     </div>
   );
 }
@@ -270,9 +304,10 @@ interface DayColumnProps {
   dayIndex: number;
   entries: EnrichedScheduleEntry[];
   onRemove: (entry: EnrichedScheduleEntry) => void;
+  onAdd: () => void;
 }
 
-function DayColumn({ dayName, dayIndex, entries, onRemove }: DayColumnProps) {
+function DayColumn({ dayName, dayIndex, entries, onRemove, onAdd }: DayColumnProps) {
   return (
     <div className="bg-card rounded-lg border overflow-hidden">
       {/* Day Header */}
@@ -296,6 +331,17 @@ function DayColumn({ dayName, dayIndex, entries, onRemove }: DayColumnProps) {
             />
           ))
         )}
+
+        {/* Add Button */}
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full mt-2"
+          onClick={onAdd}
+        >
+          <Plus className="h-4 w-4 mr-1" />
+          Add
+        </Button>
       </div>
     </div>
   );
