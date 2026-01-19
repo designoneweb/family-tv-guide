@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-01-18)
 ## Current Position
 
 Phase: 8.1 of 10 (Schedule UX - INSERTED)
-Plan: 0 of 1 in current phase
-Status: Ready to execute
-Last activity: 2026-01-19 — Created 08.1-01-PLAN.md (Schedule UX Improvement)
+Plan: 1 of 1 in current phase
+Status: Phase complete
+Last activity: 2026-01-19 — Completed 08.1-01-PLAN.md (Schedule UX Improvement)
 
-Progress: ███████████░░░░ 73% (22 of 31 estimated plans)
+Progress: ███████████░░░░ 74% (23 of 31 estimated plans)
 
 ## Performance Metrics
 
@@ -98,6 +98,8 @@ Recent decisions affecting current work:
 | 08-02 | Episode still fallback to show backdrop | Better than no image when episode still missing |
 | 08-02 | Mark Watched 1.5s delay before navigation | Brief confirmation before auto-navigating to next episode |
 | 08-02 | TitleCard links to show detail for TV only | Movies don't have detail page yet |
+| 08.1-01 | Episode still links to episode detail page | Deeper navigation from schedule |
+| 08.1-01 | Fallback to show poster when no episode still | Better UX than empty placeholder |
 
 ### Deferred Issues
 
@@ -110,6 +112,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Created 08.1-01-PLAN.md (Schedule UX)
+Stopped at: Completed 08.1-01-PLAN.md (Schedule UX)
 Resume file: None
-Next: Execute Phase 8.1 Schedule UX improvement
+Next: Plan Phase 9 (Person Pages)
