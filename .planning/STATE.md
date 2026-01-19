@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-01-18)
 ## Current Position
 
 Phase: 2 of 10 (Data Model)
-Plan: 2 of 5 in current phase
+Plan: 3 of 5 in current phase
 Status: In progress
-Last activity: 2026-01-19 — Completed 02-02-PLAN.md
+Last activity: 2026-01-19 — Completed 02-03-PLAN.md
 
-Progress: ██░░░░░░░░ 16%
+Progress: ██░░░░░░░░ 19%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: 2.8 min
-- Total execution time: 14 min
+- Total plans completed: 6
+- Average duration: 2.5 min
+- Total execution time: 15 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Foundation | 3 | 10 min | 3.3 min |
-| 2. Data Model | 2 | 4 min | 2.0 min |
+| 2. Data Model | 3 | 5 min | 1.7 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (3 min), 01-03 (4 min), 02-01 (2 min), 02-02 (2 min)
+- Last 5 plans: 01-03 (4 min), 02-01 (2 min), 02-02 (2 min), 02-03 (1 min)
 - Trend: ↓ faster
 
 ## Accumulated Context
@@ -54,6 +54,8 @@ Recent decisions affecting current work:
 | 02-02 | Single owner_id per household | One user owns each household |
 | 02-02 | get_user_household_id() helper with SECURITY DEFINER | Efficient RLS policy checks |
 | 02-02 | episode_blurbs public read | Shared cached content |
+| 02-03 | SECURITY DEFINER on trigger function | Bypasses RLS during provisioning |
+| 02-03 | Service layer in lib/services/ | Typed data access pattern |
 
 ### Deferred Issues
 
@@ -66,5 +68,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 02-02-PLAN.md
+Stopped at: Completed 02-03-PLAN.md
 Resume file: None
