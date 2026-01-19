@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Loader2, User, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Loader2, User, CheckCircle, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useProfile } from '@/lib/contexts/profile-context';
 import { getStillUrl, getBackdropUrl, getProfileUrl } from '@/lib/tmdb/images';
@@ -70,6 +70,8 @@ export function EpisodeClient({ showId, seasonNumber, episodeNumber }: EpisodeCl
   const [isMarking, setIsMarking] = useState(false);
   const [markedMessage, setMarkedMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [synopsis, setSynopsis] = useState<{ text: string; source: 'ai' | 'tmdb_truncate' } | null>(null);
+  const [isFetchingSynopsis, setIsFetchingSynopsis] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -186,6 +188,38 @@ export function EpisodeClient({ showId, seasonNumber, episodeNumber }: EpisodeCl
       setMarkedMessage(null);
     } finally {
       setIsMarking(false);
+    }
+  };
+
+  /**
+   * Fetch AI synopsis for the episode
+   */
+  const fetchSynopsis = async () => {
+    if (!episode || !showDetails || !episode.overview) return;
+
+    setIsFetchingSynopsis(true);
+    try {
+      const response = await fetch('/api/synopsis', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          showId,
+          showName: showDetails.name,
+          seasonNumber,
+          episodeNumber,
+          episodeName: episode.name,
+          overview: episode.overview,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSynopsis({ text: data.blurb, source: data.source });
+      }
+    } catch (err) {
+      console.error('Failed to fetch synopsis:', err);
+    } finally {
+      setIsFetchingSynopsis(false);
     }
   };
 
@@ -310,6 +344,45 @@ export function EpisodeClient({ showId, seasonNumber, episodeNumber }: EpisodeCl
             <p className="text-foreground leading-relaxed mb-6">
               {episode.overview}
             </p>
+          )}
+
+          {/* AI Synopsis section - only show if episode has overview */}
+          {episode.overview && (
+            <div className="mb-6">
+              {synopsis ? (
+                <div className="bg-muted/50 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Sparkles className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-medium">Family-Friendly Synopsis</span>
+                    <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+                      {synopsis.source === 'ai' ? 'AI Generated' : 'TMDB Summary'}
+                    </span>
+                  </div>
+                  <p className="text-foreground/90 italic leading-relaxed">
+                    {synopsis.text}
+                  </p>
+                </div>
+              ) : (
+                <Button
+                  variant="outline"
+                  onClick={fetchSynopsis}
+                  disabled={isFetchingSynopsis}
+                  className="gap-2"
+                >
+                  {isFetchingSynopsis ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4" />
+                      Get AI Synopsis
+                    </>
+                  )}
+                </Button>
+              )}
+            </div>
           )}
 
           {/* Mark Watched button */}
