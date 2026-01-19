@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Film, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getPosterUrl } from '@/lib/tmdb/images';
+import { ProviderLogos, type Provider } from '@/components/provider-logos';
 
 export interface TitleCardProps {
   tmdbId: number;
@@ -11,6 +12,7 @@ export interface TitleCardProps {
   title: string;
   posterPath: string | null;
   year?: string;
+  providers?: Provider[];
   inLibrary?: boolean;
   onAdd?: () => void;
   onRemove?: () => void;
@@ -26,6 +28,7 @@ export function TitleCard({
   title,
   posterPath,
   year,
+  providers,
   inLibrary = false,
   onAdd,
   onRemove,
@@ -66,6 +69,11 @@ export function TitleCard({
             {mediaType === 'tv' ? 'TV Show' : 'Movie'}
           </span>
         </div>
+
+        {/* Streaming providers */}
+        {providers && providers.length > 0 && (
+          <ProviderLogos providers={providers} />
+        )}
 
         {/* Action button */}
         <div>

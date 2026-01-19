@@ -10,7 +10,13 @@ import { createClient } from '@/lib/supabase/server';
 import { getCurrentHousehold } from '@/lib/services/household';
 import { getLibrary } from '@/lib/services/library';
 import { getTVDetails, getMovieDetails } from '@/lib/tmdb/details';
+import { getTVWatchProviders, getMovieWatchProviders } from '@/lib/tmdb/providers';
 import type { TrackedTitle } from '@/lib/database.types';
+
+interface Provider {
+  name: string;
+  logoPath: string;
+}
 
 interface EnrichedTitle {
   id: string;
@@ -19,16 +25,33 @@ interface EnrichedTitle {
   title: string;
   posterPath: string | null;
   year: string;
+  providers: Provider[];
 }
 
 /**
- * Enrich a tracked title with TMDB metadata
+ * Enrich a tracked title with TMDB metadata and optionally providers
  */
-async function enrichTitle(tracked: TrackedTitle): Promise<EnrichedTitle | null> {
+async function enrichTitle(
+  tracked: TrackedTitle,
+  fetchProviders: boolean
+): Promise<EnrichedTitle | null> {
   try {
+    let providers: Provider[] = [];
+
     if (tracked.media_type === 'tv') {
       const details = await getTVDetails(tracked.tmdb_id);
       if (!details) return null;
+
+      // Fetch streaming providers for first batch only
+      if (fetchProviders) {
+        const providerResult = await getTVWatchProviders(tracked.tmdb_id);
+        if (providerResult?.flatrate) {
+          providers = providerResult.flatrate.map((p) => ({
+            name: p.provider_name,
+            logoPath: p.logo_path,
+          }));
+        }
+      }
 
       return {
         id: tracked.id,
@@ -37,10 +60,22 @@ async function enrichTitle(tracked: TrackedTitle): Promise<EnrichedTitle | null>
         title: details.name,
         posterPath: details.poster_path,
         year: details.first_air_date?.substring(0, 4) || '',
+        providers,
       };
     } else {
       const details = await getMovieDetails(tracked.tmdb_id);
       if (!details) return null;
+
+      // Fetch streaming providers for first batch only
+      if (fetchProviders) {
+        const providerResult = await getMovieWatchProviders(tracked.tmdb_id);
+        if (providerResult?.flatrate) {
+          providers = providerResult.flatrate.map((p) => ({
+            name: p.provider_name,
+            logoPath: p.logo_path,
+          }));
+        }
+      }
 
       return {
         id: tracked.id,
@@ -49,6 +84,7 @@ async function enrichTitle(tracked: TrackedTitle): Promise<EnrichedTitle | null>
         title: details.title,
         posterPath: details.poster_path,
         year: details.release_date?.substring(0, 4) || '',
+        providers,
       };
     }
   } catch (error) {
@@ -104,12 +140,18 @@ export async function GET() {
     const trackedTitles = result.data;
 
     // Enrich with TMDB metadata (batch of 20 max to avoid rate limits)
+    // Only fetch providers for first 20 titles to avoid slow page loads
     const BATCH_SIZE = 20;
+    const PROVIDER_LIMIT = 20;
     const enrichedTitles: EnrichedTitle[] = [];
 
     for (let i = 0; i < trackedTitles.length; i += BATCH_SIZE) {
       const batch = trackedTitles.slice(i, i + BATCH_SIZE);
-      const enrichedBatch = await Promise.all(batch.map(enrichTitle));
+      const fetchProviders = i < PROVIDER_LIMIT;
+
+      const enrichedBatch = await Promise.all(
+        batch.map((t) => enrichTitle(t, fetchProviders))
+      );
 
       // Filter out nulls (failed enrichments)
       for (const enriched of enrichedBatch) {

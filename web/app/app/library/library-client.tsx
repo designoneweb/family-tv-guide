@@ -17,6 +17,11 @@ import {
 } from '@/components/ui/alert-dialog';
 import type { MediaType } from '@/lib/database.types';
 
+interface Provider {
+  name: string;
+  logoPath: string;
+}
+
 interface LibraryTitle {
   id: string;
   tmdbId: number;
@@ -24,6 +29,7 @@ interface LibraryTitle {
   title: string;
   posterPath: string | null;
   year: string;
+  providers: Provider[];
 }
 
 type FilterType = 'all' | 'tv' | 'movie';
@@ -189,6 +195,7 @@ export function LibraryClient() {
               title={title.title}
               posterPath={title.posterPath}
               year={title.year}
+              providers={title.providers}
               inLibrary={true}
               onRemove={() => handleRemoveClick(title)}
             />
