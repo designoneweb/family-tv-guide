@@ -4,7 +4,15 @@
  */
 
 import { tmdbFetch, TMDBError } from './client';
-import type { TMDBTVDetails, TMDBMovieDetails, TMDBSeason, TMDBEpisode, TMDBEpisodeCredits } from './types';
+import type {
+  TMDBTVDetails,
+  TMDBMovieDetails,
+  TMDBSeason,
+  TMDBEpisode,
+  TMDBEpisodeCredits,
+  TMDBPersonDetails,
+  TMDBPersonCombinedCredits,
+} from './types';
 
 /**
  * Fetch full TV show details by TMDB ID
@@ -120,6 +128,53 @@ export async function getEpisodeCredits(
   try {
     return await tmdbFetch<TMDBEpisodeCredits>(
       `/tv/${seriesId}/season/${seasonNumber}/episode/${episodeNumber}/credits`,
+      {
+        language: 'en-US',
+      }
+    );
+  } catch (error) {
+    if (error instanceof TMDBError && error.statusCode === 404) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+/**
+ * Fetch person details by TMDB person ID
+ *
+ * @param personId - The TMDB person ID
+ * @returns Person details or null if not found
+ * @throws TMDBError for API errors other than 404
+ */
+export async function getPersonDetails(
+  personId: number
+): Promise<TMDBPersonDetails | null> {
+  try {
+    return await tmdbFetch<TMDBPersonDetails>(`/person/${personId}`, {
+      language: 'en-US',
+    });
+  } catch (error) {
+    if (error instanceof TMDBError && error.statusCode === 404) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+/**
+ * Fetch person's combined credits (TV and movie cast/crew roles)
+ *
+ * @param personId - The TMDB person ID
+ * @returns Combined credits or null if not found
+ * @throws TMDBError for API errors other than 404
+ */
+export async function getPersonCombinedCredits(
+  personId: number
+): Promise<TMDBPersonCombinedCredits | null> {
+  try {
+    return await tmdbFetch<TMDBPersonCombinedCredits>(
+      `/person/${personId}/combined_credits`,
       {
         language: 'en-US',
       }

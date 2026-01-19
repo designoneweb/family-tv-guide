@@ -238,3 +238,64 @@ export interface TMDBEpisodeCredits {
   crew: TMDBCrewMember[];
   guest_stars: TMDBGuestStar[];
 }
+
+// ============================================================================
+// PERSON TYPES
+// ============================================================================
+
+/**
+ * Person details from /person/{person_id}
+ */
+export interface TMDBPersonDetails {
+  id: number;
+  name: string;
+  biography: string;
+  profile_path: string | null;
+  known_for_department: string;
+  birthday: string | null;
+  deathday: string | null;
+  place_of_birth: string | null;
+  also_known_as: string[];
+  popularity: number;
+}
+
+/**
+ * Cast credit from person's combined credits
+ */
+export interface TMDBPersonCastCredit {
+  id: number;
+  media_type: 'tv' | 'movie';
+  character: string;
+  name?: string; // TV show name
+  title?: string; // Movie title
+  poster_path: string | null;
+  vote_average: number;
+  first_air_date?: string; // TV
+  release_date?: string; // Movie
+  episode_count?: number; // TV only
+}
+
+/**
+ * Crew credit from person's combined credits
+ */
+export interface TMDBPersonCrewCredit {
+  id: number;
+  media_type: 'tv' | 'movie';
+  job: string;
+  department: string;
+  name?: string; // TV show name
+  title?: string; // Movie title
+  poster_path: string | null;
+  vote_average: number;
+  first_air_date?: string; // TV
+  release_date?: string; // Movie
+}
+
+/**
+ * Combined credits from /person/{person_id}/combined_credits
+ */
+export interface TMDBPersonCombinedCredits {
+  id: number;
+  cast: TMDBPersonCastCredit[];
+  crew: TMDBPersonCrewCredit[];
+}
