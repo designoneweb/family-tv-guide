@@ -110,6 +110,7 @@ export interface TMDBTVDetails {
   status: string;
   genres: TMDBGenre[];
   vote_average: number;
+  episode_run_time: number[];
 }
 
 /**
@@ -157,4 +158,35 @@ export interface TMDBWatchProviderResult {
 export interface TMDBWatchProvidersResponse {
   id: number;
   results: Record<string, TMDBWatchProviderResult>;
+}
+
+// ============================================================================
+// EPISODE & SEASON TYPES
+// ============================================================================
+
+/**
+ * Episode details from /tv/{series_id}/season/{season_number}/episode/{episode_number}
+ */
+export interface TMDBEpisode {
+  id: number;
+  name: string;
+  overview: string;
+  still_path: string | null;
+  episode_number: number;
+  season_number: number;
+  air_date: string;
+  runtime: number | null;
+  vote_average: number;
+}
+
+/**
+ * Season details from /tv/{series_id}/season/{season_number}
+ */
+export interface TMDBSeason {
+  id: number;
+  name: string;
+  overview: string;
+  poster_path: string | null;
+  season_number: number;
+  episodes: TMDBEpisode[];
 }

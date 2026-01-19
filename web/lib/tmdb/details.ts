@@ -4,7 +4,7 @@
  */
 
 import { tmdbFetch, TMDBError } from './client';
-import type { TMDBTVDetails, TMDBMovieDetails } from './types';
+import type { TMDBTVDetails, TMDBMovieDetails, TMDBSeason, TMDBEpisode } from './types';
 
 /**
  * Fetch full TV show details by TMDB ID
@@ -42,6 +42,59 @@ export async function getMovieDetails(
     return await tmdbFetch<TMDBMovieDetails>(`/movie/${tmdbId}`, {
       language: 'en-US',
     });
+  } catch (error) {
+    if (error instanceof TMDBError && error.statusCode === 404) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+/**
+ * Fetch TV season details by series ID and season number
+ *
+ * @param seriesId - The TMDB series ID
+ * @param seasonNumber - The season number (1-indexed)
+ * @returns Season details with episodes or null if not found
+ * @throws TMDBError for API errors other than 404
+ */
+export async function getTVSeason(
+  seriesId: number,
+  seasonNumber: number
+): Promise<TMDBSeason | null> {
+  try {
+    return await tmdbFetch<TMDBSeason>(`/tv/${seriesId}/season/${seasonNumber}`, {
+      language: 'en-US',
+    });
+  } catch (error) {
+    if (error instanceof TMDBError && error.statusCode === 404) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+/**
+ * Fetch TV episode details by series ID, season number, and episode number
+ *
+ * @param seriesId - The TMDB series ID
+ * @param seasonNumber - The season number (1-indexed)
+ * @param episodeNumber - The episode number (1-indexed)
+ * @returns Episode details or null if not found
+ * @throws TMDBError for API errors other than 404
+ */
+export async function getTVEpisode(
+  seriesId: number,
+  seasonNumber: number,
+  episodeNumber: number
+): Promise<TMDBEpisode | null> {
+  try {
+    return await tmdbFetch<TMDBEpisode>(
+      `/tv/${seriesId}/season/${seasonNumber}/episode/${episodeNumber}`,
+      {
+        language: 'en-US',
+      }
+    );
   } catch (error) {
     if (error instanceof TMDBError && error.statusCode === 404) {
       return null;
