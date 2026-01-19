@@ -22,6 +22,7 @@ None
 - [x] **Phase 6: Progress Tracking** - Episode progress per profile, mark watched, jump to episode
 - [x] **Phase 7: Episode Grid** - Season view, episode tiles, art-dominant layout
 - [x] **Phase 8: Episode Detail** - Full episode page, cast/guest stars, mark watched
+- [ ] **Phase 8.1: Schedule UX** - INSERTED: Simplify schedule grid, show full episode details on click
 - [ ] **Phase 9: Person Pages** - IMDb-like actor/crew pages, filmography, combined credits
 - [ ] **Phase 10: AI Synopsis** - Optional server-side synopsis, Gemini integration, caching
 
@@ -76,6 +77,13 @@ None
 **Research**: Unlikely (builds on episode grid)
 **Plans**: TBD
 
+### Phase 8.1: Schedule UX (INSERTED)
+**Goal**: Simplify schedule grid display, show full episode details on click, fix episode runtime
+**Depends on**: Phase 8 (uses episode detail patterns)
+**Research**: Unlikely (refactoring existing code)
+**Plans**: 1
+**Reason for insertion**: UX feedback - schedule grid wastes space with miniature posters, should show title + episode info instead
+
 ### Phase 9: Person Pages
 **Goal**: IMDb-like person pages with photo, bio, TV credits, combined filmography
 **Depends on**: Phase 8
@@ -105,5 +113,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 6. Progress Tracking | 3/3 | Complete | 2026-01-19 |
 | 7. Episode Grid | 1/1 | Complete | 2026-01-19 |
 | 8. Episode Detail | 2/2 | Complete | 2026-01-19 |
+| 8.1 Schedule UX | 0/1 | Not started | - |
 | 9. Person Pages | 0/TBD | Not started | - |
 | 10. AI Synopsis | 0/TBD | Not started | - |

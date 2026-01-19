@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-01-18)
 
 **Core value:** Fast "What are we watching tonight?" — the Guide page must load quickly and show exactly what's scheduled with the next episode ready to watch.
-**Current focus:** Phase 8 complete — Ready for Phase 9
+**Current focus:** Phase 8.1 (Schedule UX improvement) — Inserted before Phase 9
 
 ## Current Position
 
-Phase: 8 of 10 (Episode Detail)
-Plan: 2 of 2 in current phase
-Status: Phase complete
-Last activity: 2026-01-19 — Completed 08-02-PLAN.md (Episode Detail Page)
+Phase: 8.1 of 10 (Schedule UX - INSERTED)
+Plan: 0 of 1 in current phase
+Status: Ready to execute
+Last activity: 2026-01-19 — Created 08.1-01-PLAN.md (Schedule UX Improvement)
 
-Progress: ███████████░░░░ 73% (22 of 30 estimated plans)
+Progress: ███████████░░░░ 73% (22 of 31 estimated plans)
 
 ## Performance Metrics
 
@@ -110,6 +110,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 08-02-PLAN.md (Episode Detail Page)
+Stopped at: Created 08.1-01-PLAN.md (Schedule UX)
 Resume file: None
-Next: Phase 9 Person Pages
+Next: Execute Phase 8.1 Schedule UX improvement
