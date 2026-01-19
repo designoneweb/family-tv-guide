@@ -25,6 +25,7 @@ None
 - [x] **Phase 8.1: Schedule UX** - INSERTED: Simplify schedule grid, show full episode details on click
 - [x] **Phase 9: Person Pages** - IMDb-like actor/crew pages, filmography, combined credits
 - [x] **Phase 10: AI Synopsis** - Optional server-side synopsis, Gemini integration, caching
+- [ ] **Phase 10.1: UX Polish** - INSERTED: Episode stills on Tonight, clickable providers, enriched show detail
 
 ## Phase Details
 
@@ -96,7 +97,14 @@ None
 **Depends on**: Phase 9
 **Research**: Likely (Gemini API)
 **Research topics**: Gemini 1.5 Flash API, Next.js server actions for AI, Supabase caching, rate limiting
-**Plans**: TBD
+**Plans**: 2
+
+### Phase 10.1: UX Polish (INSERTED)
+**Goal**: Polish UX with episode stills on Tonight screen, clickable provider icons, enriched show detail page
+**Depends on**: Phase 10
+**Research**: Unlikely (uses existing patterns)
+**Plans**: 1
+**Reason for insertion**: Pre-milestone polish - improve navigation and information density
 
 ## Progress
 
@@ -116,3 +124,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 8.1 Schedule UX | 1/1 | Complete | 2026-01-19 |
 | 9. Person Pages | 2/2 | Complete | 2026-01-19 |
 | 10. AI Synopsis | 2/2 | Complete | 2026-01-19 |
+| 10.1 UX Polish | 0/1 | Not started | - |
