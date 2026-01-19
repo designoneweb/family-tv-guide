@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { Button } from "@/components/ui/button";
 import { LogoutButton } from "./logout-button";
 
 export default async function AppPage() {
@@ -16,6 +18,17 @@ export default async function AppPage() {
         <p className="text-xl text-muted-foreground">
           Logged in as: {user?.email}
         </p>
+
+        {/* Quick links */}
+        <div className="flex flex-wrap gap-4 justify-center">
+          <Link href="/app/profiles/select">
+            <Button variant="outline">Switch Profile</Button>
+          </Link>
+          <Link href="/app/profiles">
+            <Button variant="outline">Manage Profiles</Button>
+          </Link>
+        </div>
+
         <LogoutButton />
       </main>
     </div>

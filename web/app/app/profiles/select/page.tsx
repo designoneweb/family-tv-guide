@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { getCurrentHousehold, getHouseholdProfiles } from '@/lib/services/household';
@@ -37,15 +38,14 @@ export default async function ProfileSelectPage() {
 
         <ProfileSelectionClient profiles={profiles} />
 
-        {/* Manage Profiles link - placeholder for future */}
+        {/* Manage Profiles link */}
         <div className="text-center mt-12">
-          <button
-            type="button"
-            disabled
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          <Link
+            href="/app/profiles"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             Manage Profiles
-          </button>
+          </Link>
         </div>
       </div>
     </div>
