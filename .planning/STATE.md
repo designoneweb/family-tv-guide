@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-18)
 
 **Core value:** Fast "What are we watching tonight?" — the Guide page must load quickly and show exactly what's scheduled with the next episode ready to watch.
-**Current focus:** Phase 2 — Data Model
+**Current focus:** Phase 3 — TMDB Integration
 
 ## Current Position
 
-Phase: 2 of 10 (Data Model) ✓ COMPLETE
-Plan: 5 of 5 in current phase
-Status: Phase complete
-Last activity: 2026-01-19 — Completed 02-05-PLAN.md (Phase 2 done!)
+Phase: 3 of 10 (TMDB Integration)
+Plan: 1 of TBD in current phase
+Status: In progress
+Last activity: 2026-01-19 — Completed 03-01-PLAN.md (TMDB client and search)
 
 Progress: ██░░░░░░░░ 25%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
-- Average duration: 7.3 min
-- Total execution time: 58 min
+- Total plans completed: 9
+- Average duration: 6.7 min
+- Total execution time: 60 min
 
 **By Phase:**
 
@@ -29,10 +29,11 @@ Progress: ██░░░░░░░░ 25%
 |-------|-------|-------|----------|
 | 1. Foundation | 3 | 10 min | 3.3 min |
 | 2. Data Model | 5 | 48 min | 9.6 min |
+| 3. TMDB Integration | 1 | 2 min | 2.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-02 (2 min), 02-03 (1 min), 02-04 (33 min), 02-05 (10 min)
-- Trend: Normalized after 02-04 migration issue
+- Last 5 plans: 02-03 (1 min), 02-04 (33 min), 02-05 (10 min), 03-01 (2 min)
+- Trend: Fast execution continues
 
 ## Accumulated Context
 
@@ -60,6 +61,9 @@ Recent decisions affecting current work:
 | 02-04 | ProfileGuard for redirect logic | Client-side redirect when no profile |
 | 02-05 | Avatar as color picker (8 presets) | Simpler than image upload |
 | 02-05 | AlertDialog for delete confirmation | Accessible, consistent UX |
+| 03-01 | Server-side only TMDB calls via API route | Protects API key |
+| 03-01 | Simple fetch wrapper without retry | TMDB limits are generous |
+| 03-01 | Combined multi-search sorts by popularity | Better UX for search results |
 
 ### Deferred Issues
 
@@ -72,6 +76,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed Phase 2 (02-05-PLAN.md)
+Stopped at: Completed 03-01-PLAN.md (TMDB client and search)
 Resume file: None
-Next: Phase 3 - TMDB Integration
+Next: 03-02 (metadata fetching, watch providers, image helpers)

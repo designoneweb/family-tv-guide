@@ -99,7 +99,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-01-19 |
 | 2. Data Model | 5/5 | Complete | 2026-01-19 |
-| 3. TMDB Integration | 0/TBD | Not started | - |
+| 3. TMDB Integration | 1/TBD | In progress | - |
 | 4. Library Management | 0/TBD | Not started | - |
 | 5. Schedule System | 0/TBD | Not started | - |
 | 6. Progress Tracking | 0/TBD | Not started | - |
