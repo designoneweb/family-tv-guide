@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-18)
 
 **Core value:** Fast "What are we watching tonight?" — the Guide page must load quickly and show exactly what's scheduled with the next episode ready to watch.
-**Current focus:** Phase 8 in progress — Episode Detail
+**Current focus:** Phase 8 complete — Ready for Phase 9
 
 ## Current Position
 
 Phase: 8 of 10 (Episode Detail)
-Plan: 1 of TBD in current phase
-Status: In progress
-Last activity: 2026-01-19 — Completed 08-01-PLAN.md (Episode Credits Integration)
+Plan: 2 of 2 in current phase
+Status: Phase complete
+Last activity: 2026-01-19 — Completed 08-02-PLAN.md (Episode Detail Page)
 
-Progress: ██████████ 70% (21 of 30 estimated plans)
+Progress: ███████████░░░░ 73% (22 of 30 estimated plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 21
-- Average duration: 10.7 min
-- Total execution time: 225 min
+- Total plans completed: 22
+- Average duration: 11.1 min
+- Total execution time: 245 min
 
 **By Phase:**
 
@@ -34,10 +34,10 @@ Progress: ██████████ 70% (21 of 30 estimated plans)
 | 5. Schedule System | 3 | 57 min | 19.0 min |
 | 6. Progress Tracking | 3 | 71 min | 23.7 min |
 | 7. Episode Grid | 1 | 8 min | 8.0 min |
-| 8. Episode Detail | 1 | 3 min | 3.0 min |
+| 8. Episode Detail | 2 | 23 min | 11.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-02 (12 min), 06-03 (56 min), 07-01 (8 min), 08-01 (3 min)
+- Last 5 plans: 06-03 (56 min), 07-01 (8 min), 08-01 (3 min), 08-02 (20 min)
 
 ## Accumulated Context
 
@@ -95,6 +95,9 @@ Recent decisions affecting current work:
 | 07-01 | Episode badge overlay E5 format | Concise and scannable |
 | 08-01 | Profile image sizes: small (w45), medium (w185), large (h632) | TMDB standard sizes |
 | 08-01 | getEpisodeCredits returns null for 404 | Consistent with other TMDB functions |
+| 08-02 | Episode still fallback to show backdrop | Better than no image when episode still missing |
+| 08-02 | Mark Watched 1.5s delay before navigation | Brief confirmation before auto-navigating to next episode |
+| 08-02 | TitleCard links to show detail for TV only | Movies don't have detail page yet |
 
 ### Deferred Issues
 
@@ -107,6 +110,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 08-01-PLAN.md (Episode Credits Integration)
+Stopped at: Completed 08-02-PLAN.md (Episode Detail Page)
 Resume file: None
-Next: Continue Phase 8 Episode Detail
+Next: Phase 9 Person Pages
