@@ -239,6 +239,15 @@ export interface TMDBEpisodeCredits {
   guest_stars: TMDBGuestStar[];
 }
 
+/**
+ * TV show credits from /tv/{series_id}/credits
+ */
+export interface TMDBTVCredits {
+  id: number;
+  cast: TMDBCastMember[];
+  crew: TMDBCrewMember[];
+}
+
 // ============================================================================
 // PERSON TYPES
 // ============================================================================

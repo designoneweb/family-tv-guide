@@ -10,6 +10,7 @@ import type {
   TMDBSeason,
   TMDBEpisode,
   TMDBEpisodeCredits,
+  TMDBTVCredits,
   TMDBPersonDetails,
   TMDBPersonCombinedCredits,
 } from './types';
@@ -103,6 +104,28 @@ export async function getTVEpisode(
         language: 'en-US',
       }
     );
+  } catch (error) {
+    if (error instanceof TMDBError && error.statusCode === 404) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+/**
+ * Fetch TV show credits (aggregate cast for the series)
+ *
+ * @param seriesId - The TMDB series ID
+ * @returns TV credits or null if not found
+ * @throws TMDBError for API errors other than 404
+ */
+export async function getTVCredits(
+  seriesId: number
+): Promise<TMDBTVCredits | null> {
+  try {
+    return await tmdbFetch<TMDBTVCredits>(`/tv/${seriesId}/credits`, {
+      language: 'en-US',
+    });
   } catch (error) {
     if (error instanceof TMDBError && error.statusCode === 404) {
       return null;
