@@ -8,8 +8,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getWeekSchedule, addToSchedule, type WeekSchedule } from '@/lib/services/schedule';
 import { getCurrentHousehold } from '@/lib/services/household';
-import { getTVDetails, getMovieDetails } from '@/lib/tmdb/details';
+import { getTVDetails, getMovieDetails, getTVEpisode } from '@/lib/tmdb/details';
 import { getTVWatchProviders, getMovieWatchProviders } from '@/lib/tmdb/providers';
+import { getProgressForProfile } from '@/lib/services/progress';
 import type { ScheduleEntry, MediaType } from '@/lib/database.types';
 
 // ============================================================================
@@ -19,6 +20,13 @@ import type { ScheduleEntry, MediaType } from '@/lib/database.types';
 interface Provider {
   name: string;
   logoPath: string;
+}
+
+interface CurrentEpisode {
+  season: number;
+  episode: number;
+  title: string;
+  stillPath: string | null;
 }
 
 interface EnrichedScheduleEntry {
@@ -33,6 +41,8 @@ interface EnrichedScheduleEntry {
   posterPath: string | null;
   year: string;
   providers: Provider[];
+  runtime: number; // Runtime in minutes (for TV: episode runtime, for movies: total runtime)
+  currentEpisode: CurrentEpisode | null; // Episode info for TV shows, null for movies
 }
 
 type EnrichedWeekSchedule = {
@@ -44,20 +54,27 @@ interface TrackedTitleInfo {
   media_type: MediaType;
 }
 
+interface ProgressInfo {
+  seasonNumber: number;
+  episodeNumber: number;
+}
+
 // ============================================================================
 // TMDB Enrichment
 // ============================================================================
 
 /**
- * Enrich a schedule entry with TMDB metadata
+ * Enrich a schedule entry with TMDB metadata and progress info
  */
 async function enrichEntry(
   entry: ScheduleEntry,
   titleInfo: TrackedTitleInfo,
-  fetchProviders: boolean
+  fetchProviders: boolean,
+  progress: ProgressInfo | null
 ): Promise<EnrichedScheduleEntry | null> {
   try {
     let providers: Provider[] = [];
+    let currentEpisode: CurrentEpisode | null = null;
 
     if (titleInfo.media_type === 'tv') {
       const details = await getTVDetails(titleInfo.tmdb_id);
@@ -73,6 +90,43 @@ async function enrichEntry(
         }
       }
 
+      // Get episode runtime: use first value from array or default to 30 minutes
+      const episodeRuntime = details.episode_run_time?.[0] || 30;
+
+      // Fetch current episode info
+      // Default to S1E1 if no progress exists
+      const seasonNum = progress?.seasonNumber ?? 1;
+      const episodeNum = progress?.episodeNumber ?? 1;
+
+      try {
+        const episodeDetails = await getTVEpisode(titleInfo.tmdb_id, seasonNum, episodeNum);
+        if (episodeDetails) {
+          currentEpisode = {
+            season: seasonNum,
+            episode: episodeNum,
+            title: episodeDetails.name,
+            stillPath: episodeDetails.still_path,
+          };
+        } else {
+          // Episode not found, still include position without title
+          currentEpisode = {
+            season: seasonNum,
+            episode: episodeNum,
+            title: `Episode ${episodeNum}`,
+            stillPath: null,
+          };
+        }
+      } catch (episodeError) {
+        console.error(`Failed to fetch episode details for ${titleInfo.tmdb_id} S${seasonNum}E${episodeNum}:`, episodeError);
+        // Fallback: show position without title
+        currentEpisode = {
+          season: seasonNum,
+          episode: episodeNum,
+          title: `Episode ${episodeNum}`,
+          stillPath: null,
+        };
+      }
+
       return {
         id: entry.id,
         weekday: entry.weekday,
@@ -85,6 +139,8 @@ async function enrichEntry(
         posterPath: details.poster_path,
         year: details.first_air_date?.substring(0, 4) || '',
         providers,
+        runtime: episodeRuntime,
+        currentEpisode,
       };
     } else {
       const details = await getMovieDetails(titleInfo.tmdb_id);
@@ -112,6 +168,8 @@ async function enrichEntry(
         posterPath: details.poster_path,
         year: details.release_date?.substring(0, 4) || '',
         providers,
+        runtime: details.runtime || 30, // Default to 30 minutes if no runtime
+        currentEpisode: null, // Movies don't have episodes
       };
     }
   } catch (error) {
@@ -121,12 +179,13 @@ async function enrichEntry(
 }
 
 /**
- * Enrich all schedule entries with TMDB metadata
+ * Enrich all schedule entries with TMDB metadata and progress info
  */
 async function enrichSchedule(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   supabase: any,
-  schedule: WeekSchedule
+  schedule: WeekSchedule,
+  profileId: string
 ): Promise<EnrichedWeekSchedule> {
   // Collect all unique tracked_title_ids
   const allEntries: ScheduleEntry[] = [];
@@ -165,6 +224,19 @@ async function enrichSchedule(
     });
   }
 
+  // Fetch progress for this profile
+  const progressResult = await getProgressForProfile(supabase, profileId);
+  const progressMap = new Map<string, ProgressInfo>();
+
+  if (!progressResult.error && progressResult.data) {
+    for (const progress of progressResult.data) {
+      progressMap.set(progress.tracked_title_id, {
+        seasonNumber: progress.season_number,
+        episodeNumber: progress.episode_number,
+      });
+    }
+  }
+
   // Enrich entries with TMDB data (limit providers to first 20)
   const PROVIDER_LIMIT = 20;
   let enrichedCount = 0;
@@ -192,7 +264,12 @@ async function enrichSchedule(
         const fetchProviders = enrichedCount < PROVIDER_LIMIT;
         enrichedCount++;
 
-        return enrichEntry(entry, titleInfo, fetchProviders);
+        // Get progress for this title (null for movies or shows without progress)
+        const progress = titleInfo.media_type === 'tv'
+          ? progressMap.get(entry.tracked_title_id) || null
+          : null;
+
+        return enrichEntry(entry, titleInfo, fetchProviders, progress);
       })
     );
 
@@ -253,8 +330,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Enrich with TMDB metadata
-    const enrichedSchedule = await enrichSchedule(supabase, result.data);
+    // Enrich with TMDB metadata and progress info
+    const enrichedSchedule = await enrichSchedule(supabase, result.data, profileId);
 
     return NextResponse.json({ schedule: enrichedSchedule });
   } catch (error) {
