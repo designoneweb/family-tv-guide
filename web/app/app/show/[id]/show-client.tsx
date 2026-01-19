@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -24,6 +25,7 @@ interface ShowClientProps {
  * Fetches show details and season data from TMDB API routes.
  */
 export function ShowClient({ tmdbId }: ShowClientProps) {
+  const router = useRouter();
   const [showDetails, setShowDetails] = useState<TMDBTVDetails | null>(null);
   const [currentSeason, setCurrentSeason] = useState<TMDBSeason | null>(null);
   const [selectedSeasonNumber, setSelectedSeasonNumber] = useState(1);
@@ -190,6 +192,7 @@ export function ShowClient({ tmdbId }: ShowClientProps) {
                 overview={episode.overview}
                 stillPath={episode.still_path}
                 airDate={episode.air_date}
+                onClick={() => router.push(`/app/show/${tmdbId}/season/${episode.season_number}/episode/${episode.episode_number}`)}
               />
             ))}
           </div>

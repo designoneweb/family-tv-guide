@@ -3,7 +3,10 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, Loader2, User } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft, Loader2, User, CheckCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useProfile } from '@/lib/contexts/profile-context';
 import { getStillUrl, getBackdropUrl, getProfileUrl } from '@/lib/tmdb/images';
 import type { TMDBEpisode, TMDBTVDetails, TMDBEpisodeCredits, TMDBCastMember, TMDBGuestStar } from '@/lib/tmdb/types';
 
@@ -53,10 +56,15 @@ function CastCard({ person, showCharacter = true }: { person: TMDBCastMember | T
  * Fetches and displays full episode info with cast and guest stars.
  */
 export function EpisodeClient({ showId, seasonNumber, episodeNumber }: EpisodeClientProps) {
+  const router = useRouter();
+  const { activeProfileId } = useProfile();
   const [episode, setEpisode] = useState<TMDBEpisode | null>(null);
   const [credits, setCredits] = useState<TMDBEpisodeCredits | null>(null);
   const [showDetails, setShowDetails] = useState<TMDBTVDetails | null>(null);
+  const [trackedTitleId, setTrackedTitleId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isMarking, setIsMarking] = useState(false);
+  const [markedMessage, setMarkedMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -97,6 +105,88 @@ export function EpisodeClient({ showId, seasonNumber, episodeNumber }: EpisodeCl
 
     fetchData();
   }, [showId, seasonNumber, episodeNumber]);
+
+  // Check if show is in library (to show Mark Watched button)
+  useEffect(() => {
+    async function checkLibrary() {
+      try {
+        const response = await fetch(`/api/library/check?tmdbId=${showId}`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.inLibrary && data.titleId) {
+            setTrackedTitleId(data.titleId);
+          }
+        }
+      } catch (err) {
+        // Silently fail - just won't show Mark Watched button
+        console.error('Failed to check library status:', err);
+      }
+    }
+
+    checkLibrary();
+  }, [showId]);
+
+  /**
+   * Handle marking episode as watched
+   * Advances progress to next episode and shows brief confirmation
+   */
+  const handleMarkWatched = async () => {
+    if (!activeProfileId || !trackedTitleId || !showDetails) return;
+
+    setIsMarking(true);
+    setMarkedMessage(null);
+
+    try {
+      // Get current season episode count
+      const seasonResponse = await fetch(`/api/tmdb/tv/${showId}/season/${seasonNumber}`);
+      if (!seasonResponse.ok) {
+        throw new Error('Failed to fetch season details');
+      }
+      const seasonData = await seasonResponse.json();
+      const totalEpisodesInSeason = seasonData.episodes?.length || 1;
+      const totalSeasons = showDetails.number_of_seasons || 1;
+
+      // Call advance API
+      const advanceResponse = await fetch('/api/progress', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          profileId: activeProfileId,
+          trackedTitleId,
+          action: 'advance',
+          totalEpisodesInSeason,
+          totalSeasons,
+        }),
+      });
+
+      if (!advanceResponse.ok) {
+        throw new Error('Failed to advance progress');
+      }
+
+      const { progress } = await advanceResponse.json();
+
+      // Show confirmation message
+      setMarkedMessage(`Marked! Next: S${progress.season_number}E${progress.episode_number}`);
+
+      // Navigate to next episode after brief delay
+      setTimeout(() => {
+        if (progress.season_number !== seasonNumber || progress.episode_number !== episodeNumber) {
+          router.push(`/app/show/${showId}/season/${progress.season_number}/episode/${progress.episode_number}`);
+        } else {
+          // Show is complete - stay on page
+          setMarkedMessage('All caught up!');
+        }
+      }, 1500);
+    } catch (err) {
+      console.error('Failed to mark watched:', err);
+      setMarkedMessage(null);
+    } finally {
+      setIsMarking(false);
+    }
+  };
+
+  // Check if Mark Watched button should be shown
+  const canMarkWatched = activeProfileId && trackedTitleId && showDetails;
 
   // Loading state
   if (isLoading) {
@@ -213,9 +303,39 @@ export function EpisodeClient({ showId, seasonNumber, episodeNumber }: EpisodeCl
 
           {/* Overview */}
           {episode.overview && (
-            <p className="text-foreground leading-relaxed mb-8">
+            <p className="text-foreground leading-relaxed mb-6">
               {episode.overview}
             </p>
+          )}
+
+          {/* Mark Watched button */}
+          {canMarkWatched && (
+            <div className="mb-8">
+              {markedMessage ? (
+                <div className="inline-flex items-center gap-2 text-sm text-green-500">
+                  <CheckCircle className="h-4 w-4" />
+                  {markedMessage}
+                </div>
+              ) : (
+                <Button
+                  onClick={handleMarkWatched}
+                  disabled={isMarking}
+                  className="min-w-[160px]"
+                >
+                  {isMarking ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Marking...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      Mark Watched
+                    </>
+                  )}
+                </Button>
+              )}
+            </div>
           )}
 
           {/* Main Cast section */}
