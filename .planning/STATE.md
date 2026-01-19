@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-01-18)
 ## Current Position
 
 Phase: 2 of 10 (Data Model)
-Plan: 1 of 5 in current phase
+Plan: 2 of 5 in current phase
 Status: In progress
-Last activity: 2026-01-19 — Completed 02-01-PLAN.md
+Last activity: 2026-01-19 — Completed 02-02-PLAN.md
 
-Progress: ██░░░░░░░░ 13%
+Progress: ██░░░░░░░░ 16%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
-- Average duration: 3.0 min
-- Total execution time: 12 min
+- Total plans completed: 5
+- Average duration: 2.8 min
+- Total execution time: 14 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Foundation | 3 | 10 min | 3.3 min |
-| 2. Data Model | 1 | 2 min | 2.0 min |
+| 2. Data Model | 2 | 4 min | 2.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (3 min), 01-02 (3 min), 01-03 (4 min), 02-01 (2 min)
+- Last 5 plans: 01-02 (3 min), 01-03 (4 min), 02-01 (2 min), 02-02 (2 min)
 - Trend: ↓ faster
 
 ## Accumulated Context
@@ -51,6 +51,9 @@ Recent decisions affecting current work:
 | 01-03 | Auth check in layout with redirect | Protects all /app/* routes |
 | 02-01 | UUID primary keys with gen_random_uuid() | Supabase convention |
 | 02-01 | ON DELETE CASCADE on all foreign keys | Clean household deletion |
+| 02-02 | Single owner_id per household | One user owns each household |
+| 02-02 | get_user_household_id() helper with SECURITY DEFINER | Efficient RLS policy checks |
+| 02-02 | episode_blurbs public read | Shared cached content |
 
 ### Deferred Issues
 
@@ -63,5 +66,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 02-01-PLAN.md
+Stopped at: Completed 02-02-PLAN.md
 Resume file: None
