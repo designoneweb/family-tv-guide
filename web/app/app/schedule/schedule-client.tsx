@@ -1,27 +1,30 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import Image from 'next/image';
-import { Loader2, Film, X, Calendar, Plus, ChevronUp, ChevronDown } from 'lucide-react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { Loader2, Plus, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
 import { useProfile } from '@/lib/contexts/profile-context';
-import { getPosterUrl } from '@/lib/tmdb/images';
 import { AddToScheduleDialog } from '@/components/add-to-schedule-dialog';
+import { ScheduleShowDialog } from '@/components/schedule-show-dialog';
 import type { MediaType } from '@/lib/database.types';
 
-// Day names for display
+// Constants
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const DAY_SHORT_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const PIXELS_PER_MINUTE = 2; // 2px per minute = 120px per hour
+const START_HOUR = 18; // 6:00 PM
+const DAY_LABEL_WIDTH = 100; // Width of day label column in pixels
+
+// Type for current episode info from API
+interface CurrentEpisode {
+  season: number;
+  episode: number;
+  title: string;
+  stillPath: string | null;
+  runtime: number | null;
+  airDate: string | null;
+  overview: string | null;
+}
 
 // Type for enriched schedule entry from API (camelCase)
 interface EnrichedScheduleEntry {
@@ -36,12 +39,32 @@ interface EnrichedScheduleEntry {
   posterPath: string | null;
   year: string;
   providers: { name: string; logoPath: string }[];
+  runtime: number;
+  currentEpisode: CurrentEpisode | null;
 }
 
 // Week schedule with enriched entries
 type EnrichedWeekSchedule = {
   [weekday: number]: EnrichedScheduleEntry[];
 };
+
+// Helper to format time from minutes offset
+function formatTime(minutesFromStart: number): string {
+  const totalMinutes = START_HOUR * 60 + minutesFromStart;
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  const displayHour = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours;
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  return minutes === 0 ? `${displayHour} ${ampm}` : `${displayHour}:${minutes.toString().padStart(2, '0')}`;
+}
+
+// Helper to format runtime for display
+function formatRuntime(minutes: number): string {
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+}
 
 export function ScheduleClient() {
   const { activeProfileId, activeProfile } = useProfile();
@@ -51,16 +74,13 @@ export function ScheduleClient() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Delete confirmation state
-  const [deleteTarget, setDeleteTarget] = useState<EnrichedScheduleEntry | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
-
   // Add to schedule dialog state
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [addDialogWeekday, setAddDialogWeekday] = useState<number>(0);
 
-  // Track reordering state (to prevent double clicks)
-  const [isReordering, setIsReordering] = useState(false);
+  // Show details dialog state
+  const [selectedShow, setSelectedShow] = useState<EnrichedScheduleEntry | null>(null);
+  const [selectedShowStartTime, setSelectedShowStartTime] = useState<number>(0);
 
   // Fetch schedule (API returns enriched data with TMDB details)
   const fetchSchedule = useCallback(async () => {
@@ -70,14 +90,12 @@ export function ScheduleClient() {
     setError(null);
 
     try {
-      // Fetch schedule - API returns enriched entries with TMDB data
       const response = await fetch(`/api/schedule?profileId=${activeProfileId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch schedule');
       }
       const data = await response.json();
       const enrichedSchedule = data.schedule as EnrichedWeekSchedule;
-
       setSchedule(enrichedSchedule);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load schedule');
@@ -91,46 +109,31 @@ export function ScheduleClient() {
     fetchSchedule();
   }, [fetchSchedule]);
 
-  // Handle remove action - open confirmation dialog
-  const handleRemoveClick = useCallback((entry: EnrichedScheduleEntry) => {
-    setDeleteTarget(entry);
-  }, []);
-
-  // Confirm deletion
-  const handleConfirmDelete = useCallback(async () => {
-    if (!deleteTarget) return;
-
-    setIsDeleting(true);
-
-    try {
-      const response = await fetch(`/api/schedule/${deleteTarget.id}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to remove from schedule');
-      }
-
-      // Remove from local state
-      setSchedule((prev) => {
-        const updated = { ...prev };
-        updated[deleteTarget.weekday] = updated[deleteTarget.weekday].filter(
-          (e) => e.id !== deleteTarget.id
-        );
-        return updated;
-      });
-    } catch (err) {
-      console.error('Error removing from schedule:', err);
-    } finally {
-      setIsDeleting(false);
-      setDeleteTarget(null);
+  // Calculate the maximum grid width based on total runtime per day
+  const maxGridWidth = useMemo(() => {
+    let maxMinutes = 0;
+    for (let weekday = 0; weekday < 7; weekday++) {
+      const dayEntries = schedule[weekday] || [];
+      const totalMinutes = dayEntries.reduce((sum, entry) => sum + entry.runtime, 0);
+      maxMinutes = Math.max(maxMinutes, totalMinutes);
     }
-  }, [deleteTarget]);
+    // At minimum, show 4 hours (240 minutes)
+    return Math.max(maxMinutes, 240) * PIXELS_PER_MINUTE;
+  }, [schedule]);
 
-  // Cancel deletion
-  const handleCancelDelete = useCallback(() => {
-    setDeleteTarget(null);
-  }, []);
+  // Generate time markers
+  const timeMarkers = useMemo(() => {
+    const markers: { offset: number; label: string }[] = [];
+    const totalMinutes = Math.ceil(maxGridWidth / PIXELS_PER_MINUTE);
+    // Generate markers every 30 minutes
+    for (let minutes = 0; minutes <= totalMinutes; minutes += 30) {
+      markers.push({
+        offset: minutes * PIXELS_PER_MINUTE,
+        label: formatTime(minutes),
+      });
+    }
+    return markers;
+  }, [maxGridWidth]);
 
   // Handle add button click
   const handleAddClick = useCallback((weekday: number) => {
@@ -148,146 +151,31 @@ export function ScheduleClient() {
     return schedule[weekday].map((entry) => entry.trackedTitleId);
   }, [schedule]);
 
-  // Handle move up within day
-  const handleMoveUp = useCallback(async (entry: EnrichedScheduleEntry, index: number) => {
-    if (index === 0 || isReordering) return;
+  // Handle show click - open details dialog
+  const handleShowClick = useCallback((entry: EnrichedScheduleEntry, startTime: number) => {
+    setSelectedShow(entry);
+    setSelectedShowStartTime(startTime);
+  }, []);
 
-    setIsReordering(true);
-    const dayEntries = schedule[entry.weekday];
-    const prevEntry = dayEntries[index - 1];
+  // Handle show dialog close
+  const handleShowDialogClose = useCallback(() => {
+    setSelectedShow(null);
+  }, []);
 
-    // Store original slot_orders for swap
-    const entrySlotOrder = entry.slotOrder;
-    const prevEntrySlotOrder = prevEntry.slotOrder;
+  // Handle show removed from dialog
+  const handleShowRemoved = useCallback(() => {
+    fetchSchedule();
+    setSelectedShow(null);
+  }, [fetchSchedule]);
 
-    // Optimistic update - swap entries in UI
-    setSchedule((prev) => {
-      const updated = { ...prev };
-      const dayEntriesCopy = [...updated[entry.weekday]];
-      // Swap the slot_order values in the local state as well
-      dayEntriesCopy[index] = { ...dayEntriesCopy[index], slotOrder: prevEntrySlotOrder };
-      dayEntriesCopy[index - 1] = { ...dayEntriesCopy[index - 1], slotOrder: entrySlotOrder };
-      // Swap positions in array
-      [dayEntriesCopy[index - 1], dayEntriesCopy[index]] = [dayEntriesCopy[index], dayEntriesCopy[index - 1]];
-      updated[entry.weekday] = dayEntriesCopy;
-      return updated;
-    });
-
-    try {
-      // Swap slot_orders for both entries
-      // First move entry to a temporary high slot to avoid unique constraint conflict
-      const tempSlot = 99999;
-      const response1 = await fetch(`/api/schedule/${entry.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slotOrder: tempSlot }),
-      });
-
-      if (!response1.ok) {
-        throw new Error('Failed to reorder (step 1)');
-      }
-
-      // Move prevEntry to entry's original slot
-      const response2 = await fetch(`/api/schedule/${prevEntry.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slotOrder: entrySlotOrder }),
-      });
-
-      if (!response2.ok) {
-        throw new Error('Failed to reorder (step 2)');
-      }
-
-      // Move entry to prevEntry's original slot
-      const response3 = await fetch(`/api/schedule/${entry.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slotOrder: prevEntrySlotOrder }),
-      });
-
-      if (!response3.ok) {
-        throw new Error('Failed to reorder (step 3)');
-      }
-    } catch (err) {
-      console.error('Error reordering:', err);
-      // Rollback on error - refetch schedule
-      fetchSchedule();
-    } finally {
-      setIsReordering(false);
-    }
-  }, [schedule, isReordering, fetchSchedule]);
-
-  // Handle move down within day
-  const handleMoveDown = useCallback(async (entry: EnrichedScheduleEntry, index: number) => {
-    const dayEntries = schedule[entry.weekday];
-    if (index === dayEntries.length - 1 || isReordering) return;
-
-    setIsReordering(true);
-    const nextEntry = dayEntries[index + 1];
-
-    // Store original slot_orders for swap
-    const entrySlotOrder = entry.slotOrder;
-    const nextEntrySlotOrder = nextEntry.slotOrder;
-
-    // Optimistic update - swap entries in UI
-    setSchedule((prev) => {
-      const updated = { ...prev };
-      const dayEntriesCopy = [...updated[entry.weekday]];
-      // Swap the slot_order values in the local state as well
-      dayEntriesCopy[index] = { ...dayEntriesCopy[index], slotOrder: nextEntrySlotOrder };
-      dayEntriesCopy[index + 1] = { ...dayEntriesCopy[index + 1], slotOrder: entrySlotOrder };
-      // Swap positions in array
-      [dayEntriesCopy[index], dayEntriesCopy[index + 1]] = [dayEntriesCopy[index + 1], dayEntriesCopy[index]];
-      updated[entry.weekday] = dayEntriesCopy;
-      return updated;
-    });
-
-    try {
-      // Swap slot_orders for both entries
-      // First move entry to a temporary high slot to avoid unique constraint conflict
-      const tempSlot = 99999;
-      const response1 = await fetch(`/api/schedule/${entry.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slotOrder: tempSlot }),
-      });
-
-      if (!response1.ok) {
-        throw new Error('Failed to reorder (step 1)');
-      }
-
-      // Move nextEntry to entry's original slot
-      const response2 = await fetch(`/api/schedule/${nextEntry.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slotOrder: entrySlotOrder }),
-      });
-
-      if (!response2.ok) {
-        throw new Error('Failed to reorder (step 2)');
-      }
-
-      // Move entry to nextEntry's original slot
-      const response3 = await fetch(`/api/schedule/${entry.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slotOrder: nextEntrySlotOrder }),
-      });
-
-      if (!response3.ok) {
-        throw new Error('Failed to reorder (step 3)');
-      }
-    } catch (err) {
-      console.error('Error reordering:', err);
-      // Rollback on error - refetch schedule
-      fetchSchedule();
-    } finally {
-      setIsReordering(false);
-    }
-  }, [schedule, isReordering, fetchSchedule]);
+  // Handle show rescheduled from dialog
+  const handleShowRescheduled = useCallback(() => {
+    fetchSchedule();
+    setSelectedShow(null);
+  }, [fetchSchedule]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold">Weekly Schedule</h1>
@@ -310,77 +198,49 @@ export function ScheduleClient() {
         </div>
       )}
 
-      {/* Week Grid */}
+      {/* TV Guide Grid */}
       {!isLoading && !error && (
-        <>
-          {/* Desktop Grid */}
-          <div className="hidden md:grid md:grid-cols-7 gap-4">
-            {DAY_NAMES.map((dayName, index) => (
-              <DayColumn
-                key={index}
-                dayName={dayName}
-                dayIndex={index}
-                entries={schedule[index]}
-                onRemove={handleRemoveClick}
-                onAdd={() => handleAddClick(index)}
-                onMoveUp={handleMoveUp}
-                onMoveDown={handleMoveDown}
-                isReordering={isReordering}
-              />
-            ))}
-          </div>
-
-          {/* Mobile Horizontal Scroll */}
-          <div className="md:hidden overflow-x-auto pb-4">
-            <div className="flex gap-4" style={{ minWidth: 'max-content' }}>
-              {DAY_SHORT_NAMES.map((dayName, index) => (
-                <div key={index} className="min-w-[200px]">
-                  <DayColumn
-                    dayName={dayName}
-                    dayIndex={index}
-                    entries={schedule[index]}
-                    onRemove={handleRemoveClick}
-                    onAdd={() => handleAddClick(index)}
-                    onMoveUp={handleMoveUp}
-                    onMoveDown={handleMoveDown}
-                    isReordering={isReordering}
-                  />
+        <div className="bg-card rounded-lg border overflow-hidden">
+          {/* Scrollable container */}
+          <div className="overflow-x-auto">
+            <div style={{ minWidth: DAY_LABEL_WIDTH + maxGridWidth + 40 }}>
+              {/* Time Header Row */}
+              <div className="flex border-b bg-muted/50">
+                {/* Empty cell for day labels column */}
+                <div
+                  className="flex-shrink-0 border-r bg-muted"
+                  style={{ width: DAY_LABEL_WIDTH }}
+                />
+                {/* Time markers */}
+                <div className="relative h-8 flex-1" style={{ width: maxGridWidth }}>
+                  {timeMarkers.map((marker, index) => (
+                    <div
+                      key={index}
+                      className="absolute top-0 h-full flex items-center text-xs text-muted-foreground"
+                      style={{ left: marker.offset }}
+                    >
+                      <span className="px-1 bg-muted/50">{marker.label}</span>
+                    </div>
+                  ))}
                 </div>
+              </div>
+
+              {/* Day Rows */}
+              {DAY_NAMES.map((dayName, weekday) => (
+                <DayRow
+                  key={weekday}
+                  dayName={dayName}
+                  shortName={DAY_SHORT_NAMES[weekday]}
+                  entries={schedule[weekday]}
+                  gridWidth={maxGridWidth}
+                  onAddClick={() => handleAddClick(weekday)}
+                  onShowClick={handleShowClick}
+                />
               ))}
             </div>
           </div>
-        </>
+        </div>
       )}
-
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && handleCancelDelete()}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Remove from Schedule?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to remove &quot;{deleteTarget?.title}&quot; from{' '}
-              {deleteTarget ? DAY_NAMES[deleteTarget.weekday] : ''}?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleConfirmDelete}
-              disabled={isDeleting}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              {isDeleting ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Removing...
-                </>
-              ) : (
-                'Remove'
-              )}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
 
       {/* Add to Schedule Dialog */}
       {activeProfileId && (
@@ -393,142 +253,156 @@ export function ScheduleClient() {
           onAdded={handleAddSuccess}
         />
       )}
+
+      {/* Show Details Dialog */}
+      {selectedShow && (
+        <ScheduleShowDialog
+          open={!!selectedShow}
+          onOpenChange={(open) => !open && handleShowDialogClose()}
+          entry={selectedShow}
+          startTime={selectedShowStartTime}
+          onRemoved={handleShowRemoved}
+          onRescheduled={handleShowRescheduled}
+        />
+      )}
     </div>
   );
 }
 
-// Day Column Component
-interface DayColumnProps {
+// Day Row Component
+interface DayRowProps {
   dayName: string;
-  dayIndex: number;
+  shortName: string;
   entries: EnrichedScheduleEntry[];
-  onRemove: (entry: EnrichedScheduleEntry) => void;
-  onAdd: () => void;
-  onMoveUp: (entry: EnrichedScheduleEntry, index: number) => void;
-  onMoveDown: (entry: EnrichedScheduleEntry, index: number) => void;
-  isReordering: boolean;
+  gridWidth: number;
+  onAddClick: () => void;
+  onShowClick: (entry: EnrichedScheduleEntry, startTime: number) => void;
 }
 
-function DayColumn({ dayName, dayIndex, entries, onRemove, onAdd, onMoveUp, onMoveDown, isReordering }: DayColumnProps) {
+function DayRow({ dayName, shortName, entries, gridWidth, onAddClick, onShowClick }: DayRowProps) {
+  // Sort entries by slotOrder and calculate positions
+  const showPositions = useMemo(() => {
+    const sorted = [...entries].sort((a, b) => a.slotOrder - b.slotOrder);
+
+    // Use reduce to calculate positions without mutation
+    const result: { entry: EnrichedScheduleEntry; left: number; width: number; startMinutes: number }[] = [];
+    let currentOffset = 0;
+
+    for (const entry of sorted) {
+      result.push({
+        entry,
+        left: currentOffset * PIXELS_PER_MINUTE,
+        width: entry.runtime * PIXELS_PER_MINUTE,
+        startMinutes: currentOffset,
+      });
+      currentOffset = currentOffset + entry.runtime;
+    }
+
+    return result;
+  }, [entries]);
+
   return (
-    <div className="bg-card rounded-lg border overflow-hidden">
-      {/* Day Header */}
-      <div className="bg-muted px-4 py-3 font-semibold text-center border-b">
-        {dayName}
+    <div className="flex border-b last:border-b-0 hover:bg-muted/20 transition-colors">
+      {/* Day Label + Add Button */}
+      <div
+        className="flex-shrink-0 border-r bg-muted/30 flex items-center justify-between px-2 py-2"
+        style={{ width: DAY_LABEL_WIDTH }}
+      >
+        <div className="flex flex-col">
+          <span className="font-semibold text-sm hidden sm:block">{dayName}</span>
+          <span className="font-semibold text-sm sm:hidden">{shortName}</span>
+        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-7 w-7"
+          onClick={onAddClick}
+          title={`Add to ${dayName}`}
+        >
+          <Plus className="h-4 w-4" />
+        </Button>
       </div>
 
-      {/* Entries List */}
-      <div className="p-2 space-y-2 min-h-[200px]">
+      {/* Shows Grid Area */}
+      <div
+        className="relative flex-1 min-h-[60px]"
+        style={{ width: gridWidth }}
+      >
         {entries.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-8 text-muted-foreground text-sm">
-            <Calendar className="h-8 w-8 mb-2 opacity-50" />
-            <p>No shows scheduled</p>
+          <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm">
+            <Calendar className="h-4 w-4 mr-2 opacity-50" />
+            <span>No shows scheduled</span>
           </div>
         ) : (
-          entries.map((entry, index) => (
-            <ScheduleEntryCard
-              key={entry.id}
-              entry={entry}
-              index={index}
-              totalEntries={entries.length}
-              onRemove={() => onRemove(entry)}
-              onMoveUp={() => onMoveUp(entry, index)}
-              onMoveDown={() => onMoveDown(entry, index)}
-              isReordering={isReordering}
+          showPositions.map((pos) => (
+            <ShowBlock
+              key={pos.entry.id}
+              entry={pos.entry}
+              left={pos.left}
+              width={pos.width}
+              startMinutes={pos.startMinutes}
+              onClick={() => onShowClick(pos.entry, pos.startMinutes)}
             />
           ))
         )}
-
-        {/* Add Button */}
-        <Button
-          variant="outline"
-          size="sm"
-          className="w-full mt-2"
-          onClick={onAdd}
-        >
-          <Plus className="h-4 w-4 mr-1" />
-          Add
-        </Button>
       </div>
     </div>
   );
 }
 
-// Schedule Entry Card Component
-interface ScheduleEntryCardProps {
+// Show Block Component
+interface ShowBlockProps {
   entry: EnrichedScheduleEntry;
-  index: number;
-  totalEntries: number;
-  onRemove: () => void;
-  onMoveUp: () => void;
-  onMoveDown: () => void;
-  isReordering: boolean;
+  left: number;
+  width: number;
+  startMinutes: number;
+  onClick: () => void;
 }
 
-function ScheduleEntryCard({ entry, index, totalEntries, onRemove, onMoveUp, onMoveDown, isReordering }: ScheduleEntryCardProps) {
-  const posterUrl = getPosterUrl(entry.posterPath, 'small');
-  const isFirst = index === 0;
-  const isLast = index === totalEntries - 1;
+function ShowBlock({ entry, left, width, startMinutes, onClick }: ShowBlockProps) {
+  const startTimeStr = formatTime(startMinutes);
+  const endTimeStr = formatTime(startMinutes + entry.runtime);
+
+  // Episode info display
+  const episodeInfo = entry.currentEpisode
+    ? `S${entry.currentEpisode.season}E${entry.currentEpisode.episode}`
+    : entry.mediaType === 'movie' ? 'Movie' : '';
+
+  // Determine if the block is wide enough for full content
+  // Adjusted thresholds since we no longer have poster
+  const isCompact = width < 80;
+  const isVeryCompact = width < 50;
 
   return (
-    <div className="flex items-center gap-2 p-2 bg-background rounded border hover:border-primary/50 transition-colors group">
-      {/* Reorder Buttons */}
-      <div className="flex flex-col gap-0.5 flex-shrink-0">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-5 w-5"
-          onClick={onMoveUp}
-          disabled={isFirst || isReordering}
-          title="Move up"
-        >
-          <ChevronUp className="h-3 w-3" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-5 w-5"
-          onClick={onMoveDown}
-          disabled={isLast || isReordering}
-          title="Move down"
-        >
-          <ChevronDown className="h-3 w-3" />
-        </Button>
-      </div>
-
-      {/* Poster Thumbnail */}
-      <div className="w-10 h-14 relative flex-shrink-0 bg-muted rounded overflow-hidden">
-        {posterUrl ? (
-          <Image
-            src={posterUrl}
-            alt={entry.title}
-            fill
-            className="object-cover"
-            unoptimized
-          />
+    <button
+      onClick={onClick}
+      className="absolute top-1 bottom-1 rounded overflow-hidden border border-border/50 bg-background hover:border-primary/70 hover:bg-muted/50 transition-all cursor-pointer group"
+      style={{ left, width: Math.max(width - 2, 20) }} // -2 for spacing between blocks
+      title={`${entry.title} ${episodeInfo ? `(${episodeInfo})` : ''} - ${startTimeStr} to ${endTimeStr}`}
+    >
+      {/* Content */}
+      <div className={`h-full flex flex-col justify-center px-2 py-0.5 ${isVeryCompact ? 'items-center px-1' : ''}`}>
+        {isVeryCompact ? (
+          // Very compact - just show first letter
+          <span className="text-xs font-medium">{entry.title.charAt(0)}</span>
+        ) : isCompact ? (
+          // Compact - title only, truncated
+          <span className="text-xs font-medium truncate">{entry.title}</span>
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Film className="h-4 w-4 text-muted-foreground" />
-          </div>
+          // Full display - title + episode info + time
+          <>
+            <span className="text-xs font-medium truncate">{entry.title}</span>
+            {episodeInfo && (
+              <span className="text-[10px] text-muted-foreground">{episodeInfo}</span>
+            )}
+            {width > 100 && (
+              <span className="text-[10px] text-muted-foreground truncate">
+                {startTimeStr} - {endTimeStr}
+              </span>
+            )}
+          </>
         )}
       </div>
-
-      {/* Title */}
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium line-clamp-2" title={entry.title}>
-          {entry.title}
-        </p>
-      </div>
-
-      {/* Remove Button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
-        onClick={onRemove}
-      >
-        <X className="h-4 w-4" />
-      </Button>
-    </div>
+    </button>
   );
 }
