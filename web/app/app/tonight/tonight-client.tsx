@@ -56,6 +56,7 @@ export function TonightClient() {
   const [entries, setEntries] = useState<EnrichedScheduleEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [advancingIds, setAdvancingIds] = useState<Set<string>>(new Set());
 
   // Get current day info
   const today = new Date();
@@ -95,6 +96,99 @@ export function TonightClient() {
 
     fetchTonightSchedule();
   }, [activeProfileId, currentWeekday]);
+
+  /**
+   * Handle marking an episode as watched
+   * Fetches TV details and season info for advance logic, then calls PATCH /api/progress
+   */
+  const handleMarkWatched = async (entry: EnrichedScheduleEntry) => {
+    if (!activeProfileId || !entry.currentEpisode) return;
+
+    const trackedTitleId = entry.trackedTitleId;
+
+    // Add to advancing set
+    setAdvancingIds((prev) => new Set(prev).add(trackedTitleId));
+
+    try {
+      // Fetch TV details for total seasons
+      const tvResponse = await fetch(`/api/tmdb/tv/${entry.tmdbId}`);
+      if (!tvResponse.ok) {
+        throw new Error('Failed to fetch TV details');
+      }
+      const tvDetails = await tvResponse.json();
+      const totalSeasons = tvDetails.number_of_seasons || 1;
+
+      // Fetch current season for episode count
+      const seasonResponse = await fetch(
+        `/api/tmdb/tv/${entry.tmdbId}/season/${entry.currentEpisode.season}`
+      );
+      if (!seasonResponse.ok) {
+        throw new Error('Failed to fetch season details');
+      }
+      const seasonDetails = await seasonResponse.json();
+      const totalEpisodesInSeason = seasonDetails.episodes?.length || 1;
+
+      // Call advance API
+      const advanceResponse = await fetch('/api/progress', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          profileId: activeProfileId,
+          trackedTitleId,
+          action: 'advance',
+          totalEpisodesInSeason,
+          totalSeasons,
+        }),
+      });
+
+      if (!advanceResponse.ok) {
+        throw new Error('Failed to advance progress');
+      }
+
+      const { progress } = await advanceResponse.json();
+
+      // Fetch the new episode info to update the UI
+      const newEpisodeResponse = await fetch(
+        `/api/tmdb/tv/${entry.tmdbId}/season/${progress.season_number}/episode/${progress.episode_number}`
+      );
+
+      let newEpisodeTitle = `Episode ${progress.episode_number}`;
+      let newStillPath: string | null = null;
+
+      if (newEpisodeResponse.ok) {
+        const newEpisodeDetails = await newEpisodeResponse.json();
+        newEpisodeTitle = newEpisodeDetails.name || newEpisodeTitle;
+        newStillPath = newEpisodeDetails.still_path || null;
+      }
+
+      // Update local state with new episode info
+      setEntries((prevEntries) =>
+        prevEntries.map((e) =>
+          e.trackedTitleId === trackedTitleId
+            ? {
+                ...e,
+                currentEpisode: {
+                  season: progress.season_number,
+                  episode: progress.episode_number,
+                  title: newEpisodeTitle,
+                  stillPath: newStillPath,
+                },
+              }
+            : e
+        )
+      );
+    } catch (err) {
+      console.error('Failed to mark watched:', err);
+      // Could show a toast here in the future
+    } finally {
+      // Remove from advancing set
+      setAdvancingIds((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(trackedTitleId);
+        return newSet;
+      });
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -151,6 +245,9 @@ export function TonightClient() {
               providers={entry.providers}
               inLibrary={true}
               currentEpisode={entry.currentEpisode}
+              trackedTitleId={entry.trackedTitleId}
+              onMarkWatched={entry.currentEpisode ? () => handleMarkWatched(entry) : undefined}
+              isAdvancing={advancingIds.has(entry.trackedTitleId)}
             />
           ))}
         </div>

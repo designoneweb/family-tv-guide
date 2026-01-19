@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { Film, Loader2 } from 'lucide-react';
+import { Film, Loader2, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getPosterUrl } from '@/lib/tmdb/images';
 import { ProviderLogos, type Provider } from '@/components/provider-logos';
@@ -25,6 +25,9 @@ export interface TitleCardProps {
   onRemove?: () => void;
   isLoading?: boolean;
   currentEpisode?: CurrentEpisode | null;
+  onMarkWatched?: () => void;
+  trackedTitleId?: string;
+  isAdvancing?: boolean;
 }
 
 /**
@@ -42,6 +45,8 @@ export function TitleCard({
   onRemove,
   isLoading = false,
   currentEpisode,
+  onMarkWatched,
+  isAdvancing = false,
 }: TitleCardProps) {
   const posterUrl = getPosterUrl(posterPath);
 
@@ -89,6 +94,28 @@ export function TitleCard({
         {/* Streaming providers */}
         {providers && providers.length > 0 && (
           <ProviderLogos providers={providers} />
+        )}
+
+        {/* Mark Watched button for TV shows */}
+        {currentEpisode && onMarkWatched && (
+          <Button
+            variant="outline"
+            onClick={onMarkWatched}
+            disabled={isAdvancing}
+            className="w-full"
+          >
+            {isAdvancing ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Advancing...
+              </>
+            ) : (
+              <>
+                <CheckCircle className="h-4 w-4 mr-2" />
+                Mark Watched
+              </>
+            )}
+          </Button>
         )}
 
         {/* Action button */}
