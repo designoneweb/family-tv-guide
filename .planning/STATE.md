@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-18)
 
 **Core value:** Fast "What are we watching tonight?" — the Guide page must load quickly and show exactly what's scheduled with the next episode ready to watch.
-**Current focus:** Phase 5 — Schedule System
+**Current focus:** Phase 6 — Progress Tracking
 
 ## Current Position
 
-Phase: 5 of 10 (Schedule System)
-Plan: 3 of 3 in current phase
-Status: Phase complete
-Last activity: 2026-01-19 — Completed 05-03-PLAN.md (tonight view)
+Phase: 6 of 10 (Progress Tracking)
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-01-19 — Completed 06-01-PLAN.md (progress backend)
 
-Progress: ██████████ 100% (Phase 5)
+Progress: █████████░ 57% (17 of 30 estimated plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 16
-- Average duration: 8.9 min
-- Total execution time: 143 min
+- Total plans completed: 17
+- Average duration: 8.6 min
+- Total execution time: 146 min
 
 **By Phase:**
 
@@ -32,10 +32,11 @@ Progress: ██████████ 100% (Phase 5)
 | 3. TMDB Integration | 2 | 5 min | 2.5 min |
 | 4. Library Management | 3 | 23 min | 7.7 min |
 | 5. Schedule System | 3 | 57 min | 19.0 min |
+| 6. Progress Tracking | 1 | 3 min | 3.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-03 (4 min), 05-01 (4 min), 05-02 (12 min), 05-03 (41 min)
-- Trend: 05-03 included debugging time for API format mismatch
+- Last 5 plans: 05-01 (4 min), 05-02 (12 min), 05-03 (41 min), 06-01 (3 min)
+- Trend: 06-01 fast execution with autonomous subagent
 
 ## Accumulated Context
 
@@ -82,6 +83,8 @@ Recent decisions affecting current work:
 | 05-02 | Dialog for add, AlertDialog for confirm | Consistent component usage patterns |
 | 05-03 | Schedule API returns camelCase fields | Frontend consistency, matches JS conventions |
 | 05-03 | AppNav component with responsive design | Icons on mobile, labels on desktop |
+| 06-01 | Default to S1E1 if no progress exists | Simpler than requiring initialization |
+| 06-01 | Return current position when show complete | UI can detect "caught up" state |
 
 ### Deferred Issues
 
@@ -94,8 +97,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 05-03-PLAN.md (tonight view) - Phase 5 complete
+Stopped at: Completed 06-01-PLAN.md (progress backend)
 Resume file: None
-Next: User has UI/UX improvements for schedule display - address before Phase 6
-
-**Pending:** Schedule UI/UX improvements (user has ideas to share after /clear)
+Next: 06-02 Progress UI components
