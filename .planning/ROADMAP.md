@@ -18,7 +18,7 @@ None
 - [x] **Phase 2: Data Model** - Database schema, RLS policies, household/profile CRUD
 - [x] **Phase 3: TMDB Integration** - Server-side proxy, search, metadata caching
 - [x] **Phase 4: Library Management** - Add/remove titles, display library, streaming providers
-- [ ] **Phase 5: Schedule System** - Day-of-week assignment, slot ordering, tonight view
+- [x] **Phase 5: Schedule System** - Day-of-week assignment, slot ordering, tonight view
 - [ ] **Phase 6: Progress Tracking** - Episode progress per profile, mark watched, jump to episode
 - [ ] **Phase 7: Episode Grid** - Season view, episode tiles, art-dominant layout
 - [ ] **Phase 8: Episode Detail** - Full episode page, cast/guest stars, mark watched
@@ -101,7 +101,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 2. Data Model | 5/5 | Complete | 2026-01-19 |
 | 3. TMDB Integration | 2/2 | Complete | 2026-01-19 |
 | 4. Library Management | 3/3 | Complete | 2026-01-19 |
-| 5. Schedule System | 2/3 | In progress | - |
+| 5. Schedule System | 3/3 | Complete | 2026-01-19 |
 | 6. Progress Tracking | 0/TBD | Not started | - |
 | 7. Episode Grid | 0/TBD | Not started | - |
 | 8. Episode Detail | 0/TBD | Not started | - |
