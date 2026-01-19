@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-01-18)
 
 ## Current Position
 
-Phase: 3 of 10 (TMDB Integration) - COMPLETE
-Plan: 2 of 2 complete
-Status: Phase 3 complete
-Last activity: 2026-01-19 — Completed 03-02-PLAN.md (metadata, providers, images)
+Phase: 4 of 10 (Library Management)
+Plan: 1 of TBD in current phase
+Status: In progress
+Last activity: 2026-01-19 — Completed 04-01-PLAN.md (library service)
 
-Progress: ███░░░░░░░ 30%
+Progress: ███░░░░░░░ 33%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10
-- Average duration: 6.3 min
-- Total execution time: 63 min
+- Total plans completed: 11
+- Average duration: 5.9 min
+- Total execution time: 65 min
 
 **By Phase:**
 
@@ -30,9 +30,10 @@ Progress: ███░░░░░░░ 30%
 | 1. Foundation | 3 | 10 min | 3.3 min |
 | 2. Data Model | 5 | 48 min | 9.6 min |
 | 3. TMDB Integration | 2 | 5 min | 2.5 min |
+| 4. Library Management | 1 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-04 (33 min), 02-05 (10 min), 03-01 (2 min), 03-02 (3 min)
+- Last 5 plans: 02-05 (10 min), 03-01 (2 min), 03-02 (3 min), 04-01 (2 min)
 - Trend: Fast execution continues
 
 ## Accumulated Context
@@ -67,6 +68,8 @@ Recent decisions affecting current work:
 | 03-02 | Return null for 404s instead of throwing | Cleaner handling of missing resources |
 | 03-02 | Default to US region for watch providers | Most common use case |
 | 03-02 | Hardcode image sizes | TMDB sizes rarely change |
+| 04-01 | Upsert for addTitle with onConflict | Graceful duplicate handling |
+| 04-01 | API route returns 404 for no household | Clearer error than 500 |
 
 ### Deferred Issues
 
@@ -79,6 +82,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed Phase 3 (TMDB Integration)
+Stopped at: Completed 04-01-PLAN.md (library service)
 Resume file: None
-Next: Phase 4 (Library Management)
+Next: 04-02-PLAN.md (library UI)
