@@ -18,13 +18,17 @@ interface EpisodeClientProps {
 
 /**
  * Cast card component for displaying actor/guest star info.
+ * Clickable - navigates to person detail page.
  */
 function CastCard({ person, showCharacter = true }: { person: TMDBCastMember | TMDBGuestStar; showCharacter?: boolean }) {
   const profileUrl = getProfileUrl(person.profile_path, 'medium');
 
   return (
-    <div className="flex-shrink-0 w-28">
-      <div className="aspect-[2/3] relative bg-muted rounded-lg overflow-hidden">
+    <Link
+      href={`/app/person/${person.id}`}
+      className="flex-shrink-0 w-28 cursor-pointer transition-transform duration-150 hover:scale-[1.02]"
+    >
+      <div className="aspect-[2/3] relative bg-muted rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
         {profileUrl ? (
           <Image
             src={profileUrl}
@@ -47,7 +51,7 @@ function CastCard({ person, showCharacter = true }: { person: TMDBCastMember | T
           </p>
         )}
       </div>
-    </div>
+    </Link>
   );
 }
 
