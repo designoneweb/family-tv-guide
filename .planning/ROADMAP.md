@@ -25,7 +25,7 @@ None
 - [x] **Phase 8.1: Schedule UX** - INSERTED: Simplify schedule grid, show full episode details on click
 - [x] **Phase 9: Person Pages** - IMDb-like actor/crew pages, filmography, combined credits
 - [x] **Phase 10: AI Synopsis** - Optional server-side synopsis, Gemini integration, caching
-- [ ] **Phase 10.1: UX Polish** - INSERTED: Episode stills on Tonight, clickable providers, enriched show detail
+- [x] **Phase 10.1: UX Polish** - INSERTED: Episode stills on Tonight, clickable providers, enriched show detail
 
 ## Phase Details
 
@@ -124,4 +124,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 8.1 Schedule UX | 1/1 | Complete | 2026-01-19 |
 | 9. Person Pages | 2/2 | Complete | 2026-01-19 |
 | 10. AI Synopsis | 2/2 | Complete | 2026-01-19 |
-| 10.1 UX Polish | 0/1 | Not started | - |
+| 10.1 UX Polish | 1/1 | Complete | 2026-01-19 |

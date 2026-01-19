@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-01-18)
 ## Current Position
 
 Phase: 10.1 of 11 (UX Polish - INSERTED)
-Plan: 0 of 1 in current phase
-Status: Ready to execute
-Last activity: 2026-01-19 — Inserted Phase 10.1 for UX polish
+Plan: 1 of 1 in current phase
+Status: Phase complete - MILESTONE COMPLETE
+Last activity: 2026-01-19 — Completed 10.1-01-PLAN.md (UX Polish)
 
-Progress: █████████████░░ 96% (27 of 28 plans)
+Progress: ███████████████ 100% (28 of 28 plans)
 
 ## Performance Metrics
 
@@ -105,6 +105,9 @@ Recent decisions affecting current work:
 | 10-01 | Truncate at sentence boundary for TMDB fallback | Natural-sounding fallback |
 | 10-02 | Hide AI synopsis button when API key not configured | Better UX - no misleading button |
 | 10-02 | GET /api/synopsis endpoint for availability check | Client can check before showing UI |
+| 10.1-01 | Episode still (16:9) when currentEpisode exists, else poster (2:3) | Context-appropriate imagery |
+| 10.1-01 | Provider logos link to TMDB JustWatch page | JustWatch provides deep links to services |
+| 10.1-01 | Cast cards w-24 on show page (vs w-28 on episode) | Fit more cast in viewport |
 
 ### Deferred Issues
 
@@ -117,6 +120,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Inserted Phase 10.1 for UX polish
+Stopped at: Completed 10.1-01-PLAN.md (UX Polish) - MILESTONE COMPLETE
 Resume file: None
-Next: Execute 10.1-01-PLAN.md (UX Polish)
+Next: Run /gsd:complete-milestone to archive and celebrate!
