@@ -96,4 +96,6 @@ None yet.
 Last session: 2026-01-19
 Stopped at: Completed 05-03-PLAN.md (tonight view) - Phase 5 complete
 Resume file: None
-Next: Phase 6 (Progress Tracking)
+Next: User has UI/UX improvements for schedule display - address before Phase 6
+
+**Pending:** Schedule UI/UX improvements (user has ideas to share after /clear)
