@@ -15,7 +15,7 @@ None
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Foundation** - Next.js setup, Supabase config, auth, dark theme scaffold
-- [ ] **Phase 2: Data Model** - Database schema, RLS policies, household/profile CRUD
+- [x] **Phase 2: Data Model** - Database schema, RLS policies, household/profile CRUD
 - [ ] **Phase 3: TMDB Integration** - Server-side proxy, search, metadata caching
 - [ ] **Phase 4: Library Management** - Add/remove titles, display library, streaming providers
 - [ ] **Phase 5: Schedule System** - Day-of-week assignment, slot ordering, tonight view
@@ -98,7 +98,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-01-19 |
-| 2. Data Model | 4/5 | In progress | - |
+| 2. Data Model | 5/5 | Complete | 2026-01-19 |
 | 3. TMDB Integration | 0/TBD | Not started | - |
 | 4. Library Management | 0/TBD | Not started | - |
 | 5. Schedule System | 0/TBD | Not started | - |
