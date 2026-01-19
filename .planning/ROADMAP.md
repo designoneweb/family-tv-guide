@@ -20,7 +20,7 @@ None
 - [x] **Phase 4: Library Management** - Add/remove titles, display library, streaming providers
 - [x] **Phase 5: Schedule System** - Day-of-week assignment, slot ordering, tonight view
 - [x] **Phase 6: Progress Tracking** - Episode progress per profile, mark watched, jump to episode
-- [ ] **Phase 7: Episode Grid** - Season view, episode tiles, art-dominant layout
+- [x] **Phase 7: Episode Grid** - Season view, episode tiles, art-dominant layout
 - [ ] **Phase 8: Episode Detail** - Full episode page, cast/guest stars, mark watched
 - [ ] **Phase 9: Person Pages** - IMDb-like actor/crew pages, filmography, combined credits
 - [ ] **Phase 10: AI Synopsis** - Optional server-side synopsis, Gemini integration, caching
@@ -103,7 +103,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 4. Library Management | 3/3 | Complete | 2026-01-19 |
 | 5. Schedule System | 3/3 | Complete | 2026-01-19 |
 | 6. Progress Tracking | 3/3 | Complete | 2026-01-19 |
-| 7. Episode Grid | 0/TBD | Not started | - |
+| 7. Episode Grid | 1/1 | Complete | 2026-01-19 |
 | 8. Episode Detail | 0/TBD | Not started | - |
 | 9. Person Pages | 0/TBD | Not started | - |
 | 10. AI Synopsis | 0/TBD | Not started | - |

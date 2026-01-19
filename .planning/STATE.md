@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-18)
 
 **Core value:** Fast "What are we watching tonight?" — the Guide page must load quickly and show exactly what's scheduled with the next episode ready to watch.
-**Current focus:** Phase 6 complete — Ready for Phase 7
+**Current focus:** Phase 7 complete — Ready for Phase 8
 
 ## Current Position
 
-Phase: 6 of 10 (Progress Tracking)
-Plan: 3 of 3 in current phase
+Phase: 7 of 10 (Episode Grid)
+Plan: 1 of 1 in current phase
 Status: Phase complete
-Last activity: 2026-01-19 — Completed 06-03-PLAN.md (Jump to Episode)
+Last activity: 2026-01-19 — Completed 07-01-PLAN.md (Episode Grid)
 
-Progress: ██████████ 63% (19 of 30 estimated plans)
+Progress: ██████████ 67% (20 of 30 estimated plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19
-- Average duration: 11.3 min
-- Total execution time: 214 min
+- Total plans completed: 20
+- Average duration: 11.1 min
+- Total execution time: 222 min
 
 **By Phase:**
 
@@ -33,10 +33,10 @@ Progress: ██████████ 63% (19 of 30 estimated plans)
 | 4. Library Management | 3 | 23 min | 7.7 min |
 | 5. Schedule System | 3 | 57 min | 19.0 min |
 | 6. Progress Tracking | 3 | 71 min | 23.7 min |
+| 7. Episode Grid | 1 | 8 min | 8.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-03 (41 min), 06-01 (3 min), 06-02 (12 min), 06-03 (56 min)
-- Note: 06-03 duration includes checkpoint verification wait time
+- Last 5 plans: 06-01 (3 min), 06-02 (12 min), 06-03 (56 min), 07-01 (8 min)
 
 ## Accumulated Context
 
@@ -89,6 +89,9 @@ Recent decisions affecting current work:
 | 06-02 | Optimistic UI for Mark Watched | Updates display immediately, then persists |
 | 06-03 | Clickable episode text opens Jump dialog | Cleaner UX than separate menu button |
 | 06-03 | Cascading dropdowns with season reset | Changing season resets episode to 1 |
+| 07-01 | Tabs for ≤6 seasons, dropdown for more | Cleaner UX for most shows |
+| 07-01 | 16:9 aspect ratio for episode stills | Matches TMDB still format |
+| 07-01 | Episode badge overlay E5 format | Concise and scannable |
 
 ### Deferred Issues
 
@@ -101,6 +104,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 06-03-PLAN.md (Jump to Episode) - Phase 6 complete
+Stopped at: Completed 07-01-PLAN.md (Episode Grid) - Phase 7 complete
 Resume file: None
-Next: Phase 7 Episode Grid
+Next: Phase 8 Episode Detail
