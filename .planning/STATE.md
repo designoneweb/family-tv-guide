@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-18)
 ## Current Position
 
 Phase: 6 of 10 (Progress Tracking)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-01-19 — Completed 06-01-PLAN.md (progress backend)
+Last activity: 2026-01-19 — Completed 06-02-PLAN.md (progress UI)
 
-Progress: █████████░ 57% (17 of 30 estimated plans)
+Progress: ██████████ 60% (18 of 30 estimated plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 17
-- Average duration: 8.6 min
-- Total execution time: 146 min
+- Total plans completed: 18
+- Average duration: 8.8 min
+- Total execution time: 158 min
 
 **By Phase:**
 
@@ -32,11 +32,11 @@ Progress: █████████░ 57% (17 of 30 estimated plans)
 | 3. TMDB Integration | 2 | 5 min | 2.5 min |
 | 4. Library Management | 3 | 23 min | 7.7 min |
 | 5. Schedule System | 3 | 57 min | 19.0 min |
-| 6. Progress Tracking | 1 | 3 min | 3.0 min |
+| 6. Progress Tracking | 2 | 15 min | 7.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-01 (4 min), 05-02 (12 min), 05-03 (41 min), 06-01 (3 min)
-- Trend: 06-01 fast execution with autonomous subagent
+- Last 5 plans: 05-02 (12 min), 05-03 (41 min), 06-01 (3 min), 06-02 (12 min)
+- Trend: Consistent execution with subagent-based workflow
 
 ## Accumulated Context
 
@@ -85,6 +85,8 @@ Recent decisions affecting current work:
 | 05-03 | AppNav component with responsive design | Icons on mobile, labels on desktop |
 | 06-01 | Default to S1E1 if no progress exists | Simpler than requiring initialization |
 | 06-01 | Return current position when show complete | UI can detect "caught up" state |
+| 06-02 | Client-facing TMDB API routes under /api/tmdb/* | Enables client-side episode fetching for Mark Watched |
+| 06-02 | Optimistic UI for Mark Watched | Updates display immediately, then persists |
 
 ### Deferred Issues
 
@@ -97,6 +99,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 06-01-PLAN.md (progress backend)
+Stopped at: Completed 06-02-PLAN.md (progress UI)
 Resume file: None
-Next: 06-02 Progress UI components
+Next: 06-03 Jump to Episode
