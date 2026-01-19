@@ -6,6 +6,13 @@ import { Button } from '@/components/ui/button';
 import { getPosterUrl } from '@/lib/tmdb/images';
 import { ProviderLogos, type Provider } from '@/components/provider-logos';
 
+export interface CurrentEpisode {
+  season: number;
+  episode: number;
+  title: string;
+  stillPath: string | null;
+}
+
 export interface TitleCardProps {
   tmdbId: number;
   mediaType: 'tv' | 'movie';
@@ -17,6 +24,7 @@ export interface TitleCardProps {
   onAdd?: () => void;
   onRemove?: () => void;
   isLoading?: boolean;
+  currentEpisode?: CurrentEpisode | null;
 }
 
 /**
@@ -33,6 +41,7 @@ export function TitleCard({
   onAdd,
   onRemove,
   isLoading = false,
+  currentEpisode,
 }: TitleCardProps) {
   const posterUrl = getPosterUrl(posterPath);
 
@@ -61,6 +70,13 @@ export function TitleCard({
         <h3 className="font-semibold line-clamp-1" title={title}>
           {title}
         </h3>
+
+        {/* Episode info for TV shows */}
+        {currentEpisode && (
+          <p className="text-sm text-muted-foreground line-clamp-1" title={`S${currentEpisode.season}E${currentEpisode.episode}: ${currentEpisode.title}`}>
+            S{currentEpisode.season}E{currentEpisode.episode}: {currentEpisode.title}
+          </p>
+        )}
 
         {/* Year and media type row */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground">

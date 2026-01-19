@@ -11,6 +11,13 @@ interface Provider {
   logoPath: string;
 }
 
+interface CurrentEpisode {
+  season: number;
+  episode: number;
+  title: string;
+  stillPath: string | null;
+}
+
 interface EnrichedScheduleEntry {
   id: string;
   weekday: number;
@@ -23,6 +30,7 @@ interface EnrichedScheduleEntry {
   posterPath: string | null;
   year: string;
   providers: Provider[];
+  currentEpisode: CurrentEpisode | null;
 }
 
 const WEEKDAY_NAMES = [
@@ -142,6 +150,7 @@ export function TonightClient() {
               year={entry.year}
               providers={entry.providers}
               inLibrary={true}
+              currentEpisode={entry.currentEpisode}
             />
           ))}
         </div>
