@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-01-18)
 ## Current Position
 
 Phase: 10 of 10 (AI Synopsis)
-Plan: 1 of 2 in current phase
-Status: In progress
-Last activity: 2026-01-19 — Completed 10-01-PLAN.md (AI Synopsis Infrastructure)
+Plan: 2 of 2 in current phase
+Status: Phase complete - MILESTONE COMPLETE
+Last activity: 2026-01-19 — Completed 10-02-PLAN.md (AI Synopsis UI Integration)
 
-Progress: █████████████░░ 84% (26 of 31 estimated plans)
+Progress: ███████████████ 100% (27 of 27 plans)
 
 ## Performance Metrics
 
@@ -103,6 +103,8 @@ Recent decisions affecting current work:
 | 10-01 | Return null (not throw) when Gemini API key missing | Graceful fallback enabled |
 | 10-01 | Cache blurbs by composite key (series, season, episode) | Efficient upsert pattern |
 | 10-01 | Truncate at sentence boundary for TMDB fallback | Natural-sounding fallback |
+| 10-02 | Hide AI synopsis button when API key not configured | Better UX - no misleading button |
+| 10-02 | GET /api/synopsis endpoint for availability check | Client can check before showing UI |
 
 ### Deferred Issues
 
@@ -115,6 +117,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 10-01-PLAN.md (AI Synopsis Infrastructure)
+Stopped at: Completed 10-02-PLAN.md (AI Synopsis UI Integration) - MILESTONE COMPLETE
 Resume file: None
-Next: Execute 10-02-PLAN.md (AI Synopsis UI Integration)
+Next: Run /gsd:complete-milestone to archive and celebrate!

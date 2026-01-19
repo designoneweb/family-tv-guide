@@ -24,7 +24,7 @@ None
 - [x] **Phase 8: Episode Detail** - Full episode page, cast/guest stars, mark watched
 - [x] **Phase 8.1: Schedule UX** - INSERTED: Simplify schedule grid, show full episode details on click
 - [x] **Phase 9: Person Pages** - IMDb-like actor/crew pages, filmography, combined credits
-- [ ] **Phase 10: AI Synopsis** - Optional server-side synopsis, Gemini integration, caching
+- [x] **Phase 10: AI Synopsis** - Optional server-side synopsis, Gemini integration, caching
 
 ## Phase Details
 
@@ -115,4 +115,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 8. Episode Detail | 2/2 | Complete | 2026-01-19 |
 | 8.1 Schedule UX | 1/1 | Complete | 2026-01-19 |
 | 9. Person Pages | 2/2 | Complete | 2026-01-19 |
-| 10. AI Synopsis | 1/2 | In progress | - |
+| 10. AI Synopsis | 2/2 | Complete | 2026-01-19 |
