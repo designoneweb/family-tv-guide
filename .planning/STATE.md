@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-01-18)
 ## Current Position
 
 Phase: 1 of 10 (Foundation)
-Plan: 1 of ? in current phase
+Plan: 2 of ? in current phase
 Status: In progress
-Last activity: 2026-01-19 — Completed 01-01-PLAN.md
+Last activity: 2026-01-19 — Completed 01-02-PLAN.md
 
-Progress: █░░░░░░░░░ 10%
+Progress: ██░░░░░░░░ 20%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
+- Total plans completed: 2
 - Average duration: 3 min
-- Total execution time: 3 min
+- Total execution time: 6 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1. Foundation | 1 | 3 min | 3 min |
+| 1. Foundation | 2 | 6 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (3 min)
+- Last 5 plans: 01-01 (3 min), 01-02 (3 min)
 - Trend: —
 
 ## Accumulated Context
@@ -44,6 +44,8 @@ Recent decisions affecting current work:
 |-------|----------|-----------|
 | 01-01 | Used Next.js 16.1.3 (latest stable) | create-next-app installs latest |
 | 01-01 | Dark mode via className="dark" | Tailwind v4 compatibility |
+| 01-02 | @supabase/ssr for auth | Current standard, not deprecated auth-helpers |
+| 01-02 | Cookie-based sessions | SSR-compatible, middleware refresh |
 
 ### Deferred Issues
 
@@ -56,5 +58,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 01-01-PLAN.md
+Stopped at: Completed 01-02-PLAN.md
 Resume file: None
