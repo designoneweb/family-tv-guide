@@ -6,6 +6,7 @@ import { getProviderLogoUrl } from '@/lib/tmdb/images';
 export interface Provider {
   name: string;
   logoPath: string;
+  link?: string;
 }
 
 export interface ProviderLogosProps {
@@ -30,9 +31,8 @@ export function ProviderLogos({ providers, maxDisplay = 4 }: ProviderLogosProps)
         const logoUrl = getProviderLogoUrl(provider.logoPath);
         if (!logoUrl) return null;
 
-        return (
+        const logoElement = (
           <div
-            key={provider.name}
             className="relative w-6 h-6 rounded overflow-hidden bg-muted"
             title={provider.name}
           >
@@ -43,6 +43,27 @@ export function ProviderLogos({ providers, maxDisplay = 4 }: ProviderLogosProps)
               className="object-cover"
               unoptimized
             />
+          </div>
+        );
+
+        // Wrap in anchor if link is provided
+        if (provider.link) {
+          return (
+            <a
+              key={provider.name}
+              href={provider.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:opacity-80 hover:scale-110 transition-all"
+            >
+              {logoElement}
+            </a>
+          );
+        }
+
+        return (
+          <div key={provider.name}>
+            {logoElement}
           </div>
         );
       })}

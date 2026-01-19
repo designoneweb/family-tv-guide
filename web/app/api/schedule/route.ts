@@ -20,6 +20,7 @@ import type { ScheduleEntry, MediaType } from '@/lib/database.types';
 interface Provider {
   name: string;
   logoPath: string;
+  link?: string;
 }
 
 interface CurrentEpisode {
@@ -86,9 +87,12 @@ async function enrichEntry(
       if (fetchProviders) {
         const providerResult = await getTVWatchProviders(titleInfo.tmdb_id);
         if (providerResult?.flatrate) {
+          // Include the JustWatch link with each provider
+          const providerLink = providerResult.link;
           providers = providerResult.flatrate.map((p) => ({
             name: p.provider_name,
             logoPath: p.logo_path,
+            link: providerLink,
           }));
         }
       }
@@ -164,9 +168,12 @@ async function enrichEntry(
       if (fetchProviders) {
         const providerResult = await getMovieWatchProviders(titleInfo.tmdb_id);
         if (providerResult?.flatrate) {
+          // Include the JustWatch link with each provider
+          const providerLink = providerResult.link;
           providers = providerResult.flatrate.map((p) => ({
             name: p.provider_name,
             logoPath: p.logo_path,
+            link: providerLink,
           }));
         }
       }
