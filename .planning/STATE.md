@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-01-18)
 
 ## Current Position
 
-Phase: 8.1 of 10 (Schedule UX - INSERTED)
-Plan: 1 of 1 in current phase
-Status: Phase complete
-Last activity: 2026-01-19 — Completed 08.1-01-PLAN.md (Schedule UX Improvement)
+Phase: 9 of 10 (Person Pages)
+Plan: 1 of TBD in current phase
+Status: In progress
+Last activity: 2026-01-19 — Completed 09-01-PLAN.md (TMDB Person API)
 
-Progress: ███████████░░░░ 74% (23 of 31 estimated plans)
+Progress: ████████████░░░ 77% (24 of 31 estimated plans)
 
 ## Performance Metrics
 
@@ -112,6 +112,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 08.1-01-PLAN.md (Schedule UX)
+Stopped at: Completed 09-01-PLAN.md (TMDB Person API)
 Resume file: None
-Next: Plan Phase 9 (Person Pages)
+Next: Continue Phase 9 or plan next phase plan

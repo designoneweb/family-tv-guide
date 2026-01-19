@@ -114,5 +114,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 7. Episode Grid | 1/1 | Complete | 2026-01-19 |
 | 8. Episode Detail | 2/2 | Complete | 2026-01-19 |
 | 8.1 Schedule UX | 1/1 | Complete | 2026-01-19 |
-| 9. Person Pages | 0/TBD | Not started | - |
+| 9. Person Pages | 1/TBD | In progress | - |
 | 10. AI Synopsis | 0/TBD | Not started | - |
