@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-18)
 ## Current Position
 
 Phase: 5 of 10 (Schedule System)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-01-19 — Completed 05-01-PLAN.md (schedule service)
+Last activity: 2026-01-19 — Completed 05-02-PLAN.md (schedule UI)
 
-Progress: █████████░ 93%
+Progress: █████████░ 94%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 14
-- Average duration: 6.4 min
-- Total execution time: 90 min
+- Total plans completed: 15
+- Average duration: 6.8 min
+- Total execution time: 102 min
 
 **By Phase:**
 
@@ -31,10 +31,10 @@ Progress: █████████░ 93%
 | 2. Data Model | 5 | 48 min | 9.6 min |
 | 3. TMDB Integration | 2 | 5 min | 2.5 min |
 | 4. Library Management | 3 | 23 min | 7.7 min |
-| 5. Schedule System | 1 | 4 min | 4.0 min |
+| 5. Schedule System | 2 | 16 min | 8.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-01 (2 min), 04-02 (17 min), 04-03 (4 min), 05-01 (4 min)
+- Last 5 plans: 04-02 (17 min), 04-03 (4 min), 05-01 (4 min), 05-02 (12 min)
 - Trend: Stable execution with verification checkpoints
 
 ## Accumulated Context
@@ -77,6 +77,9 @@ Recent decisions affecting current work:
 | 05-01 | Gaps in slot_order allowed | Simplifies deletion, avoids race conditions |
 | 05-01 | Shift-then-update for reorder | Avoids unique constraint conflicts |
 | 05-01 | PATCH handles both reorder and move-day | Single endpoint, weekday takes precedence |
+| 05-02 | Up/down buttons for reorder | Simpler than drag-drop for MVP |
+| 05-02 | 3-step swap via temp slot | Avoids unique constraint conflicts during swap |
+| 05-02 | Dialog for add, AlertDialog for confirm | Consistent component usage patterns |
 
 ### Deferred Issues
 
@@ -89,6 +92,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 05-01-PLAN.md (schedule service)
+Stopped at: Completed 05-02-PLAN.md (schedule UI)
 Resume file: None
-Next: 05-02-PLAN.md (schedule UI)
+Next: 05-03-PLAN.md (guide/tonight view)
