@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-18)
 
 **Core value:** Fast "What are we watching tonight?" — the Guide page must load quickly and show exactly what's scheduled with the next episode ready to watch.
-**Current focus:** Phase 7 complete — Ready for Phase 8
+**Current focus:** Phase 8 in progress — Episode Detail
 
 ## Current Position
 
-Phase: 7 of 10 (Episode Grid)
-Plan: 1 of 1 in current phase
-Status: Phase complete
-Last activity: 2026-01-19 — Completed 07-01-PLAN.md (Episode Grid)
+Phase: 8 of 10 (Episode Detail)
+Plan: 1 of TBD in current phase
+Status: In progress
+Last activity: 2026-01-19 — Completed 08-01-PLAN.md (Episode Credits Integration)
 
-Progress: ██████████ 67% (20 of 30 estimated plans)
+Progress: ██████████ 70% (21 of 30 estimated plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 20
-- Average duration: 11.1 min
-- Total execution time: 222 min
+- Total plans completed: 21
+- Average duration: 10.7 min
+- Total execution time: 225 min
 
 **By Phase:**
 
@@ -34,9 +34,10 @@ Progress: ██████████ 67% (20 of 30 estimated plans)
 | 5. Schedule System | 3 | 57 min | 19.0 min |
 | 6. Progress Tracking | 3 | 71 min | 23.7 min |
 | 7. Episode Grid | 1 | 8 min | 8.0 min |
+| 8. Episode Detail | 1 | 3 min | 3.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-01 (3 min), 06-02 (12 min), 06-03 (56 min), 07-01 (8 min)
+- Last 5 plans: 06-02 (12 min), 06-03 (56 min), 07-01 (8 min), 08-01 (3 min)
 
 ## Accumulated Context
 
@@ -92,6 +93,8 @@ Recent decisions affecting current work:
 | 07-01 | Tabs for ≤6 seasons, dropdown for more | Cleaner UX for most shows |
 | 07-01 | 16:9 aspect ratio for episode stills | Matches TMDB still format |
 | 07-01 | Episode badge overlay E5 format | Concise and scannable |
+| 08-01 | Profile image sizes: small (w45), medium (w185), large (h632) | TMDB standard sizes |
+| 08-01 | getEpisodeCredits returns null for 404 | Consistent with other TMDB functions |
 
 ### Deferred Issues
 
@@ -104,6 +107,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 07-01-PLAN.md (Episode Grid) - Phase 7 complete
+Stopped at: Completed 08-01-PLAN.md (Episode Credits Integration)
 Resume file: None
-Next: Phase 8 Episode Detail
+Next: Continue Phase 8 Episode Detail

@@ -104,6 +104,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 5. Schedule System | 3/3 | Complete | 2026-01-19 |
 | 6. Progress Tracking | 3/3 | Complete | 2026-01-19 |
 | 7. Episode Grid | 1/1 | Complete | 2026-01-19 |
-| 8. Episode Detail | 0/TBD | Not started | - |
+| 8. Episode Detail | 1/TBD | In progress | - |
 | 9. Person Pages | 0/TBD | Not started | - |
 | 10. AI Synopsis | 0/TBD | Not started | - |
