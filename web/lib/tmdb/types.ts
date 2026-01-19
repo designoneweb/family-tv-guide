@@ -127,3 +127,34 @@ export interface TMDBMovieDetails {
   genres: TMDBGenre[];
   vote_average: number;
 }
+
+// ============================================================================
+// WATCH PROVIDER TYPES
+// ============================================================================
+
+/**
+ * Individual streaming provider
+ */
+export interface TMDBWatchProvider {
+  provider_id: number;
+  provider_name: string;
+  logo_path: string;
+}
+
+/**
+ * Watch provider availability for a region
+ */
+export interface TMDBWatchProviderResult {
+  flatrate?: TMDBWatchProvider[];
+  rent?: TMDBWatchProvider[];
+  buy?: TMDBWatchProvider[];
+  link?: string;
+}
+
+/**
+ * Full watch providers response from TMDB
+ */
+export interface TMDBWatchProvidersResponse {
+  id: number;
+  results: Record<string, TMDBWatchProviderResult>;
+}
