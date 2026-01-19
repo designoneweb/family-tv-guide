@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-18)
 ## Current Position
 
 Phase: 4 of 10 (Library Management)
-Plan: 1 of TBD in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-01-19 — Completed 04-01-PLAN.md (library service)
+Last activity: 2026-01-19 — Completed 04-02-PLAN.md (library search UI)
 
-Progress: ███░░░░░░░ 33%
+Progress: █████████░ 92%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
-- Average duration: 5.9 min
-- Total execution time: 65 min
+- Total plans completed: 12
+- Average duration: 6.8 min
+- Total execution time: 82 min
 
 **By Phase:**
 
@@ -30,11 +30,11 @@ Progress: ███░░░░░░░ 33%
 | 1. Foundation | 3 | 10 min | 3.3 min |
 | 2. Data Model | 5 | 48 min | 9.6 min |
 | 3. TMDB Integration | 2 | 5 min | 2.5 min |
-| 4. Library Management | 1 | 2 min | 2 min |
+| 4. Library Management | 2 | 19 min | 9.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-05 (10 min), 03-01 (2 min), 03-02 (3 min), 04-01 (2 min)
-- Trend: Fast execution continues
+- Last 5 plans: 03-01 (2 min), 03-02 (3 min), 04-01 (2 min), 04-02 (17 min)
+- Trend: Longer plan due to auth gate and verification checkpoint
 
 ## Accumulated Context
 
@@ -70,6 +70,9 @@ Recent decisions affecting current work:
 | 03-02 | Hardcode image sizes | TMDB sizes rarely change |
 | 04-01 | Upsert for addTitle with onConflict | Graceful duplicate handling |
 | 04-01 | API route returns 404 for no household | Clearer error than 500 |
+| 04-02 | Debounce 300ms for search input | Balances responsiveness vs API calls |
+| 04-02 | Parallel library status checks | Fetch status for all results simultaneously |
+| 04-02 | TitleCard as reusable component | Will be used in library display page |
 
 ### Deferred Issues
 
@@ -82,6 +85,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 04-01-PLAN.md (library service)
+Stopped at: Completed 04-02-PLAN.md (library search UI)
 Resume file: None
-Next: 04-02-PLAN.md (library UI)
+Next: 04-03-PLAN.md (library display)
