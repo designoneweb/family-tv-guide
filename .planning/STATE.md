@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-18)
 
 **Core value:** Fast "What are we watching tonight?" — the Guide page must load quickly and show exactly what's scheduled with the next episode ready to watch.
-**Current focus:** Phase 3 — TMDB Integration
+**Current focus:** Phase 4 — Library Management
 
 ## Current Position
 
-Phase: 3 of 10 (TMDB Integration)
-Plan: 1 of TBD in current phase
-Status: In progress
-Last activity: 2026-01-19 — Completed 03-01-PLAN.md (TMDB client and search)
+Phase: 3 of 10 (TMDB Integration) - COMPLETE
+Plan: 2 of 2 complete
+Status: Phase 3 complete
+Last activity: 2026-01-19 — Completed 03-02-PLAN.md (metadata, providers, images)
 
-Progress: ██░░░░░░░░ 25%
+Progress: ███░░░░░░░ 30%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
-- Average duration: 6.7 min
-- Total execution time: 60 min
+- Total plans completed: 10
+- Average duration: 6.3 min
+- Total execution time: 63 min
 
 **By Phase:**
 
@@ -29,10 +29,10 @@ Progress: ██░░░░░░░░ 25%
 |-------|-------|-------|----------|
 | 1. Foundation | 3 | 10 min | 3.3 min |
 | 2. Data Model | 5 | 48 min | 9.6 min |
-| 3. TMDB Integration | 1 | 2 min | 2.0 min |
+| 3. TMDB Integration | 2 | 5 min | 2.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-03 (1 min), 02-04 (33 min), 02-05 (10 min), 03-01 (2 min)
+- Last 5 plans: 02-04 (33 min), 02-05 (10 min), 03-01 (2 min), 03-02 (3 min)
 - Trend: Fast execution continues
 
 ## Accumulated Context
@@ -64,6 +64,9 @@ Recent decisions affecting current work:
 | 03-01 | Server-side only TMDB calls via API route | Protects API key |
 | 03-01 | Simple fetch wrapper without retry | TMDB limits are generous |
 | 03-01 | Combined multi-search sorts by popularity | Better UX for search results |
+| 03-02 | Return null for 404s instead of throwing | Cleaner handling of missing resources |
+| 03-02 | Default to US region for watch providers | Most common use case |
+| 03-02 | Hardcode image sizes | TMDB sizes rarely change |
 
 ### Deferred Issues
 
@@ -76,6 +79,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 03-01-PLAN.md (TMDB client and search)
+Stopped at: Completed Phase 3 (TMDB Integration)
 Resume file: None
-Next: 03-02 (metadata fetching, watch providers, image helpers)
+Next: Phase 4 (Library Management)
