@@ -204,25 +204,57 @@ export function ScheduleClient() {
     const dayEntries = schedule[entry.weekday];
     const prevEntry = dayEntries[index - 1];
 
+    // Store original slot_orders for swap
+    const entrySlotOrder = entry.slot_order;
+    const prevEntrySlotOrder = prevEntry.slot_order;
+
     // Optimistic update - swap entries in UI
     setSchedule((prev) => {
       const updated = { ...prev };
       const dayEntriesCopy = [...updated[entry.weekday]];
+      // Swap the slot_order values in the local state as well
+      dayEntriesCopy[index] = { ...dayEntriesCopy[index], slot_order: prevEntrySlotOrder };
+      dayEntriesCopy[index - 1] = { ...dayEntriesCopy[index - 1], slot_order: entrySlotOrder };
+      // Swap positions in array
       [dayEntriesCopy[index - 1], dayEntriesCopy[index]] = [dayEntriesCopy[index], dayEntriesCopy[index - 1]];
       updated[entry.weekday] = dayEntriesCopy;
       return updated;
     });
 
     try {
-      // Update the entry being moved to the previous position's slot_order
-      const response = await fetch(`/api/schedule/${entry.id}`, {
+      // Swap slot_orders for both entries
+      // First move entry to a temporary high slot to avoid unique constraint conflict
+      const tempSlot = 99999;
+      const response1 = await fetch(`/api/schedule/${entry.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slotOrder: prevEntry.slot_order }),
+        body: JSON.stringify({ slotOrder: tempSlot }),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to reorder');
+      if (!response1.ok) {
+        throw new Error('Failed to reorder (step 1)');
+      }
+
+      // Move prevEntry to entry's original slot
+      const response2 = await fetch(`/api/schedule/${prevEntry.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slotOrder: entrySlotOrder }),
+      });
+
+      if (!response2.ok) {
+        throw new Error('Failed to reorder (step 2)');
+      }
+
+      // Move entry to prevEntry's original slot
+      const response3 = await fetch(`/api/schedule/${entry.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slotOrder: prevEntrySlotOrder }),
+      });
+
+      if (!response3.ok) {
+        throw new Error('Failed to reorder (step 3)');
       }
     } catch (err) {
       console.error('Error reordering:', err);
@@ -241,25 +273,57 @@ export function ScheduleClient() {
     setIsReordering(true);
     const nextEntry = dayEntries[index + 1];
 
+    // Store original slot_orders for swap
+    const entrySlotOrder = entry.slot_order;
+    const nextEntrySlotOrder = nextEntry.slot_order;
+
     // Optimistic update - swap entries in UI
     setSchedule((prev) => {
       const updated = { ...prev };
       const dayEntriesCopy = [...updated[entry.weekday]];
+      // Swap the slot_order values in the local state as well
+      dayEntriesCopy[index] = { ...dayEntriesCopy[index], slot_order: nextEntrySlotOrder };
+      dayEntriesCopy[index + 1] = { ...dayEntriesCopy[index + 1], slot_order: entrySlotOrder };
+      // Swap positions in array
       [dayEntriesCopy[index], dayEntriesCopy[index + 1]] = [dayEntriesCopy[index + 1], dayEntriesCopy[index]];
       updated[entry.weekday] = dayEntriesCopy;
       return updated;
     });
 
     try {
-      // Update the entry being moved to the next position's slot_order
-      const response = await fetch(`/api/schedule/${entry.id}`, {
+      // Swap slot_orders for both entries
+      // First move entry to a temporary high slot to avoid unique constraint conflict
+      const tempSlot = 99999;
+      const response1 = await fetch(`/api/schedule/${entry.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slotOrder: nextEntry.slot_order }),
+        body: JSON.stringify({ slotOrder: tempSlot }),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to reorder');
+      if (!response1.ok) {
+        throw new Error('Failed to reorder (step 1)');
+      }
+
+      // Move nextEntry to entry's original slot
+      const response2 = await fetch(`/api/schedule/${nextEntry.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slotOrder: entrySlotOrder }),
+      });
+
+      if (!response2.ok) {
+        throw new Error('Failed to reorder (step 2)');
+      }
+
+      // Move entry to nextEntry's original slot
+      const response3 = await fetch(`/api/schedule/${entry.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slotOrder: nextEntrySlotOrder }),
+      });
+
+      if (!response3.ok) {
+        throw new Error('Failed to reorder (step 3)');
       }
     } catch (err) {
       console.error('Error reordering:', err);
