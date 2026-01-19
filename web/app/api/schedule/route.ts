@@ -27,6 +27,9 @@ interface CurrentEpisode {
   episode: number;
   title: string;
   stillPath: string | null;
+  runtime: number | null;
+  airDate: string | null;
+  overview: string | null;
 }
 
 interface EnrichedScheduleEntry {
@@ -90,22 +93,28 @@ async function enrichEntry(
         }
       }
 
-      // Get episode runtime: use first value from array or default to 30 minutes
-      const episodeRuntime = details.episode_run_time?.[0] || 30;
-
       // Fetch current episode info
       // Default to S1E1 if no progress exists
       const seasonNum = progress?.seasonNumber ?? 1;
       const episodeNum = progress?.episodeNumber ?? 1;
 
+      // Default episode runtime from show details
+      const showEpisodeRuntime = details.episode_run_time?.[0] || 30;
+      let episodeRuntime = showEpisodeRuntime;
+
       try {
         const episodeDetails = await getTVEpisode(titleInfo.tmdb_id, seasonNum, episodeNum);
         if (episodeDetails) {
+          // Use episode-specific runtime if available, fallback to show average
+          episodeRuntime = episodeDetails.runtime ?? showEpisodeRuntime;
           currentEpisode = {
             season: seasonNum,
             episode: episodeNum,
             title: episodeDetails.name,
             stillPath: episodeDetails.still_path,
+            runtime: episodeDetails.runtime ?? null,
+            airDate: episodeDetails.air_date ?? null,
+            overview: episodeDetails.overview ?? null,
           };
         } else {
           // Episode not found, still include position without title
@@ -114,6 +123,9 @@ async function enrichEntry(
             episode: episodeNum,
             title: `Episode ${episodeNum}`,
             stillPath: null,
+            runtime: null,
+            airDate: null,
+            overview: null,
           };
         }
       } catch (episodeError) {
@@ -124,6 +136,9 @@ async function enrichEntry(
           episode: episodeNum,
           title: `Episode ${episodeNum}`,
           stillPath: null,
+          runtime: null,
+          airDate: null,
+          overview: null,
         };
       }
 
