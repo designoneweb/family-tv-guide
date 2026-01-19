@@ -10,29 +10,29 @@ See: .planning/PROJECT.md (updated 2026-01-18)
 ## Current Position
 
 Phase: 2 of 10 (Data Model)
-Plan: 3 of 5 in current phase
+Plan: 4 of 5 in current phase
 Status: In progress
-Last activity: 2026-01-19 — Completed 02-03-PLAN.md
+Last activity: 2026-01-19 — Completed 02-04-PLAN.md
 
-Progress: ██░░░░░░░░ 19%
+Progress: ██░░░░░░░░ 22%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
-- Average duration: 2.5 min
-- Total execution time: 15 min
+- Total plans completed: 7
+- Average duration: 6.9 min
+- Total execution time: 48 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Foundation | 3 | 10 min | 3.3 min |
-| 2. Data Model | 3 | 5 min | 1.7 min |
+| 2. Data Model | 4 | 38 min | 9.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-03 (4 min), 02-01 (2 min), 02-02 (2 min), 02-03 (1 min)
-- Trend: ↓ faster
+- Last 5 plans: 02-01 (2 min), 02-02 (2 min), 02-03 (1 min), 02-04 (33 min)
+- Trend: ↑ 02-04 longer (migration issue + verification)
 
 ## Accumulated Context
 
@@ -56,6 +56,8 @@ Recent decisions affecting current work:
 | 02-02 | episode_blurbs public read | Shared cached content |
 | 02-03 | SECURITY DEFINER on trigger function | Bypasses RLS during provisioning |
 | 02-03 | Service layer in lib/services/ | Typed data access pattern |
+| 02-04 | localStorage for profile persistence | Simple, no extra DB calls |
+| 02-04 | ProfileGuard for redirect logic | Client-side redirect when no profile |
 
 ### Deferred Issues
 
@@ -68,5 +70,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 02-03-PLAN.md
+Stopped at: Completed 02-04-PLAN.md
 Resume file: None
