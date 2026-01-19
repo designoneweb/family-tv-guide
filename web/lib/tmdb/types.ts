@@ -82,3 +82,48 @@ export type TMDBMovieSearchResponse = TMDBPaginatedResponse<TMDBMovieSearchResul
  * Multi-search response from /search/multi
  */
 export type TMDBMultiSearchResponse = TMDBPaginatedResponse<TMDBMultiSearchResult>;
+
+// ============================================================================
+// DETAIL TYPES
+// ============================================================================
+
+/**
+ * Genre object used in detail responses
+ */
+export interface TMDBGenre {
+  id: number;
+  name: string;
+}
+
+/**
+ * Full TV show details from /tv/{series_id}
+ */
+export interface TMDBTVDetails {
+  id: number;
+  name: string;
+  overview: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  first_air_date: string;
+  number_of_seasons: number;
+  number_of_episodes: number;
+  status: string;
+  genres: TMDBGenre[];
+  vote_average: number;
+}
+
+/**
+ * Full movie details from /movie/{movie_id}
+ */
+export interface TMDBMovieDetails {
+  id: number;
+  title: string;
+  overview: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  release_date: string;
+  runtime: number | null;
+  status: string;
+  genres: TMDBGenre[];
+  vote_average: number;
+}
