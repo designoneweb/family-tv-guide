@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-18)
 
 **Core value:** Fast "What are we watching tonight?" — the Guide page must load quickly and show exactly what's scheduled with the next episode ready to watch.
-**Current focus:** Phase 6 — Progress Tracking
+**Current focus:** Phase 6 complete — Ready for Phase 7
 
 ## Current Position
 
 Phase: 6 of 10 (Progress Tracking)
-Plan: 2 of 3 in current phase
-Status: In progress
-Last activity: 2026-01-19 — Completed 06-02-PLAN.md (progress UI)
+Plan: 3 of 3 in current phase
+Status: Phase complete
+Last activity: 2026-01-19 — Completed 06-03-PLAN.md (Jump to Episode)
 
-Progress: ██████████ 60% (18 of 30 estimated plans)
+Progress: ██████████ 63% (19 of 30 estimated plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 18
-- Average duration: 8.8 min
-- Total execution time: 158 min
+- Total plans completed: 19
+- Average duration: 11.3 min
+- Total execution time: 214 min
 
 **By Phase:**
 
@@ -32,11 +32,11 @@ Progress: ██████████ 60% (18 of 30 estimated plans)
 | 3. TMDB Integration | 2 | 5 min | 2.5 min |
 | 4. Library Management | 3 | 23 min | 7.7 min |
 | 5. Schedule System | 3 | 57 min | 19.0 min |
-| 6. Progress Tracking | 2 | 15 min | 7.5 min |
+| 6. Progress Tracking | 3 | 71 min | 23.7 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-02 (12 min), 05-03 (41 min), 06-01 (3 min), 06-02 (12 min)
-- Trend: Consistent execution with subagent-based workflow
+- Last 5 plans: 05-03 (41 min), 06-01 (3 min), 06-02 (12 min), 06-03 (56 min)
+- Note: 06-03 duration includes checkpoint verification wait time
 
 ## Accumulated Context
 
@@ -87,6 +87,8 @@ Recent decisions affecting current work:
 | 06-01 | Return current position when show complete | UI can detect "caught up" state |
 | 06-02 | Client-facing TMDB API routes under /api/tmdb/* | Enables client-side episode fetching for Mark Watched |
 | 06-02 | Optimistic UI for Mark Watched | Updates display immediately, then persists |
+| 06-03 | Clickable episode text opens Jump dialog | Cleaner UX than separate menu button |
+| 06-03 | Cascading dropdowns with season reset | Changing season resets episode to 1 |
 
 ### Deferred Issues
 
@@ -99,6 +101,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 06-02-PLAN.md (progress UI)
+Stopped at: Completed 06-03-PLAN.md (Jump to Episode) - Phase 6 complete
 Resume file: None
-Next: 06-03 Jump to Episode
+Next: Phase 7 Episode Grid
