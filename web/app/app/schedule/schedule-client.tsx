@@ -17,18 +17,25 @@ import {
 import { useProfile } from '@/lib/contexts/profile-context';
 import { getPosterUrl } from '@/lib/tmdb/images';
 import { AddToScheduleDialog } from '@/components/add-to-schedule-dialog';
-import type { ScheduleEntry, MediaType } from '@/lib/database.types';
+import type { MediaType } from '@/lib/database.types';
 
 // Day names for display
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const DAY_SHORT_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-// Type for enriched schedule entry with title info
-interface EnrichedScheduleEntry extends ScheduleEntry {
+// Type for enriched schedule entry from API (camelCase)
+interface EnrichedScheduleEntry {
+  id: string;
+  weekday: number;
+  slotOrder: number;
+  enabled: boolean;
+  trackedTitleId: string;
+  tmdbId: number;
+  mediaType: MediaType;
   title: string;
   posterPath: string | null;
-  mediaType: MediaType;
-  tmdbId: number;
+  year: string;
+  providers: { name: string; logoPath: string }[];
 }
 
 // Week schedule with enriched entries
@@ -55,7 +62,7 @@ export function ScheduleClient() {
   // Track reordering state (to prevent double clicks)
   const [isReordering, setIsReordering] = useState(false);
 
-  // Fetch schedule and enrich with TMDB data
+  // Fetch schedule (API returns enriched data with TMDB details)
   const fetchSchedule = useCallback(async () => {
     if (!activeProfileId) return;
 
@@ -63,68 +70,13 @@ export function ScheduleClient() {
     setError(null);
 
     try {
-      // Fetch schedule
+      // Fetch schedule - API returns enriched entries with TMDB data
       const response = await fetch(`/api/schedule?profileId=${activeProfileId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch schedule');
       }
       const data = await response.json();
-      const rawSchedule = data.schedule as { [weekday: number]: ScheduleEntry[] };
-
-      // Fetch library to get title info (has TMDB details)
-      const libraryResponse = await fetch('/api/library');
-      if (!libraryResponse.ok) {
-        throw new Error('Failed to fetch library');
-      }
-      const libraryData = await libraryResponse.json();
-
-      // Create a map of tracked_title_id -> library info
-      const libraryMap = new Map<string, {
-        title: string;
-        posterPath: string | null;
-        mediaType: MediaType;
-        tmdbId: number;
-      }>();
-
-      for (const title of libraryData.titles) {
-        libraryMap.set(title.id, {
-          title: title.title,
-          posterPath: title.posterPath,
-          mediaType: title.mediaType,
-          tmdbId: title.tmdbId,
-        });
-      }
-
-      // Enrich schedule entries with title info
-      const enrichedSchedule: EnrichedWeekSchedule = {
-        0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [],
-      };
-
-      for (const weekday of Object.keys(rawSchedule)) {
-        const day = parseInt(weekday);
-        for (const entry of rawSchedule[day]) {
-          const libraryInfo = libraryMap.get(entry.tracked_title_id);
-          if (libraryInfo) {
-            enrichedSchedule[day].push({
-              ...entry,
-              title: libraryInfo.title,
-              posterPath: libraryInfo.posterPath,
-              mediaType: libraryInfo.mediaType,
-              tmdbId: libraryInfo.tmdbId,
-            });
-          } else {
-            // If not in library map, try to fetch directly (fallback)
-            // This handles edge cases where title might not be in library anymore
-            enrichedSchedule[day].push({
-              ...entry,
-              title: 'Unknown Title',
-              posterPath: null,
-              mediaType: 'tv',
-              tmdbId: 0,
-            });
-          }
-        }
-      }
+      const enrichedSchedule = data.schedule as EnrichedWeekSchedule;
 
       setSchedule(enrichedSchedule);
     } catch (err) {
@@ -193,7 +145,7 @@ export function ScheduleClient() {
 
   // Get existing title IDs for a specific day
   const getExistingTitleIds = useCallback((weekday: number) => {
-    return schedule[weekday].map((entry) => entry.tracked_title_id);
+    return schedule[weekday].map((entry) => entry.trackedTitleId);
   }, [schedule]);
 
   // Handle move up within day
@@ -205,16 +157,16 @@ export function ScheduleClient() {
     const prevEntry = dayEntries[index - 1];
 
     // Store original slot_orders for swap
-    const entrySlotOrder = entry.slot_order;
-    const prevEntrySlotOrder = prevEntry.slot_order;
+    const entrySlotOrder = entry.slotOrder;
+    const prevEntrySlotOrder = prevEntry.slotOrder;
 
     // Optimistic update - swap entries in UI
     setSchedule((prev) => {
       const updated = { ...prev };
       const dayEntriesCopy = [...updated[entry.weekday]];
       // Swap the slot_order values in the local state as well
-      dayEntriesCopy[index] = { ...dayEntriesCopy[index], slot_order: prevEntrySlotOrder };
-      dayEntriesCopy[index - 1] = { ...dayEntriesCopy[index - 1], slot_order: entrySlotOrder };
+      dayEntriesCopy[index] = { ...dayEntriesCopy[index], slotOrder: prevEntrySlotOrder };
+      dayEntriesCopy[index - 1] = { ...dayEntriesCopy[index - 1], slotOrder: entrySlotOrder };
       // Swap positions in array
       [dayEntriesCopy[index - 1], dayEntriesCopy[index]] = [dayEntriesCopy[index], dayEntriesCopy[index - 1]];
       updated[entry.weekday] = dayEntriesCopy;
@@ -274,16 +226,16 @@ export function ScheduleClient() {
     const nextEntry = dayEntries[index + 1];
 
     // Store original slot_orders for swap
-    const entrySlotOrder = entry.slot_order;
-    const nextEntrySlotOrder = nextEntry.slot_order;
+    const entrySlotOrder = entry.slotOrder;
+    const nextEntrySlotOrder = nextEntry.slotOrder;
 
     // Optimistic update - swap entries in UI
     setSchedule((prev) => {
       const updated = { ...prev };
       const dayEntriesCopy = [...updated[entry.weekday]];
       // Swap the slot_order values in the local state as well
-      dayEntriesCopy[index] = { ...dayEntriesCopy[index], slot_order: nextEntrySlotOrder };
-      dayEntriesCopy[index + 1] = { ...dayEntriesCopy[index + 1], slot_order: entrySlotOrder };
+      dayEntriesCopy[index] = { ...dayEntriesCopy[index], slotOrder: nextEntrySlotOrder };
+      dayEntriesCopy[index + 1] = { ...dayEntriesCopy[index + 1], slotOrder: entrySlotOrder };
       // Swap positions in array
       [dayEntriesCopy[index], dayEntriesCopy[index + 1]] = [dayEntriesCopy[index + 1], dayEntriesCopy[index]];
       updated[entry.weekday] = dayEntriesCopy;
