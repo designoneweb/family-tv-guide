@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ProfileProvider } from "@/lib/contexts/profile-context";
 import { ProfileGuard } from "@/components/profile-guard";
+import { AppNav } from "@/components/app-nav";
 
 export default async function AppLayout({
   children,
@@ -19,6 +20,7 @@ export default async function AppLayout({
 
   return (
     <ProfileProvider>
+      <AppNav />
       <ProfileGuard>{children}</ProfileGuard>
     </ProfileProvider>
   );
