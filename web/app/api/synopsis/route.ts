@@ -48,6 +48,19 @@ interface SynopsisResponse {
  * - 400: Invalid request body
  * - 500: Server error
  */
+/**
+ * GET /api/synopsis
+ *
+ * Check if AI synopsis generation is available (API key configured)
+ *
+ * Returns:
+ * - 200: { available: boolean }
+ */
+export async function GET() {
+  const available = !!process.env.GEMINI_API_KEY;
+  return NextResponse.json({ available });
+}
+
 export async function POST(request: NextRequest) {
   let body: SynopsisRequestBody;
 

@@ -72,6 +72,7 @@ export function EpisodeClient({ showId, seasonNumber, episodeNumber }: EpisodeCl
   const [error, setError] = useState<string | null>(null);
   const [synopsis, setSynopsis] = useState<{ text: string; source: 'ai' | 'tmdb_truncate' } | null>(null);
   const [isFetchingSynopsis, setIsFetchingSynopsis] = useState(false);
+  const [aiSynopsisAvailable, setAiSynopsisAvailable] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -111,6 +112,24 @@ export function EpisodeClient({ showId, seasonNumber, episodeNumber }: EpisodeCl
 
     fetchData();
   }, [showId, seasonNumber, episodeNumber]);
+
+  // Check if AI synopsis is available (API key configured)
+  useEffect(() => {
+    async function checkAiAvailability() {
+      try {
+        const response = await fetch('/api/synopsis');
+        if (response.ok) {
+          const data = await response.json();
+          setAiSynopsisAvailable(data.available);
+        }
+      } catch (err) {
+        // Silently fail - AI synopsis won't be shown
+        console.error('Failed to check AI availability:', err);
+      }
+    }
+
+    checkAiAvailability();
+  }, []);
 
   // Check if show is in library (to show Mark Watched button)
   useEffect(() => {
@@ -346,8 +365,8 @@ export function EpisodeClient({ showId, seasonNumber, episodeNumber }: EpisodeCl
             </p>
           )}
 
-          {/* AI Synopsis section - only show if episode has overview */}
-          {episode.overview && (
+          {/* AI Synopsis section - only show if episode has overview AND AI is available */}
+          {episode.overview && aiSynopsisAvailable && (
             <div className="mb-6">
               {synopsis ? (
                 <div className="bg-muted/50 rounded-lg p-4">
