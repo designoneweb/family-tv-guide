@@ -1,13 +1,209 @@
 /**
  * Schedule API Route
- * GET /api/schedule - Get week schedule for a profile
+ * GET /api/schedule - Get week schedule for a profile (with TMDB enrichment)
  * POST /api/schedule - Add title to schedule
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { getWeekSchedule, addToSchedule } from '@/lib/services/schedule';
+import { getWeekSchedule, addToSchedule, type WeekSchedule } from '@/lib/services/schedule';
 import { getCurrentHousehold } from '@/lib/services/household';
+import { getTVDetails, getMovieDetails } from '@/lib/tmdb/details';
+import { getTVWatchProviders, getMovieWatchProviders } from '@/lib/tmdb/providers';
+import type { ScheduleEntry, MediaType } from '@/lib/database.types';
+
+// ============================================================================
+// Types for enriched schedule entries
+// ============================================================================
+
+interface Provider {
+  name: string;
+  logoPath: string;
+}
+
+interface EnrichedScheduleEntry {
+  id: string;
+  weekday: number;
+  slotOrder: number;
+  enabled: boolean;
+  trackedTitleId: string;
+  tmdbId: number;
+  mediaType: MediaType;
+  title: string;
+  posterPath: string | null;
+  year: string;
+  providers: Provider[];
+}
+
+type EnrichedWeekSchedule = {
+  [weekday: number]: EnrichedScheduleEntry[];
+};
+
+interface TrackedTitleInfo {
+  tmdb_id: number;
+  media_type: MediaType;
+}
+
+// ============================================================================
+// TMDB Enrichment
+// ============================================================================
+
+/**
+ * Enrich a schedule entry with TMDB metadata
+ */
+async function enrichEntry(
+  entry: ScheduleEntry,
+  titleInfo: TrackedTitleInfo,
+  fetchProviders: boolean
+): Promise<EnrichedScheduleEntry | null> {
+  try {
+    let providers: Provider[] = [];
+
+    if (titleInfo.media_type === 'tv') {
+      const details = await getTVDetails(titleInfo.tmdb_id);
+      if (!details) return null;
+
+      if (fetchProviders) {
+        const providerResult = await getTVWatchProviders(titleInfo.tmdb_id);
+        if (providerResult?.flatrate) {
+          providers = providerResult.flatrate.map((p) => ({
+            name: p.provider_name,
+            logoPath: p.logo_path,
+          }));
+        }
+      }
+
+      return {
+        id: entry.id,
+        weekday: entry.weekday,
+        slotOrder: entry.slot_order,
+        enabled: entry.enabled,
+        trackedTitleId: entry.tracked_title_id,
+        tmdbId: titleInfo.tmdb_id,
+        mediaType: 'tv',
+        title: details.name,
+        posterPath: details.poster_path,
+        year: details.first_air_date?.substring(0, 4) || '',
+        providers,
+      };
+    } else {
+      const details = await getMovieDetails(titleInfo.tmdb_id);
+      if (!details) return null;
+
+      if (fetchProviders) {
+        const providerResult = await getMovieWatchProviders(titleInfo.tmdb_id);
+        if (providerResult?.flatrate) {
+          providers = providerResult.flatrate.map((p) => ({
+            name: p.provider_name,
+            logoPath: p.logo_path,
+          }));
+        }
+      }
+
+      return {
+        id: entry.id,
+        weekday: entry.weekday,
+        slotOrder: entry.slot_order,
+        enabled: entry.enabled,
+        trackedTitleId: entry.tracked_title_id,
+        tmdbId: titleInfo.tmdb_id,
+        mediaType: 'movie',
+        title: details.title,
+        posterPath: details.poster_path,
+        year: details.release_date?.substring(0, 4) || '',
+        providers,
+      };
+    }
+  } catch (error) {
+    console.error(`Failed to enrich schedule entry ${entry.id}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Enrich all schedule entries with TMDB metadata
+ */
+async function enrichSchedule(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabase: any,
+  schedule: WeekSchedule
+): Promise<EnrichedWeekSchedule> {
+  // Collect all unique tracked_title_ids
+  const allEntries: ScheduleEntry[] = [];
+  const trackedTitleIds = new Set<string>();
+
+  for (const weekday of Object.keys(schedule)) {
+    const entries = schedule[Number(weekday)];
+    for (const entry of entries) {
+      allEntries.push(entry);
+      trackedTitleIds.add(entry.tracked_title_id);
+    }
+  }
+
+  if (trackedTitleIds.size === 0) {
+    // No entries, return empty schedule
+    return { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
+  }
+
+  // Fetch tracked_titles for tmdb_id and media_type
+  const { data: trackedTitles, error: titlesError } = await supabase
+    .from('tracked_titles')
+    .select('id, tmdb_id, media_type')
+    .in('id', Array.from(trackedTitleIds));
+
+  if (titlesError || !trackedTitles) {
+    console.error('Failed to fetch tracked titles:', titlesError?.message);
+    return { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
+  }
+
+  // Create lookup map
+  const titleInfoMap = new Map<string, TrackedTitleInfo>();
+  for (const title of trackedTitles) {
+    titleInfoMap.set(title.id, {
+      tmdb_id: title.tmdb_id,
+      media_type: title.media_type,
+    });
+  }
+
+  // Enrich entries with TMDB data (limit providers to first 20)
+  const PROVIDER_LIMIT = 20;
+  let enrichedCount = 0;
+
+  const enrichedSchedule: EnrichedWeekSchedule = {
+    0: [],
+    1: [],
+    2: [],
+    3: [],
+    4: [],
+    5: [],
+    6: [],
+  };
+
+  // Process entries by weekday to maintain order
+  for (const weekdayStr of Object.keys(schedule)) {
+    const weekday = Number(weekdayStr);
+    const entries = schedule[weekday];
+
+    const enrichedEntries = await Promise.all(
+      entries.map(async (entry) => {
+        const titleInfo = titleInfoMap.get(entry.tracked_title_id);
+        if (!titleInfo) return null;
+
+        const fetchProviders = enrichedCount < PROVIDER_LIMIT;
+        enrichedCount++;
+
+        return enrichEntry(entry, titleInfo, fetchProviders);
+      })
+    );
+
+    // Filter out nulls and add to schedule
+    enrichedSchedule[weekday] = enrichedEntries.filter(
+      (e): e is EnrichedScheduleEntry => e !== null
+    );
+  }
+
+  return enrichedSchedule;
+}
 
 /**
  * GET /api/schedule
@@ -16,7 +212,7 @@ import { getCurrentHousehold } from '@/lib/services/household';
  * - profileId (required): Profile ID to fetch schedule for
  *
  * Returns:
- * - 200: { schedule: { [weekday: number]: ScheduleEntry[] } }
+ * - 200: { schedule: { [weekday: number]: EnrichedScheduleEntry[] } }
  * - 400: Missing profileId
  * - 401: Not authenticated
  * - 500: Server error
@@ -57,7 +253,10 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({ schedule: result.data });
+    // Enrich with TMDB metadata
+    const enrichedSchedule = await enrichSchedule(supabase, result.data);
+
+    return NextResponse.json({ schedule: enrichedSchedule });
   } catch (error) {
     console.error('Unexpected error in schedule fetch:', error);
     return NextResponse.json(
