@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-01-18)
 
 ## Current Position
 
-Phase: 9 of 10 (Person Pages)
-Plan: 2 of 2 in current phase
-Status: Phase complete
-Last activity: 2026-01-19 — Completed 09-02-PLAN.md (Person Page UI)
+Phase: 10 of 10 (AI Synopsis)
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-01-19 — Completed 10-01-PLAN.md (AI Synopsis Infrastructure)
 
-Progress: █████████████░░ 81% (25 of 31 estimated plans)
+Progress: █████████████░░ 84% (26 of 31 estimated plans)
 
 ## Performance Metrics
 
@@ -100,6 +100,9 @@ Recent decisions affecting current work:
 | 08-02 | TitleCard links to show detail for TV only | Movies don't have detail page yet |
 | 08.1-01 | Episode still links to episode detail page | Deeper navigation from schedule |
 | 08.1-01 | Fallback to show poster when no episode still | Better UX than empty placeholder |
+| 10-01 | Return null (not throw) when Gemini API key missing | Graceful fallback enabled |
+| 10-01 | Cache blurbs by composite key (series, season, episode) | Efficient upsert pattern |
+| 10-01 | Truncate at sentence boundary for TMDB fallback | Natural-sounding fallback |
 
 ### Deferred Issues
 
@@ -112,6 +115,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed 09-02-PLAN.md (Person Page UI) - Phase 9 complete
+Stopped at: Completed 10-01-PLAN.md (AI Synopsis Infrastructure)
 Resume file: None
-Next: Plan Phase 10 (AI Synopsis) or complete milestone
+Next: Execute 10-02-PLAN.md (AI Synopsis UI Integration)
