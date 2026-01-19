@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-18)
 
 **Core value:** Fast "What are we watching tonight?" — the Guide page must load quickly and show exactly what's scheduled with the next episode ready to watch.
-**Current focus:** Phase 4 — Library Management
+**Current focus:** Phase 5 — Schedule System
 
 ## Current Position
 
-Phase: 4 of 10 (Library Management)
-Plan: 3 of 3 in current phase
-Status: Phase complete
-Last activity: 2026-01-19 — Completed 04-03-PLAN.md (library display)
+Phase: 5 of 10 (Schedule System)
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-01-19 — Completed 05-01-PLAN.md (schedule service)
 
 Progress: █████████░ 93%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 13
-- Average duration: 6.6 min
-- Total execution time: 86 min
+- Total plans completed: 14
+- Average duration: 6.4 min
+- Total execution time: 90 min
 
 **By Phase:**
 
@@ -31,9 +31,10 @@ Progress: █████████░ 93%
 | 2. Data Model | 5 | 48 min | 9.6 min |
 | 3. TMDB Integration | 2 | 5 min | 2.5 min |
 | 4. Library Management | 3 | 23 min | 7.7 min |
+| 5. Schedule System | 1 | 4 min | 4.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-02 (3 min), 04-01 (2 min), 04-02 (17 min), 04-03 (4 min)
+- Last 5 plans: 04-01 (2 min), 04-02 (17 min), 04-03 (4 min), 05-01 (4 min)
 - Trend: Stable execution with verification checkpoints
 
 ## Accumulated Context
@@ -73,6 +74,9 @@ Recent decisions affecting current work:
 | 04-02 | Debounce 300ms for search input | Balances responsiveness vs API calls |
 | 04-02 | Parallel library status checks | Fetch status for all results simultaneously |
 | 04-02 | TitleCard as reusable component | Will be used in library display page |
+| 05-01 | Gaps in slot_order allowed | Simplifies deletion, avoids race conditions |
+| 05-01 | Shift-then-update for reorder | Avoids unique constraint conflicts |
+| 05-01 | PATCH handles both reorder and move-day | Single endpoint, weekday takes precedence |
 
 ### Deferred Issues
 
@@ -85,6 +89,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-19
-Stopped at: Completed Phase 4 (Library Management)
+Stopped at: Completed 05-01-PLAN.md (schedule service)
 Resume file: None
-Next: Phase 5 (Schedule System)
+Next: 05-02-PLAN.md (schedule UI)
