@@ -11,9 +11,9 @@ import type { MediaType } from '@/lib/database.types';
 // Constants
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const DAY_SHORT_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const PIXELS_PER_MINUTE = 2; // 2px per minute = 120px per hour
+const PIXELS_PER_MINUTE = 2.5; // 2.5px per minute = 150px per hour (wider blocks for readability)
 const START_HOUR = 18; // 6:00 PM
-const DAY_LABEL_WIDTH = 100; // Width of day label column in pixels
+const DAY_LABEL_WIDTH = 150; // Width of day label column in pixels
 
 // Type for current episode info from API
 interface CurrentEpisode {
