@@ -153,7 +153,7 @@ export function EpisodeClient({ showId, seasonNumber, episodeNumber }: EpisodeCl
 
   /**
    * Handle marking episode as watched
-   * Advances progress to next episode and shows brief confirmation
+   * Sets progress to the NEXT episode after the one being viewed
    */
   const handleMarkWatched = async () => {
     if (!activeProfileId || !trackedTitleId || !showDetails) return;
@@ -171,37 +171,54 @@ export function EpisodeClient({ showId, seasonNumber, episodeNumber }: EpisodeCl
       const totalEpisodesInSeason = seasonData.episodes?.length || 1;
       const totalSeasons = showDetails.number_of_seasons || 1;
 
-      // Call advance API
-      const advanceResponse = await fetch('/api/progress', {
-        method: 'PATCH',
+      // Calculate the next episode from the CURRENT viewed episode
+      let nextSeason = seasonNumber;
+      let nextEpisode = episodeNumber;
+      let isCompleted = false;
+
+      if (episodeNumber < totalEpisodesInSeason) {
+        // Next episode in current season
+        nextEpisode = episodeNumber + 1;
+      } else if (seasonNumber < totalSeasons) {
+        // First episode of next season
+        nextSeason = seasonNumber + 1;
+        nextEpisode = 1;
+      } else {
+        // This is the last episode of the last season - show is complete
+        isCompleted = true;
+      }
+
+      // Set progress directly to the next episode (or mark as completed)
+      const setProgressResponse = await fetch('/api/progress', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           profileId: activeProfileId,
           trackedTitleId,
-          action: 'advance',
-          totalEpisodesInSeason,
-          totalSeasons,
+          seasonNumber: nextSeason,
+          episodeNumber: nextEpisode,
+          completed: isCompleted,
         }),
       });
 
-      if (!advanceResponse.ok) {
-        throw new Error('Failed to advance progress');
+      if (!setProgressResponse.ok) {
+        throw new Error('Failed to set progress');
       }
 
-      const { progress } = await advanceResponse.json();
+      const { progress } = await setProgressResponse.json();
 
-      // Show confirmation message
-      setMarkedMessage(`Marked! Next: S${progress.season_number}E${progress.episode_number}`);
+      if (isCompleted) {
+        // Show is complete - stay on page
+        setMarkedMessage('All caught up!');
+      } else {
+        // Show confirmation message
+        setMarkedMessage(`Marked! Next: S${progress.season_number}E${progress.episode_number}`);
 
-      // Navigate to next episode after brief delay
-      setTimeout(() => {
-        if (progress.season_number !== seasonNumber || progress.episode_number !== episodeNumber) {
+        // Navigate to next episode after brief delay
+        setTimeout(() => {
           router.push(`/app/show/${showId}/season/${progress.season_number}/episode/${progress.episode_number}`);
-        } else {
-          // Show is complete - stay on page
-          setMarkedMessage('All caught up!');
-        }
-      }, 1500);
+        }, 1500);
+      }
     } catch (err) {
       console.error('Failed to mark watched:', err);
       setMarkedMessage(null);

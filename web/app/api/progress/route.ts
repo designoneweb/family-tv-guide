@@ -82,6 +82,7 @@ interface SetProgressBody {
   trackedTitleId: string;
   seasonNumber: number;
   episodeNumber: number;
+  completed?: boolean;
 }
 
 /**
@@ -155,7 +156,8 @@ export async function POST(request: NextRequest) {
       body.profileId,
       body.trackedTitleId,
       body.seasonNumber,
-      body.episodeNumber
+      body.episodeNumber,
+      body.completed ?? false
     );
 
     if (result.error) {
