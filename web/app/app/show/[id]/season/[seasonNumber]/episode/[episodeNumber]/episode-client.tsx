@@ -135,7 +135,7 @@ export function EpisodeClient({ showId, seasonNumber, episodeNumber }: EpisodeCl
   useEffect(() => {
     async function checkLibrary() {
       try {
-        const response = await fetch(`/api/library/check?tmdbId=${showId}`);
+        const response = await fetch(`/api/library/check?tmdbId=${showId}`, { cache: 'no-store' });
         if (response.ok) {
           const data = await response.json();
           if (data.inLibrary && data.titleId) {

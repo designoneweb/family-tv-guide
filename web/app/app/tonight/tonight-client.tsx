@@ -72,7 +72,8 @@ export function TonightClient() {
 
       try {
         const response = await fetch(
-          `/api/schedule?profileId=${activeProfileId}`
+          `/api/schedule?profileId=${activeProfileId}`,
+          { cache: 'no-store' }
         );
         if (!response.ok) {
           throw new Error('Failed to fetch schedule');
