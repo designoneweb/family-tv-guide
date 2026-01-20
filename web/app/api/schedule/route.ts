@@ -31,6 +31,7 @@ interface CurrentEpisode {
   runtime: number | null;
   airDate: string | null;
   overview: string | null;
+  completed: boolean;
 }
 
 interface EnrichedScheduleEntry {
@@ -61,6 +62,7 @@ interface TrackedTitleInfo {
 interface ProgressInfo {
   seasonNumber: number;
   episodeNumber: number;
+  completed: boolean;
 }
 
 // ============================================================================
@@ -106,6 +108,9 @@ async function enrichEntry(
       const showEpisodeRuntime = details.episode_run_time?.[0] || 30;
       let episodeRuntime = showEpisodeRuntime;
 
+      // Check if show is completed (from progress data)
+      const isCompleted = progress?.completed ?? false;
+
       try {
         const episodeDetails = await getTVEpisode(titleInfo.tmdb_id, seasonNum, episodeNum);
         if (episodeDetails) {
@@ -119,6 +124,7 @@ async function enrichEntry(
             runtime: episodeDetails.runtime ?? null,
             airDate: episodeDetails.air_date ?? null,
             overview: episodeDetails.overview ?? null,
+            completed: isCompleted,
           };
         } else {
           // Episode not found, still include position without title
@@ -130,6 +136,7 @@ async function enrichEntry(
             runtime: null,
             airDate: null,
             overview: null,
+            completed: isCompleted,
           };
         }
       } catch (episodeError) {
@@ -143,6 +150,7 @@ async function enrichEntry(
           runtime: null,
           airDate: null,
           overview: null,
+          completed: isCompleted,
         };
       }
 
@@ -255,6 +263,7 @@ async function enrichSchedule(
       progressMap.set(progress.tracked_title_id, {
         seasonNumber: progress.season_number,
         episodeNumber: progress.episode_number,
+        completed: progress.completed,
       });
     }
   }

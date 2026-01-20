@@ -122,6 +122,7 @@ export async function getProgressForProfile(
  * @param trackedTitleId - Tracked title ID
  * @param seasonNumber - Current season number
  * @param episodeNumber - Current episode number
+ * @param completed - Whether the show is fully watched (optional, defaults to false)
  * @returns The upserted progress entry
  */
 export async function setProgress(
@@ -129,7 +130,8 @@ export async function setProgress(
   profileId: string,
   trackedTitleId: string,
   seasonNumber: number,
-  episodeNumber: number
+  episodeNumber: number,
+  completed: boolean = false
 ): Promise<ProgressResult<TvProgress>> {
   if (!profileId) {
     return { data: null, error: { message: 'Profile ID is required', code: 'VALIDATION_ERROR' } };
@@ -155,6 +157,7 @@ export async function setProgress(
         tracked_title_id: trackedTitleId,
         season_number: seasonNumber,
         episode_number: episodeNumber,
+        completed,
         updated_at: new Date().toISOString(),
       },
       {
@@ -226,6 +229,7 @@ export async function advanceEpisode(
 
   let newSeason = current.season_number;
   let newEpisode = current.episode_number;
+  let completed = false;
 
   if (current.episode_number < totalEpisodesInSeason) {
     // Advance to next episode in current season
@@ -234,9 +238,11 @@ export async function advanceEpisode(
     // Advance to next season, reset to episode 1
     newSeason = current.season_number + 1;
     newEpisode = 1;
+  } else {
+    // Show is complete - at last episode of last season
+    completed = true;
   }
-  // Else: show is complete, keep current position
 
   // Upsert the new progress
-  return setProgress(supabase, profileId, trackedTitleId, newSeason, newEpisode);
+  return setProgress(supabase, profileId, trackedTitleId, newSeason, newEpisode, completed);
 }

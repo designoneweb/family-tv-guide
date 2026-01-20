@@ -16,6 +16,7 @@ interface CurrentEpisode {
   episode: number;
   title: string;
   stillPath: string | null;
+  completed: boolean;
 }
 
 interface EnrichedScheduleEntry {
@@ -57,7 +58,6 @@ export function TonightClient() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [advancingIds, setAdvancingIds] = useState<Set<string>>(new Set());
-  const [caughtUpIds, setCaughtUpIds] = useState<Set<string>>(new Set());
 
   // Get current day info
   const today = new Date();
@@ -149,23 +149,8 @@ export function TonightClient() {
 
       const { progress } = await advanceResponse.json();
 
-      // Check if show is caught up (position didn't change)
-      const isCaughtUp =
-        progress.season_number === entry.currentEpisode.season &&
-        progress.episode_number === entry.currentEpisode.episode;
-
-      if (isCaughtUp) {
-        // Show "All caught up!" feedback briefly
-        setCaughtUpIds((prev) => new Set(prev).add(trackedTitleId));
-        setTimeout(() => {
-          setCaughtUpIds((prev) => {
-            const newSet = new Set(prev);
-            newSet.delete(trackedTitleId);
-            return newSet;
-          });
-        }, 2500);
-        return;
-      }
+      // Check if show is completed (from API response)
+      const isCompleted = progress.completed ?? false;
 
       // Fetch the new episode info to update the UI
       const newEpisodeResponse = await fetch(
@@ -181,7 +166,7 @@ export function TonightClient() {
         newStillPath = newEpisodeDetails.still_path || null;
       }
 
-      // Update local state with new episode info
+      // Update local state with new episode info and completed status
       setEntries((prevEntries) =>
         prevEntries.map((e) =>
           e.trackedTitleId === trackedTitleId
@@ -192,6 +177,7 @@ export function TonightClient() {
                   episode: progress.episode_number,
                   title: newEpisodeTitle,
                   stillPath: newStillPath,
+                  completed: isCompleted,
                 },
               }
             : e
@@ -236,7 +222,7 @@ export function TonightClient() {
         newStillPath = newEpisodeDetails.still_path || null;
       }
 
-      // Update local state with new episode info
+      // Update local state with new episode info (not completed since we jumped)
       setEntries((prevEntries) =>
         prevEntries.map((e) =>
           e.trackedTitleId === trackedTitleId
@@ -247,6 +233,7 @@ export function TonightClient() {
                   episode: newEpisode,
                   title: newEpisodeTitle,
                   stillPath: newStillPath,
+                  completed: false,
                 },
               }
             : e
@@ -265,6 +252,7 @@ export function TonightClient() {
                   episode: newEpisode,
                   title: `Episode ${newEpisode}`,
                   stillPath: null,
+                  completed: false,
                 },
               }
             : e
@@ -337,7 +325,7 @@ export function TonightClient() {
                   ? (newSeason, newEpisode) => handleJumpToEpisode(entry, newSeason, newEpisode)
                   : undefined
               }
-              isCaughtUp={caughtUpIds.has(entry.trackedTitleId)}
+              isCaughtUp={entry.currentEpisode?.completed ?? false}
             />
           ))}
         </div>

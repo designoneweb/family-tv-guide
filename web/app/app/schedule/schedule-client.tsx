@@ -24,6 +24,7 @@ interface CurrentEpisode {
   runtime: number | null;
   airDate: string | null;
   overview: string | null;
+  completed: boolean;
 }
 
 // Type for enriched schedule entry from API (camelCase)

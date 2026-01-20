@@ -126,6 +126,7 @@ export interface Database {
           tracked_title_id: string;
           season_number: number;
           episode_number: number;
+          completed: boolean;
           updated_at: string;
         };
         Insert: {
@@ -134,6 +135,7 @@ export interface Database {
           tracked_title_id: string;
           season_number?: number;
           episode_number?: number;
+          completed?: boolean;
           updated_at?: string;
         };
         Update: {
@@ -142,6 +144,7 @@ export interface Database {
           tracked_title_id?: string;
           season_number?: number;
           episode_number?: number;
+          completed?: boolean;
           updated_at?: string;
         };
       };

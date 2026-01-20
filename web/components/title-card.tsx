@@ -14,6 +14,7 @@ export interface CurrentEpisode {
   episode: number;
   title: string;
   stillPath: string | null;
+  completed?: boolean;
 }
 
 export interface TitleCardProps {
