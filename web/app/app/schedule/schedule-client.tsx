@@ -212,11 +212,11 @@ export function ScheduleClient() {
                   style={{ width: DAY_LABEL_WIDTH }}
                 />
                 {/* Time markers */}
-                <div className="relative h-8 flex-1" style={{ width: maxGridWidth }}>
+                <div className="relative h-10 flex-1" style={{ width: maxGridWidth }}>
                   {timeMarkers.map((marker, index) => (
                     <div
                       key={index}
-                      className="absolute top-0 h-full flex items-center text-xs text-muted-foreground"
+                      className="absolute top-0 h-full flex items-center text-sm text-muted-foreground"
                       style={{ left: marker.offset }}
                     >
                       <span className="px-1 bg-muted/50">{marker.label}</span>
@@ -309,8 +309,8 @@ function DayRow({ dayName, shortName, entries, gridWidth, onAddClick, onShowClic
         style={{ width: DAY_LABEL_WIDTH }}
       >
         <div className="flex flex-col">
-          <span className="font-semibold text-sm hidden sm:block">{dayName}</span>
-          <span className="font-semibold text-sm sm:hidden">{shortName}</span>
+          <span className="font-semibold text-base hidden sm:block">{dayName}</span>
+          <span className="font-semibold text-base sm:hidden">{shortName}</span>
         </div>
         <Button
           variant="ghost"
@@ -325,11 +325,11 @@ function DayRow({ dayName, shortName, entries, gridWidth, onAddClick, onShowClic
 
       {/* Shows Grid Area */}
       <div
-        className="relative flex-1 min-h-[60px]"
+        className="relative flex-1 min-h-[70px]"
         style={{ width: gridWidth }}
       >
         {entries.length === 0 ? (
-          <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm">
+          <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-base">
             <Calendar className="h-4 w-4 mr-2 opacity-50" />
             <span>No shows scheduled</span>
           </div>
@@ -384,19 +384,19 @@ function ShowBlock({ entry, left, width, startMinutes, onClick }: ShowBlockProps
       <div className={`h-full flex flex-col justify-center px-2 py-0.5 ${isVeryCompact ? 'items-center px-1' : ''}`}>
         {isVeryCompact ? (
           // Very compact - just show first letter
-          <span className="text-xs font-medium">{entry.title.charAt(0)}</span>
+          <span className="text-sm font-medium">{entry.title.charAt(0)}</span>
         ) : isCompact ? (
           // Compact - title only, truncated
-          <span className="text-xs font-medium truncate">{entry.title}</span>
+          <span className="text-sm font-medium truncate">{entry.title}</span>
         ) : (
           // Full display - title + episode info + time
           <>
-            <span className="text-xs font-medium truncate">{entry.title}</span>
+            <span className="text-sm font-medium truncate">{entry.title}</span>
             {episodeInfo && (
-              <span className="text-[10px] text-muted-foreground">{episodeInfo}</span>
+              <span className="text-xs text-muted-foreground">{episodeInfo}</span>
             )}
             {width > 100 && (
-              <span className="text-[10px] text-muted-foreground truncate">
+              <span className="text-xs text-muted-foreground truncate">
                 {startTimeStr} - {endTimeStr}
               </span>
             )}
