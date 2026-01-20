@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A dark-mode, art-forward web app that lets a household curate their TV shows and movies, schedule what's on each night, track progress per profile, and explore IMDb-like episode details and cast filmographies. Web-first for rapid iteration, with Android TV as a future milestone.
+A dark-mode, art-forward web app that lets a household curate their TV shows and movies, schedule what's on each night, track progress per profile, and explore IMDb-like episode details and cast filmographies. Features AI-powered spoiler-safe synopses via Gemini integration. Web-first for rapid iteration, with Android TV as a future milestone.
 
 ## Core Value
 
@@ -12,56 +12,59 @@ A dark-mode, art-forward web app that lets a household curate their TV shows and
 
 ### Validated
 
-(None yet — ship to validate)
+**Auth & Foundation — v1.0**
+- ✓ Supabase Auth with protected /app routes
+- ✓ RLS-enabled database schema (households, profiles, titles, progress)
+- ✓ Automatic household/profile provisioning on signup
+
+**Profiles — v1.0**
+- ✓ Create/edit/delete profiles per household
+- ✓ Avatar color selection with 8 presets
+- ✓ Profile switcher with persistent selection
+
+**Library — v1.0**
+- ✓ Search TMDB and add TV shows/movies to household library
+- ✓ Store minimal metadata locally (tmdb_id, name, poster/backdrop paths)
+- ✓ Show streaming providers with clickable JustWatch links
+
+**Schedule ("Our TV Guide") — v1.0**
+- ✓ Assign TV titles to days of week with slot ordering
+- ✓ "Tonight" view shows scheduled titles with episode info and stills
+- ✓ Episode details on click with full navigation
+
+**Progress Tracking — v1.0**
+- ✓ Track current episode per profile per series
+- ✓ "Mark watched" advances progress with auto-navigation
+- ✓ "Jump to episode" dialog for corrections
+
+**Episode Grid (Art-Dominant) — v1.0**
+- ✓ Season view with episode tile grid (tabs for ≤6 seasons)
+- ✓ Each tile: still image, title, brief description
+- ✓ Graceful fallback to show poster for missing stills
+
+**Episode Detail — v1.0**
+- ✓ Full overview, large still/backdrop
+- ✓ Main cast + guest stars lists with clickable cards
+- ✓ Mark watched action with navigation to next episode
+
+**Person Page (IMDb-like) — v1.0**
+- ✓ Photo, bio, known for (clickable)
+- ✓ TV credits with Acting/Crew filter
+- ✓ Combined credits (TV + movies) for full filmography
+
+**AI Synopsis (Optional) — v1.0**
+- ✓ Server-side endpoint for spoiler-safe brief synopses
+- ✓ Gemini 1.5 Flash integration
+- ✓ Cache results in Supabase
+- ✓ Fallback to truncated TMDB overview
+- ✓ Conditional UI display based on API key availability
 
 ### Active
 
-**Auth & Foundation**
 - [ ] Public landing page (dark theme, feature preview, CTA)
-- [ ] Supabase Auth with protected /app routes
-- [ ] RLS-enabled database schema (households, profiles, titles, progress)
-
-**Profiles**
-- [ ] Create/edit/delete profiles per household
-- [ ] Avatar selection and maturity levels (Kids/Teen/Adult)
+- [ ] Maturity levels (Kids/Teen/Adult) for profiles
 - [ ] Optional PIN lock for admin profile
-
-**Library**
-- [ ] Search TMDB and add TV shows/movies to household library
-- [ ] Store minimal metadata locally (tmdb_id, name, poster/backdrop paths)
-- [ ] Show streaming providers where available
-
-**Schedule ("Our TV Guide")**
-- [ ] Assign TV titles to days of week with slot ordering
-- [ ] "Tonight" view shows scheduled titles for current day
 - [ ] Binge mode toggle (ignore schedule, show Continue Watching)
-
-**Progress Tracking**
-- [ ] Track current episode per profile per series
-- [ ] "Mark watched" advances progress
-- [ ] "Jump to episode" for corrections or binge catch-up
-
-**Episode Grid (Art-Dominant)**
-- [ ] Season view with episode tile grid
-- [ ] Each tile: still image, title, brief description, guest stars preview
-- [ ] Graceful fallback for missing stills
-
-**Episode Detail**
-- [ ] Full overview, large still/backdrop
-- [ ] Main cast + guest stars lists
-- [ ] Click actor opens Person page
-- [ ] Mark watched action
-
-**Person Page (IMDb-like)**
-- [ ] Photo, bio, known for (clickable)
-- [ ] TV credits with Acting/Crew filter
-- [ ] Combined credits (TV + movies) for full filmography
-
-**AI Synopsis (Optional)**
-- [ ] Server-side endpoint for spoiler-safe brief synopses
-- [ ] User-supplied API key or Gemini 1.5 Flash as free option
-- [ ] Cache results in Supabase
-- [ ] Fallback to truncated TMDB overview
 
 ### Out of Scope
 
@@ -72,6 +75,12 @@ A dark-mode, art-forward web app that lets a household curate their TV shows and
 - Multi-household admin dashboard — single household focus for v1
 
 ## Context
+
+**Current State (v1.0 shipped):**
+- 11,096 lines of TypeScript/TSX across 180 files
+- Tech stack: Next.js 16 App Router, Supabase (auth + database), TanStack Query, shadcn/ui
+- Deployed on Netlify with OpenNext adapter
+- TMDB integration for all metadata, Gemini AI for synopsis generation
 
 **Source Documents:**
 - `docs/PRD.md` — full product requirements with user journeys and milestones
@@ -100,11 +109,17 @@ A dark-mode, art-forward web app that lets a household curate their TV shows and
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| TanStack Query for client data | Powerful caching, devtools, handles TMDB waterfall well | — Pending |
-| shadcn/ui for components | Tailwind-based, customizable, dark mode native | — Pending |
-| RLS from day one | Family first, then public — secure foundation matters | — Pending |
-| Gemini 1.5 Flash as free AI option | User requested, avoids API key requirement for basic use | — Pending |
-| Per-profile schedules (not household) | Simpler model, can add shared schedules later | — Pending |
+| TanStack Query for client data | Powerful caching, devtools, handles TMDB waterfall well | ✓ Good |
+| shadcn/ui for components | Tailwind-based, customizable, dark mode native | ✓ Good |
+| RLS from day one | Family first, then public — secure foundation matters | ✓ Good |
+| Gemini 1.5 Flash as free AI option | User requested, avoids API key requirement for basic use | ✓ Good |
+| Per-profile schedules (not household) | Simpler model, can add shared schedules later | ✓ Good |
+| @supabase/ssr for auth | Current standard, cookie-based SSR sessions | ✓ Good |
+| Server-side TMDB proxy | Protects API key, handles rate limits | ✓ Good |
+| Tabs ≤6 seasons, dropdown for more | Cleaner UX for most shows | ✓ Good |
+| Episode still fallback to show backdrop | Better UX when episode stills missing | ✓ Good |
+| Provider logos link to JustWatch | JustWatch provides deep links to streaming services | ✓ Good |
+| Conditional AI synopsis display | Hide button when API key not configured | ✓ Good |
 
 ---
-*Last updated: 2025-01-18 after initialization*
+*Last updated: 2026-01-19 after v1.0 Family Launch milestone*
