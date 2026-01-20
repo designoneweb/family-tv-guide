@@ -10,7 +10,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 import { getPosterUrl } from '@/lib/tmdb/images';
 import type { MediaType } from '@/lib/database.types';
 

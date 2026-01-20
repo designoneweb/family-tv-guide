@@ -57,6 +57,7 @@ export function TonightClient() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [advancingIds, setAdvancingIds] = useState<Set<string>>(new Set());
+  const [caughtUpIds, setCaughtUpIds] = useState<Set<string>>(new Set());
 
   // Get current day info
   const today = new Date();
@@ -147,6 +148,24 @@ export function TonightClient() {
       }
 
       const { progress } = await advanceResponse.json();
+
+      // Check if show is caught up (position didn't change)
+      const isCaughtUp =
+        progress.season_number === entry.currentEpisode.season &&
+        progress.episode_number === entry.currentEpisode.episode;
+
+      if (isCaughtUp) {
+        // Show "All caught up!" feedback briefly
+        setCaughtUpIds((prev) => new Set(prev).add(trackedTitleId));
+        setTimeout(() => {
+          setCaughtUpIds((prev) => {
+            const newSet = new Set(prev);
+            newSet.delete(trackedTitleId);
+            return newSet;
+          });
+        }, 2500);
+        return;
+      }
 
       // Fetch the new episode info to update the UI
       const newEpisodeResponse = await fetch(
@@ -318,6 +337,7 @@ export function TonightClient() {
                   ? (newSeason, newEpisode) => handleJumpToEpisode(entry, newSeason, newEpisode)
                   : undefined
               }
+              isCaughtUp={caughtUpIds.has(entry.trackedTitleId)}
             />
           ))}
         </div>

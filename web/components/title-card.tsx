@@ -33,6 +33,7 @@ export interface TitleCardProps {
   isAdvancing?: boolean;
   profileId?: string;
   onJumpToEpisode?: (newSeason: number, newEpisode: number) => void;
+  isCaughtUp?: boolean;
 }
 
 /**
@@ -56,6 +57,7 @@ export function TitleCard({
   isAdvancing = false,
   profileId,
   onJumpToEpisode,
+  isCaughtUp = false,
 }: TitleCardProps) {
   const [jumpDialogOpen, setJumpDialogOpen] = useState(false);
   const posterUrl = getPosterUrl(posterPath);
@@ -177,24 +179,31 @@ export function TitleCard({
 
         {/* Mark Watched button for TV shows */}
         {currentEpisode && onMarkWatched && (
-          <Button
-            variant="outline"
-            onClick={onMarkWatched}
-            disabled={isAdvancing}
-            className="w-full"
-          >
-            {isAdvancing ? (
-              <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Advancing...
-              </>
-            ) : (
-              <>
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Mark Watched
-              </>
-            )}
-          </Button>
+          isCaughtUp ? (
+            <div className="flex items-center justify-center gap-2 py-2 text-sm text-green-500">
+              <CheckCircle className="h-4 w-4" />
+              All caught up!
+            </div>
+          ) : (
+            <Button
+              variant="outline"
+              onClick={onMarkWatched}
+              disabled={isAdvancing}
+              className="w-full"
+            >
+              {isAdvancing ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Advancing...
+                </>
+              ) : (
+                <>
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  Mark Watched
+                </>
+              )}
+            </Button>
+          )
         )}
 
         {/* Action button */}
