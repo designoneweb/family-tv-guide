@@ -287,10 +287,10 @@ export function TitleCard({
         <div>
           {inLibrary && onRemove ? (
             <Button
-              variant="destructive"
+              variant="ghost"
               onClick={onRemove}
               disabled={isLoading}
-              className="w-full transition-all active:scale-[0.98]"
+              className="w-full transition-all active:scale-[0.98] text-muted-foreground hover:text-destructive hover:bg-destructive/10"
             >
               {isLoading ? (
                 <>

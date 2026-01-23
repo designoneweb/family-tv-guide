@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
-import { Loader2, Film, Plus, Library, Search, AlertCircle } from 'lucide-react';
+import { Loader2, Film, Plus, Library, Search, AlertCircle, Tv, LayoutGrid } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { TitleCard } from '@/components/title-card';
 import { TitleCardSkeletonGrid } from '@/components/ui/skeleton';
@@ -110,58 +110,86 @@ export function LibraryClient() {
     return title.mediaType === filter;
   });
 
+  // Compute stats by media type
+  const stats = useMemo(() => {
+    const shows = titles.filter((t) => t.mediaType === 'tv').length;
+    const movies = titles.filter((t) => t.mediaType === 'movie').length;
+    return { shows, movies };
+  }, [titles]);
+
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-fade-in-up">
-        <div className="flex items-center gap-4">
-          <div className="p-3 rounded-2xl bg-primary/10">
-            <Library className="h-8 w-8 text-primary" />
+    <div className="space-y-8 animate-fade-in-up">
+      {/* Ambient gradient background */}
+      <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-primary/5 via-primary/2 to-transparent pointer-events-none -z-10" />
+
+      {/* Header with glass card */}
+      <div className="glass rounded-2xl p-6 border border-border/50">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-2xl bg-primary/10 ring-1 ring-primary/20">
+              <Library className="h-8 w-8 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight">My Library</h1>
+              {!isLoading && titles.length > 0 && (
+                <p className="text-muted-foreground mt-1">
+                  {stats.shows > 0 && <span>{stats.shows} {stats.shows === 1 ? 'Show' : 'Shows'}</span>}
+                  {stats.shows > 0 && stats.movies > 0 && <span className="mx-2">•</span>}
+                  {stats.movies > 0 && <span>{stats.movies} {stats.movies === 1 ? 'Movie' : 'Movies'}</span>}
+                </p>
+              )}
+            </div>
           </div>
-          <div>
-            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">My Library</h1>
-            {!isLoading && (
-              <p className="text-muted-foreground mt-1">
-                {titles.length} {titles.length === 1 ? 'title' : 'titles'} in your collection
-              </p>
-            )}
-          </div>
+          <Link href="/app/library/search">
+            <Button size="lg" className="gap-2 glow-on-hover">
+              <Plus className="h-5 w-5" />
+              Add Titles
+            </Button>
+          </Link>
         </div>
-        <Link href="/app/library/search">
-          <Button size="lg" className="gap-2">
-            <Plus className="h-5 w-5" />
-            Add Titles
-          </Button>
-        </Link>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex gap-2 animate-fade-in-up" style={{ animationDelay: '50ms' }}>
-        <Button
-          variant={filter === 'all' ? 'default' : 'outline'}
-          onClick={() => setFilter('all')}
-          size="sm"
-          className="transition-all active:scale-[0.98]"
-        >
-          All
-        </Button>
-        <Button
-          variant={filter === 'tv' ? 'default' : 'outline'}
-          onClick={() => setFilter('tv')}
-          size="sm"
-          className="transition-all active:scale-[0.98]"
-        >
-          TV Shows
-        </Button>
-        <Button
-          variant={filter === 'movie' ? 'default' : 'outline'}
-          onClick={() => setFilter('movie')}
-          size="sm"
-          className="transition-all active:scale-[0.98]"
-        >
-          Movies
-        </Button>
+      {/* Premium Filter Pills */}
+      <div className="flex justify-center">
+        <div className="inline-flex gap-1 p-1.5 rounded-full glass border border-border/50">
+          <Button
+            variant={filter === 'all' ? 'default' : 'ghost'}
+            onClick={() => setFilter('all')}
+            size="sm"
+            className={`rounded-full gap-2 transition-all active:scale-[0.98] ${
+              filter === 'all' ? 'shadow-md' : 'hover:bg-muted/50'
+            }`}
+          >
+            <LayoutGrid className="h-4 w-4" />
+            All
+          </Button>
+          <Button
+            variant={filter === 'tv' ? 'default' : 'ghost'}
+            onClick={() => setFilter('tv')}
+            size="sm"
+            className={`rounded-full gap-2 transition-all active:scale-[0.98] ${
+              filter === 'tv' ? 'shadow-md' : 'hover:bg-muted/50'
+            }`}
+          >
+            <Tv className="h-4 w-4" />
+            TV Shows
+          </Button>
+          <Button
+            variant={filter === 'movie' ? 'default' : 'ghost'}
+            onClick={() => setFilter('movie')}
+            size="sm"
+            className={`rounded-full gap-2 transition-all active:scale-[0.98] ${
+              filter === 'movie' ? 'shadow-md' : 'hover:bg-muted/50'
+            }`}
+          >
+            <Film className="h-4 w-4" />
+            Movies
+          </Button>
+        </div>
       </div>
+
+      {/* Gradient divider */}
+      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
       {/* Loading State - Skeleton */}
       {isLoading && (
@@ -183,18 +211,18 @@ export function LibraryClient() {
 
       {/* Empty State - Enhanced */}
       {!isLoading && !error && titles.length === 0 && (
-        <div className="text-center py-16 animate-fade-in-up">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-muted mb-6">
-            <Film className="h-10 w-10 text-muted-foreground/60" />
+        <div className="text-center py-20 animate-fade-in-up">
+          <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 mb-8 ring-1 ring-primary/10">
+            <Film className="h-12 w-12 text-primary/60" />
           </div>
-          <h2 className="text-2xl font-semibold mb-2">Your library is empty</h2>
-          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-            Start building your collection by searching for your favorite shows and movies.
+          <h2 className="text-3xl font-bold mb-3">Start Your Collection</h2>
+          <p className="text-muted-foreground mb-8 max-w-md mx-auto text-lg">
+            Add your favorite shows and movies to track what you&apos;re watching and never miss an episode.
           </p>
           <Link href="/app/library/search">
-            <Button size="lg" className="gap-2">
+            <Button size="lg" className="gap-2 glow-on-hover">
               <Search className="h-5 w-5" />
-              Search Titles
+              Browse Titles
             </Button>
           </Link>
         </div>
