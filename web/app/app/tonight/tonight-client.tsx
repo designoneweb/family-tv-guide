@@ -1,9 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Loader2, Calendar, Tv } from 'lucide-react';
+import { Calendar, Tv, Popcorn, CalendarPlus } from 'lucide-react';
+import Link from 'next/link';
 import { TitleCard } from '@/components/title-card';
 import { useProfile } from '@/lib/contexts/profile-context';
+import { TitleCardSkeletonGrid } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
 import type { MediaType } from '@/lib/database.types';
 
 interface Provider {
@@ -264,47 +267,63 @@ export function TonightClient() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div>
-        <div className="flex items-center gap-3 mb-2">
-          <Calendar className="h-8 w-8 text-primary" />
-          <h1 className="text-3xl font-bold">Tonight</h1>
+      <div className="animate-fade-in-up">
+        <div className="flex items-center gap-4 mb-3">
+          <div className="p-3 rounded-2xl bg-primary/10">
+            <Calendar className="h-8 w-8 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">Tonight</h1>
+            <p className="text-muted-foreground text-lg mt-1">{formatDate(today)}</p>
+          </div>
         </div>
-        <p className="text-muted-foreground text-lg">{formatDate(today)}</p>
-        {!isLoading && !error && (
-          <p className="text-muted-foreground mt-1">
-            {entries.length} {entries.length === 1 ? 'show' : 'shows'} scheduled
+        {!isLoading && !error && entries.length > 0 && (
+          <p className="text-muted-foreground">
+            {entries.length} {entries.length === 1 ? 'show' : 'shows'} scheduled for tonight
           </p>
         )}
       </div>
 
-      {/* Loading State */}
+      {/* Loading State - Skeleton Grid */}
       {isLoading && (
-        <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <div className="animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+          <TitleCardSkeletonGrid count={3} aspectVideo={true} />
         </div>
       )}
 
       {/* Error State */}
       {error && (
-        <div className="text-center py-12 text-destructive">
-          <p>{error}</p>
+        <div className="text-center py-16 animate-fade-in-up">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-destructive/10 mb-4">
+            <Tv className="h-8 w-8 text-destructive" />
+          </div>
+          <p className="text-lg font-medium text-destructive">{error}</p>
+          <p className="text-muted-foreground mt-2">Please try refreshing the page.</p>
         </div>
       )}
 
-      {/* Empty State */}
+      {/* Empty State - Enhanced */}
       {!isLoading && !error && entries.length === 0 && (
-        <div className="text-center py-12 text-muted-foreground">
-          <Tv className="h-12 w-12 mx-auto mb-4 opacity-50" />
-          <p className="text-lg mb-2">Nothing scheduled for {WEEKDAY_NAMES[currentWeekday]}.</p>
-          <p className="text-sm">
-            Add titles to your schedule from the Schedule page.
+        <div className="text-center py-16 animate-fade-in-up">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-muted mb-6">
+            <Popcorn className="h-10 w-10 text-muted-foreground/60" />
+          </div>
+          <h2 className="text-2xl font-semibold mb-2">Nothing on tonight</h2>
+          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+            Your {WEEKDAY_NAMES[currentWeekday]} schedule is empty. Add some shows to make the most of your evening!
           </p>
+          <Link href="/app/schedule">
+            <Button size="lg" className="gap-2">
+              <CalendarPlus className="h-5 w-5" />
+              Add to Schedule
+            </Button>
+          </Link>
         </div>
       )}
 
-      {/* Title Grid - Art-forward display */}
+      {/* Title Grid - Art-forward display with staggered animation */}
       {!isLoading && entries.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 stagger-children">
           {entries.map((entry) => (
             <TitleCard
               key={entry.id}

@@ -1,5 +1,3 @@
-
-
 # **Product Requirements Document: “Family TV Guide”**
 
 ### **1) Product summary**
@@ -561,5 +559,3 @@ Enable RLS and restrict rows by household_id membership. Supabase explicitly rec
 - Required TMDB attribution is present. 
 
 - Deployed on Netlify and stable under normal family usage. 
-
-

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Loader2, User } from 'lucide-react';
+import { User, AlertCircle, Star } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/select';
 import { EpisodeTile } from '@/components/episode-tile';
 import { ProviderLogos, type Provider } from '@/components/provider-logos';
+import { Skeleton } from '@/components/ui/skeleton';
 import { getBackdropUrl, getProfileUrl } from '@/lib/tmdb/images';
 import type { TMDBTVDetails, TMDBSeason, TMDBTVCredits, TMDBCastMember, TMDBWatchProviderResult } from '@/lib/tmdb/types';
 
@@ -157,11 +158,34 @@ export function ShowClient({ tmdbId }: ShowClientProps) {
     setSelectedSeasonNumber(seasonNumber);
   };
 
-  // Loading state
+  // Loading state - skeleton
   if (isLoadingShow) {
     return (
-      <div className="container mx-auto py-8 px-4 flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      <div className="min-h-screen animate-fade-in-up">
+        <div className="relative">
+          <Skeleton className="h-64 w-full" />
+          <div className="container mx-auto py-8 px-4 relative">
+            <Skeleton className="h-10 w-64 mb-4" />
+            <div className="flex gap-3 mb-4">
+              <Skeleton className="h-5 w-20" />
+              <Skeleton className="h-5 w-16" />
+              <Skeleton className="h-5 w-24" />
+            </div>
+            <Skeleton className="h-24 w-full max-w-3xl mb-6" />
+            <div className="flex gap-3 mb-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} className="h-32 w-24 rounded-lg" />
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="container mx-auto px-4 pb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <Skeleton key={i} className="aspect-video rounded-lg" />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
@@ -169,11 +193,14 @@ export function ShowClient({ tmdbId }: ShowClientProps) {
   // Error state
   if (error || !showDetails) {
     return (
-      <div className="container mx-auto py-8 px-4">
-        <h1 className="text-2xl font-bold text-destructive">
+      <div className="container mx-auto py-16 px-4 text-center animate-fade-in-up">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-destructive/10 mb-4">
+          <AlertCircle className="h-8 w-8 text-destructive" />
+        </div>
+        <h1 className="text-2xl font-bold text-destructive mb-2">
           {error || 'Show not found'}
         </h1>
-        <p className="text-muted-foreground mt-2">
+        <p className="text-muted-foreground">
           Unable to load show details. Please try again later.
         </p>
       </div>
@@ -196,37 +223,38 @@ export function ShowClient({ tmdbId }: ShowClientProps) {
   const hasMoreCast = (credits?.cast?.length || 0) > 10;
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen animate-fade-in-up">
       {/* Header with backdrop */}
       <div className="relative">
         {backdropUrl && (
-          <div className="absolute inset-0 h-64 overflow-hidden">
+          <div className="absolute inset-0 h-72 overflow-hidden">
             <Image
               src={backdropUrl}
               alt={showDetails.name}
               fill
-              className="object-cover opacity-30"
+              className="object-cover opacity-40"
               unoptimized
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background" />
+            <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/60 to-background" />
           </div>
         )}
 
         <div className="container mx-auto py-8 px-4 relative">
-          <h1 className="text-3xl font-bold mb-4">{showDetails.name}</h1>
+          <h1 className="text-4xl sm:text-5xl font-bold mb-4 tracking-tight">{showDetails.name}</h1>
 
           {/* Metadata row: rating, year, seasons */}
           <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-4">
             {showDetails.vote_average > 0 && (
-              <span className="font-medium">
-                <span className="text-yellow-500">&#9733;</span> {showDetails.vote_average.toFixed(1)}/10
+              <span className="flex items-center gap-1 font-medium bg-amber-500/20 text-amber-200 px-2 py-0.5 rounded-md">
+                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                {showDetails.vote_average.toFixed(1)}
               </span>
             )}
-            {yearDisplay && <span>{yearDisplay}</span>}
-            <span>{totalSeasons} {totalSeasons === 1 ? 'Season' : 'Seasons'}</span>
+            {yearDisplay && <span className="px-2 py-0.5 bg-muted rounded-md">{yearDisplay}</span>}
+            <span className="px-2 py-0.5 bg-muted rounded-md">{totalSeasons} {totalSeasons === 1 ? 'Season' : 'Seasons'}</span>
             {showDetails.genres && showDetails.genres.length > 0 && (
-              <span>{showDetails.genres.map((g) => g.name).join(', ')}</span>
+              <span className="text-muted-foreground">{showDetails.genres.map((g) => g.name).join(', ')}</span>
             )}
           </div>
 
@@ -302,11 +330,13 @@ export function ShowClient({ tmdbId }: ShowClientProps) {
       {/* Episode Grid */}
       <div className="container mx-auto px-4 pb-8">
         {isLoadingSeason ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <Skeleton key={i} className="aspect-video rounded-lg" />
+            ))}
           </div>
         ) : currentSeason?.episodes && currentSeason.episodes.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 stagger-children">
             {currentSeason.episodes.map((episode) => (
               <EpisodeTile
                 key={episode.id}
@@ -321,8 +351,8 @@ export function ShowClient({ tmdbId }: ShowClientProps) {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 text-muted-foreground">
-            No episodes found for this season.
+          <div className="text-center py-16 text-muted-foreground">
+            <p className="text-lg">No episodes found for this season.</p>
           </div>
         )}
       </div>

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Calendar, Library, CalendarDays, Users } from 'lucide-react';
+import { Calendar, Library, CalendarDays, Users, Tv } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface NavItem {
@@ -22,12 +22,17 @@ export function AppNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-14 items-center gap-4">
-          {/* App Title */}
-          <Link href="/app/tonight" className="font-semibold text-lg mr-4">
-            TV Guide
+        <div className="flex h-16 items-center gap-6">
+          {/* App Title with icon */}
+          <Link href="/app/tonight" className="flex items-center gap-2 font-bold text-lg mr-2 group">
+            <div className="p-1.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+              <Tv className="h-5 w-5 text-primary" />
+            </div>
+            <span className="hidden sm:inline bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
+              TV Guide
+            </span>
           </Link>
 
           {/* Nav Links */}
@@ -42,15 +47,19 @@ export function AppNav() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    'flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors',
-                    'hover:bg-accent hover:text-accent-foreground',
+                    'relative flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200',
+                    'hover:bg-accent/80 hover:text-accent-foreground',
+                    'active:scale-[0.98]',
                     isActive
-                      ? 'bg-accent text-accent-foreground'
+                      ? 'bg-accent text-accent-foreground shadow-sm'
                       : 'text-muted-foreground'
                   )}
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className={cn('h-4 w-4 transition-colors', isActive && 'text-primary')} />
                   <span className="hidden sm:inline">{item.label}</span>
+                  {isActive && (
+                    <span className="absolute -bottom-[17px] left-1/2 -translate-x-1/2 w-8 h-0.5 bg-primary rounded-full" />
+                  )}
                 </Link>
               );
             })}

@@ -44,6 +44,15 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+  /* Genre accent colors */
+  --color-genre-comedy: var(--genre-comedy);
+  --color-genre-drama: var(--genre-drama);
+  --color-genre-action: var(--genre-action);
+  --color-genre-scifi: var(--genre-scifi);
+  --color-genre-horror: var(--genre-horror);
+  --color-genre-romance: var(--genre-romance);
+  --color-genre-documentary: var(--genre-documentary);
+  --color-genre-animation: var(--genre-animation);
 }
 
 :root {
@@ -84,22 +93,22 @@
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  --card: oklch(0.185 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
+  --primary: oklch(0.7 0.15 250);
+  --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
+  --muted: oklch(0.25 0 0);
+  --muted-foreground: oklch(0.65 0 0);
+  --accent: oklch(0.35 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
+  --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --ring: oklch(0.7 0.15 250);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -113,6 +122,15 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  /* Genre accent colors - vibrant for dark mode */
+  --genre-comedy: oklch(0.8 0.18 85);
+  --genre-drama: oklch(0.65 0.2 250);
+  --genre-action: oklch(0.7 0.22 25);
+  --genre-scifi: oklch(0.7 0.2 200);
+  --genre-horror: oklch(0.55 0.25 0);
+  --genre-romance: oklch(0.75 0.2 350);
+  --genre-documentary: oklch(0.7 0.15 160);
+  --genre-animation: oklch(0.75 0.2 300);
 }
 
 @layer base {
@@ -120,6 +138,104 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
   }
+  /* Enhanced typography */
+  h1 {
+    @apply tracking-tight;
+  }
+  h2 {
+    @apply tracking-tight;
+  }
+  h3 {
+    @apply tracking-tight;
+  }
+}
+
+/* Staggered fade-in animation for card grids */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+/* Stagger children for grid items */
+.stagger-children > * {
+  animation: fadeInUp 0.4s ease-out forwards;
+  opacity: 0;
+}
+.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 50ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 100ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 150ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 200ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 250ms; }
+.stagger-children > *:nth-child(7) { animation-delay: 300ms; }
+.stagger-children > *:nth-child(8) { animation-delay: 350ms; }
+.stagger-children > *:nth-child(9) { animation-delay: 400ms; }
+.stagger-children > *:nth-child(10) { animation-delay: 450ms; }
+.stagger-children > *:nth-child(n+11) { animation-delay: 500ms; }
+
+/* Skeleton pulse animation */
+@keyframes skeletonPulse {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.skeleton-pulse {
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+
+/* Glassmorphism utilities */
+.glass {
+  @apply bg-background/80 backdrop-blur-md border border-border/50;
+}
+
+.glass-subtle {
+  @apply bg-background/60 backdrop-blur-sm border border-border/30;
+}
+
+/* Current time indicator animation */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 8px 2px oklch(0.7 0.15 250 / 0.5);
+  }
+  50% {
+    box-shadow: 0 0 16px 4px oklch(0.7 0.15 250 / 0.8);
+  }
+}
+
+.time-indicator-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* Success celebration animation */
+@keyframes celebratePop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-celebrate {
+  animation: celebratePop 0.3s ease-out;
 }

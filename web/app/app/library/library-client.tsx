@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { Loader2, Film, Plus } from 'lucide-react';
+import { Loader2, Film, Plus, Library, Search, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { TitleCard } from '@/components/title-card';
+import { TitleCardSkeletonGrid } from '@/components/ui/skeleton';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -112,27 +113,35 @@ export function LibraryClient() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">My Library</h1>
-          <p className="text-muted-foreground mt-1">
-            {titles.length} {titles.length === 1 ? 'title' : 'titles'} in your library
-          </p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-fade-in-up">
+        <div className="flex items-center gap-4">
+          <div className="p-3 rounded-2xl bg-primary/10">
+            <Library className="h-8 w-8 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">My Library</h1>
+            {!isLoading && (
+              <p className="text-muted-foreground mt-1">
+                {titles.length} {titles.length === 1 ? 'title' : 'titles'} in your collection
+              </p>
+            )}
+          </div>
         </div>
         <Link href="/app/library/search">
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
+          <Button size="lg" className="gap-2">
+            <Plus className="h-5 w-5" />
             Add Titles
           </Button>
         </Link>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 animate-fade-in-up" style={{ animationDelay: '50ms' }}>
         <Button
           variant={filter === 'all' ? 'default' : 'outline'}
           onClick={() => setFilter('all')}
           size="sm"
+          className="transition-all active:scale-[0.98]"
         >
           All
         </Button>
@@ -140,6 +149,7 @@ export function LibraryClient() {
           variant={filter === 'tv' ? 'default' : 'outline'}
           onClick={() => setFilter('tv')}
           size="sm"
+          className="transition-all active:scale-[0.98]"
         >
           TV Shows
         </Button>
@@ -147,46 +157,62 @@ export function LibraryClient() {
           variant={filter === 'movie' ? 'default' : 'outline'}
           onClick={() => setFilter('movie')}
           size="sm"
+          className="transition-all active:scale-[0.98]"
         >
           Movies
         </Button>
       </div>
 
-      {/* Loading State */}
+      {/* Loading State - Skeleton */}
       {isLoading && (
-        <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <div className="animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+          <TitleCardSkeletonGrid count={6} />
         </div>
       )}
 
       {/* Error State */}
       {error && (
-        <div className="text-center py-12 text-destructive">
-          <p>{error}</p>
+        <div className="text-center py-16 animate-fade-in-up">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-destructive/10 mb-4">
+            <AlertCircle className="h-8 w-8 text-destructive" />
+          </div>
+          <p className="text-lg font-medium text-destructive">{error}</p>
+          <p className="text-muted-foreground mt-2">Please try refreshing the page.</p>
         </div>
       )}
 
-      {/* Empty State */}
+      {/* Empty State - Enhanced */}
       {!isLoading && !error && titles.length === 0 && (
-        <div className="text-center py-12 text-muted-foreground">
-          <Film className="h-12 w-12 mx-auto mb-4 opacity-50" />
-          <p className="text-lg mb-4">No titles in your library.</p>
+        <div className="text-center py-16 animate-fade-in-up">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-muted mb-6">
+            <Film className="h-10 w-10 text-muted-foreground/60" />
+          </div>
+          <h2 className="text-2xl font-semibold mb-2">Your library is empty</h2>
+          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+            Start building your collection by searching for your favorite shows and movies.
+          </p>
           <Link href="/app/library/search">
-            <Button>Search to add some!</Button>
+            <Button size="lg" className="gap-2">
+              <Search className="h-5 w-5" />
+              Search Titles
+            </Button>
           </Link>
         </div>
       )}
 
       {/* No Results for Filter */}
       {!isLoading && !error && titles.length > 0 && filteredTitles.length === 0 && (
-        <div className="text-center py-12 text-muted-foreground">
-          <p>No {filter === 'tv' ? 'TV shows' : 'movies'} in your library.</p>
+        <div className="text-center py-16 text-muted-foreground animate-fade-in-up">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted mb-4">
+            <Film className="h-8 w-8 text-muted-foreground/60" />
+          </div>
+          <p className="text-lg">No {filter === 'tv' ? 'TV shows' : 'movies'} in your library.</p>
         </div>
       )}
 
-      {/* Title Grid */}
+      {/* Title Grid with staggered animation */}
       {!isLoading && filteredTitles.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 stagger-children">
           {filteredTitles.map((title) => (
             <TitleCard
               key={title.id}
