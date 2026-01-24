@@ -11,6 +11,7 @@ import { getCurrentHousehold } from '@/lib/services/household';
 import { getTVDetails, getMovieDetails, getTVEpisode } from '@/lib/tmdb/details';
 import { getTVWatchProviders, getMovieWatchProviders } from '@/lib/tmdb/providers';
 import { getProgressForProfile } from '@/lib/services/progress';
+import { getEpisodeOffers, buildProviderUrlMap } from '@/lib/justwatch/client';
 import type { ScheduleEntry, MediaType } from '@/lib/database.types';
 
 // ============================================================================
@@ -86,20 +87,10 @@ async function enrichEntry(
       const details = await getTVDetails(titleInfo.tmdb_id);
       if (!details) return null;
 
-      if (fetchProviders) {
-        const providerResult = await getTVWatchProviders(titleInfo.tmdb_id);
-        if (providerResult?.flatrate) {
-          // Include the JustWatch link with each provider
-          const providerLink = providerResult.link;
-          providers = providerResult.flatrate.map((p) => ({
-            name: p.provider_name,
-            logoPath: p.logo_path,
-            link: providerLink,
-          }));
-        }
-      }
+      // Get show title for JustWatch search
+      const showTitle = details.name;
 
-      // Fetch current episode info
+      // Fetch current episode info first to know season/episode numbers
       // Default to S1E1 if no progress exists
       const seasonNum = progress?.seasonNumber ?? 1;
       const episodeNum = progress?.episodeNumber ?? 1;
@@ -110,6 +101,34 @@ async function enrichEntry(
 
       // Check if show is completed (from progress data)
       const isCompleted = progress?.completed ?? false;
+
+      // Fetch providers and JustWatch episode offers in parallel
+      if (fetchProviders) {
+        const [providerResult, jwOffers] = await Promise.all([
+          getTVWatchProviders(titleInfo.tmdb_id),
+          // Fetch JustWatch episode offers for deep linking
+          getEpisodeOffers(titleInfo.tmdb_id, showTitle, seasonNum, episodeNum).catch(() => ({ offers: [], showLevelUrl: undefined })),
+        ]);
+
+        if (providerResult?.flatrate) {
+          // Build a map of provider name → episode URL from JustWatch
+          const jwUrlMap = buildProviderUrlMap(jwOffers.offers);
+          // Fallback to JustWatch show-level URL, then TMDB link
+          const fallbackLink = jwOffers.showLevelUrl ?? providerResult.link;
+
+          providers = providerResult.flatrate.map((p) => {
+            // Try to find a JustWatch episode URL for this provider
+            const normalizedName = p.provider_name.toLowerCase().trim();
+            const episodeUrl = jwUrlMap.get(normalizedName);
+
+            return {
+              name: p.provider_name,
+              logoPath: p.logo_path,
+              link: episodeUrl || fallbackLink,
+            };
+          });
+        }
+      }
 
       try {
         const episodeDetails = await getTVEpisode(titleInfo.tmdb_id, seasonNum, episodeNum);

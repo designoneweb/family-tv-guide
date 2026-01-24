@@ -126,6 +126,8 @@ export function EpisodeClient({ showId, seasonNumber, episodeNumber }: EpisodeCl
   const [synopsis, setSynopsis] = useState<{ text: string; source: 'ai' | 'tmdb_truncate' } | null>(null);
   const [isFetchingSynopsis, setIsFetchingSynopsis] = useState(false);
   const [aiSynopsisAvailable, setAiSynopsisAvailable] = useState(false);
+  const [showAllCast, setShowAllCast] = useState(false);
+  const [showAllGuests, setShowAllGuests] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -378,13 +380,15 @@ export function EpisodeClient({ showId, seasonNumber, episodeNumber }: EpisodeCl
     ? `${episode.runtime} min`
     : null;
 
-  // Get top 10 cast members
-  const mainCast = credits?.cast?.slice(0, 10) || [];
-  const hasMoreCast = (credits?.cast?.length || 0) > 10;
+  // Get cast members (show all or limit to 10)
+  const allCast = credits?.cast || [];
+  const mainCast = showAllCast ? allCast : allCast.slice(0, 10);
+  const hasMoreCast = allCast.length > 10;
 
-  // Get guest stars (limit to 10)
-  const guestStars = (credits?.guest_stars || []).slice(0, 10);
-  const hasMoreGuests = (credits?.guest_stars?.length || 0) > 10;
+  // Get guest stars (show all or limit to 10)
+  const allGuests = credits?.guest_stars || [];
+  const guestStars = showAllGuests ? allGuests : allGuests.slice(0, 10);
+  const hasMoreGuests = allGuests.length > 10;
 
   return (
     <div className="min-h-screen pb-12 animate-fade-in-up">
@@ -562,9 +566,14 @@ export function EpisodeClient({ showId, seasonNumber, episodeNumber }: EpisodeCl
                 <span className="absolute -bottom-1 left-0 w-12 h-0.5 bg-primary rounded-full" />
               </h2>
               {hasMoreCast && (
-                <span className="text-sm text-muted-foreground">
-                  +{(credits?.cast?.length || 0) - 10} more
-                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowAllCast(!showAllCast)}
+                  className="text-sm text-muted-foreground hover:text-foreground"
+                >
+                  {showAllCast ? 'Show Less' : `Show All (${allCast.length})`}
+                </Button>
               )}
             </div>
             <div className="flex gap-5 overflow-x-auto pb-4 -mx-4 px-4 stagger-children">
@@ -584,9 +593,14 @@ export function EpisodeClient({ showId, seasonNumber, episodeNumber }: EpisodeCl
                 <span className="absolute -bottom-1 left-0 w-12 h-0.5 bg-primary rounded-full" />
               </h2>
               {hasMoreGuests && (
-                <span className="text-sm text-muted-foreground">
-                  +{(credits?.guest_stars?.length || 0) - 10} more
-                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowAllGuests(!showAllGuests)}
+                  className="text-sm text-muted-foreground hover:text-foreground"
+                >
+                  {showAllGuests ? 'Show Less' : `Show All (${allGuests.length})`}
+                </Button>
               )}
             </div>
             <div className="flex gap-5 overflow-x-auto pb-4 -mx-4 px-4 stagger-children">

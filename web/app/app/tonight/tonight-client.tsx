@@ -17,6 +17,7 @@ import type { MediaType } from '@/lib/database.types';
 interface Provider {
   name: string;
   logoPath: string;
+  link?: string;
 }
 
 interface CurrentEpisode {
@@ -434,17 +435,36 @@ export function TonightClient() {
 
                 {/* Streaming Badge */}
                 {featuredShow.providers && featuredShow.providers.length > 0 && (
-                  <div className="mt-4 inline-flex items-center gap-2 glass-subtle rounded-full px-3 py-1.5">
-                    <span className="text-xs text-muted-foreground">Watch on</span>
-                    <Image
-                      src={`https://image.tmdb.org/t/p/w45${featuredShow.providers[0].logoPath}`}
-                      alt={featuredShow.providers[0].name}
-                      width={20}
-                      height={20}
-                      className="rounded"
-                      unoptimized
-                    />
-                  </div>
+                  featuredShow.providers[0].link ? (
+                    <a
+                      href={featuredShow.providers[0].link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-4 inline-flex items-center gap-2 glass-subtle rounded-full px-3 py-1.5 hover:bg-primary/10 transition-colors"
+                    >
+                      <span className="text-xs text-muted-foreground">Watch on</span>
+                      <Image
+                        src={`https://image.tmdb.org/t/p/w45${featuredShow.providers[0].logoPath}`}
+                        alt={featuredShow.providers[0].name}
+                        width={20}
+                        height={20}
+                        className="rounded"
+                        unoptimized
+                      />
+                    </a>
+                  ) : (
+                    <div className="mt-4 inline-flex items-center gap-2 glass-subtle rounded-full px-3 py-1.5">
+                      <span className="text-xs text-muted-foreground">Watch on</span>
+                      <Image
+                        src={`https://image.tmdb.org/t/p/w45${featuredShow.providers[0].logoPath}`}
+                        alt={featuredShow.providers[0].name}
+                        width={20}
+                        height={20}
+                        className="rounded"
+                        unoptimized
+                      />
+                    </div>
+                  )
                 )}
               </div>
             </div>

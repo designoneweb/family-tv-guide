@@ -191,13 +191,8 @@ export function TitleCard({
           {/* Streaming provider badge - glass effect */}
           {providers && providers.length > 0 && (
             <div className="flex -space-x-1 pointer-events-auto">
-              {providers.slice(0, 3).map((provider, idx) => (
-                <div
-                  key={provider.name}
-                  className="w-8 h-8 rounded-[8px] overflow-hidden ring-2 ring-background/50 glass-subtle"
-                  style={{ zIndex: 3 - idx }}
-                  title={provider.name}
-                >
+              {providers.slice(0, 3).map((provider, idx) => {
+                const providerImage = (
                   <Image
                     src={`https://image.tmdb.org/t/p/w45${provider.logoPath}`}
                     alt={provider.name}
@@ -206,8 +201,34 @@ export function TitleCard({
                     className="w-full h-full object-cover"
                     unoptimized
                   />
-                </div>
-              ))}
+                );
+
+                const wrapperClass = "w-8 h-8 rounded-[8px] overflow-hidden ring-2 ring-background/50 glass-subtle";
+                const wrapperStyle = { zIndex: 3 - idx };
+
+                return provider.link ? (
+                  <a
+                    key={provider.name}
+                    href={provider.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cn(wrapperClass, "hover:ring-primary/50 hover:scale-110 transition-all")}
+                    style={wrapperStyle}
+                    title={`Watch on ${provider.name}`}
+                  >
+                    {providerImage}
+                  </a>
+                ) : (
+                  <div
+                    key={provider.name}
+                    className={wrapperClass}
+                    style={wrapperStyle}
+                    title={provider.name}
+                  >
+                    {providerImage}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

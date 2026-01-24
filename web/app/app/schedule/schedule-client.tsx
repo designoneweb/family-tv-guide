@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import Image from 'next/image';
 import { Plus, Calendar, Clock, AlertCircle, ChevronLeft, ChevronRight, Tv } from 'lucide-react';
+import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvided } from '@hello-pangea/dnd';
 import { Button } from '@/components/ui/button';
 import { useProfile } from '@/lib/contexts/profile-context';
 import { AddToScheduleDialog } from '@/components/add-to-schedule-dialog';
@@ -15,7 +16,8 @@ import type { MediaType } from '@/lib/database.types';
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const DAY_SHORT_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const PIXELS_PER_MINUTE = 4; // 4px per minute = 240px per hour
-const START_HOUR = 17; // 5:00 PM
+const START_HOUR = 18; // 6:00 PM
+const START_MINUTES = 30; // Start at 6:30 PM
 const DAY_LABEL_WIDTH = 100; // Width of day label column in pixels
 
 // Genre-based color mapping using Cinema Lounge palette
@@ -55,7 +57,7 @@ interface EnrichedScheduleEntry {
   title: string;
   posterPath: string | null;
   year: string;
-  providers: { name: string; logoPath: string }[];
+  providers: { name: string; logoPath: string; link?: string }[];
   runtime: number;
   currentEpisode: CurrentEpisode | null;
 }
@@ -67,7 +69,7 @@ type EnrichedWeekSchedule = {
 
 // Helper to format time from minutes offset
 function formatTime(minutesFromStart: number): string {
-  const totalMinutes = START_HOUR * 60 + minutesFromStart;
+  const totalMinutes = START_HOUR * 60 + START_MINUTES + minutesFromStart;
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
   const displayHour = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours;
@@ -101,6 +103,50 @@ function getDateForWeekday(weekday: number): string {
   return targetDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
+// Helper to reorder schedule locally for optimistic updates
+function reorderScheduleLocally(
+  schedule: EnrichedWeekSchedule,
+  entryId: string,
+  sourceDay: number,
+  destDay: number,
+  destIndex: number
+): EnrichedWeekSchedule {
+  const newSchedule = { ...schedule };
+
+  // Find and remove the entry from source day
+  const sourceEntries = [...newSchedule[sourceDay]];
+  const entryIndex = sourceEntries.findIndex(e => e.id === entryId);
+  if (entryIndex === -1) return schedule;
+
+  const [movedEntry] = sourceEntries.splice(entryIndex, 1);
+
+  if (sourceDay === destDay) {
+    // Reordering within same day
+    sourceEntries.splice(destIndex, 0, { ...movedEntry, slotOrder: destIndex });
+    // Update slot orders
+    newSchedule[sourceDay] = sourceEntries.map((entry, idx) => ({
+      ...entry,
+      slotOrder: idx,
+    }));
+  } else {
+    // Moving to different day
+    const destEntries = [...newSchedule[destDay]];
+    destEntries.splice(destIndex, 0, { ...movedEntry, weekday: destDay, slotOrder: destIndex });
+
+    // Update slot orders for both days
+    newSchedule[sourceDay] = sourceEntries.map((entry, idx) => ({
+      ...entry,
+      slotOrder: idx,
+    }));
+    newSchedule[destDay] = destEntries.map((entry, idx) => ({
+      ...entry,
+      slotOrder: idx,
+    }));
+  }
+
+  return newSchedule;
+}
+
 export function ScheduleClient() {
   const { activeProfileId, activeProfile } = useProfile();
   const [schedule, setSchedule] = useState<EnrichedWeekSchedule>({
@@ -109,6 +155,9 @@ export function ScheduleClient() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Store previous schedule for reverting on error
+  const previousScheduleRef = useRef<EnrichedWeekSchedule | null>(null);
 
   // Add to schedule dialog state
   const [addDialogOpen, setAddDialogOpen] = useState(false);
@@ -134,11 +183,13 @@ export function ScheduleClient() {
   const currentTimePosition = useMemo(() => {
     const hours = currentTime.getHours();
     const minutes = currentTime.getMinutes();
+    const currentTotalMinutes = hours * 60 + minutes;
+    const startTotalMinutes = START_HOUR * 60 + START_MINUTES;
 
-    // Only show indicator if current time is after START_HOUR (5 PM)
-    if (hours < START_HOUR) return null;
+    // Only show indicator if current time is after start time (6:30 PM)
+    if (currentTotalMinutes < startTotalMinutes) return null;
 
-    const minutesFromStart = (hours - START_HOUR) * 60 + minutes;
+    const minutesFromStart = currentTotalMinutes - startTotalMinutes;
     return minutesFromStart * PIXELS_PER_MINUTE;
   }, [currentTime]);
 
@@ -177,8 +228,8 @@ export function ScheduleClient() {
       const totalMinutes = dayEntries.reduce((sum, entry) => sum + entry.runtime, 0);
       maxMinutes = Math.max(maxMinutes, totalMinutes);
     }
-    // At minimum, show 7 hours (420 minutes) - 5 PM to midnight
-    return Math.max(maxMinutes, 420) * PIXELS_PER_MINUTE;
+    // At minimum, show 5.5 hours (330 minutes) - 6:30 PM to midnight
+    return Math.max(maxMinutes, 330) * PIXELS_PER_MINUTE;
   }, [schedule]);
 
   // Generate time markers
@@ -195,6 +246,65 @@ export function ScheduleClient() {
     }
     return markers;
   }, [maxGridWidth]);
+
+  // Handle drag end
+  const handleDragEnd = useCallback(async (result: DropResult) => {
+    const { source, destination, draggableId } = result;
+
+    // Dropped outside any droppable
+    if (!destination) return;
+
+    // No change in position
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index === destination.index
+    ) {
+      return;
+    }
+
+    const sourceDay = parseInt(source.droppableId.replace('day-', ''));
+    const destDay = parseInt(destination.droppableId.replace('day-', ''));
+    const newSlotOrder = destination.index;
+
+    // Store previous state for potential revert
+    previousScheduleRef.current = schedule;
+
+    // Optimistic update
+    setSchedule(prev => reorderScheduleLocally(prev, draggableId, sourceDay, destDay, newSlotOrder));
+
+    try {
+      if (sourceDay === destDay) {
+        // Reorder within same day
+        const response = await fetch('/api/schedule/reorder', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ entryId: draggableId, newSlotOrder }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to reorder');
+        }
+      } else {
+        // Move to different day
+        const response = await fetch('/api/schedule/move', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ entryId: draggableId, newWeekday: destDay, newSlotOrder }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to move');
+        }
+      }
+    } catch {
+      // Revert on failure
+      if (previousScheduleRef.current) {
+        setSchedule(previousScheduleRef.current);
+      }
+      // Refresh from server to ensure consistency
+      await fetchSchedule();
+    }
+  }, [schedule, fetchSchedule]);
 
   // Handle add button click
   const handleAddClick = useCallback((weekday: number) => {
@@ -354,7 +464,7 @@ export function ScheduleClient() {
         </div>
       )}
 
-      {/* TV Guide Grid */}
+      {/* TV Guide Grid with Drag and Drop */}
       {!isLoading && !error && !isScheduleEmpty && (
         <div className="px-6 lg:px-8 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
           <div className="max-w-7xl mx-auto">
@@ -403,22 +513,25 @@ export function ScheduleClient() {
                     </div>
                   </div>
 
-                  {/* Day Rows */}
-                  {DAY_NAMES.map((dayName, weekday) => (
-                    <DayRow
-                      key={weekday}
-                      id={`day-row-${weekday}`}
-                      dayName={dayName}
-                      shortName={DAY_SHORT_NAMES[weekday]}
-                      dateLabel={getDateForWeekday(weekday)}
-                      entries={schedule[weekday]}
-                      gridWidth={maxGridWidth}
-                      onAddClick={() => handleAddClick(weekday)}
-                      onShowClick={handleShowClick}
-                      isToday={weekday === currentWeekday}
-                      currentTimePosition={weekday === currentWeekday ? currentTimePosition : null}
-                    />
-                  ))}
+                  {/* Day Rows with Drag and Drop */}
+                  <DragDropContext onDragEnd={handleDragEnd}>
+                    {DAY_NAMES.map((dayName, weekday) => (
+                      <DayRow
+                        key={weekday}
+                        id={`day-row-${weekday}`}
+                        weekday={weekday}
+                        dayName={dayName}
+                        shortName={DAY_SHORT_NAMES[weekday]}
+                        dateLabel={getDateForWeekday(weekday)}
+                        entries={schedule[weekday]}
+                        gridWidth={maxGridWidth}
+                        onAddClick={() => handleAddClick(weekday)}
+                        onShowClick={handleShowClick}
+                        isToday={weekday === currentWeekday}
+                        currentTimePosition={weekday === currentWeekday ? currentTimePosition : null}
+                      />
+                    ))}
+                  </DragDropContext>
                 </div>
               </div>
             </div>
@@ -467,9 +580,10 @@ export function ScheduleClient() {
   );
 }
 
-// Day Row Component
+// Day Row Component with Droppable
 interface DayRowProps {
   id: string;
+  weekday: number;
   dayName: string;
   shortName: string;
   dateLabel: string;
@@ -481,27 +595,22 @@ interface DayRowProps {
   currentTimePosition?: number | null;
 }
 
-function DayRow({ id, dayName, shortName, dateLabel, entries, gridWidth, onAddClick, onShowClick, isToday = false, currentTimePosition = null }: DayRowProps) {
-  // Sort entries by slotOrder and calculate positions
-  const showPositions = useMemo(() => {
-    const sorted = [...entries].sort((a, b) => a.slotOrder - b.slotOrder);
-
-    // Use reduce to calculate positions without mutation
-    const result: { entry: EnrichedScheduleEntry; left: number; width: number; startMinutes: number }[] = [];
-    let currentOffset = 0;
-
-    for (const entry of sorted) {
-      result.push({
-        entry,
-        left: currentOffset * PIXELS_PER_MINUTE,
-        width: entry.runtime * PIXELS_PER_MINUTE,
-        startMinutes: currentOffset,
-      });
-      currentOffset = currentOffset + entry.runtime;
-    }
-
-    return result;
+function DayRow({ id, weekday, dayName, shortName, dateLabel, entries, gridWidth, onAddClick, onShowClick, isToday = false, currentTimePosition = null }: DayRowProps) {
+  // Sort entries by slotOrder
+  const sortedEntries = useMemo(() => {
+    return [...entries].sort((a, b) => a.slotOrder - b.slotOrder);
   }, [entries]);
+
+  // Calculate cumulative start times for each entry
+  const entryStartTimes = useMemo(() => {
+    const times: Record<string, number> = {};
+    let currentOffset = 0;
+    for (const entry of sortedEntries) {
+      times[entry.id] = currentOffset;
+      currentOffset += entry.runtime;
+    }
+    return times;
+  }, [sortedEntries]);
 
   return (
     <div
@@ -550,55 +659,70 @@ function DayRow({ id, dayName, shortName, dateLabel, entries, gridWidth, onAddCl
         </Button>
       </div>
 
-      {/* Shows Grid Area */}
-      <div
-        className="relative flex-1"
-        style={{ width: gridWidth, minHeight: 120 }}
-      >
-        {entries.length === 0 ? (
-          <div className="absolute inset-0 flex items-center justify-center text-hint text-sm border border-dashed border-primary/10 m-2 rounded-lg">
-            <Calendar className="h-4 w-4 mr-2 opacity-40" />
-            <span>No shows scheduled</span>
-          </div>
-        ) : (
-          showPositions.map((pos, index) => (
-            <ShowBlock
-              key={pos.entry.id}
-              entry={pos.entry}
-              left={pos.left}
-              width={pos.width}
-              startMinutes={pos.startMinutes}
-              onClick={() => onShowClick(pos.entry, pos.startMinutes)}
-              index={index}
-            />
-          ))
-        )}
-        {/* Current time indicator line for today's row */}
-        {currentTimePosition !== null && (
+      {/* Droppable Shows Grid Area */}
+      <Droppable droppableId={`day-${weekday}`} direction="horizontal">
+        {(provided, snapshot) => (
           <div
-            className="absolute top-0 bottom-0 w-0.5 bg-secondary z-20 pointer-events-none"
-            style={{
-              left: currentTimePosition,
-              boxShadow: '0 0 10px rgba(139, 41, 66, 0.5)',
-            }}
-          />
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            className={cn(
+              'relative flex-1 flex items-center gap-1 py-2 px-1 transition-colors',
+              snapshot.isDraggingOver && 'bg-primary/5'
+            )}
+            style={{ width: gridWidth, minHeight: 120 }}
+          >
+            {sortedEntries.length === 0 ? (
+              <div className="absolute inset-0 flex items-center justify-center text-hint text-sm border border-dashed border-primary/10 m-2 rounded-lg">
+                <Calendar className="h-4 w-4 mr-2 opacity-40" />
+                <span>No shows scheduled</span>
+              </div>
+            ) : (
+              sortedEntries.map((entry, index) => (
+                <Draggable key={entry.id} draggableId={entry.id} index={index}>
+                  {(dragProvided, dragSnapshot) => (
+                    <ShowBlock
+                      entry={entry}
+                      width={entry.runtime * PIXELS_PER_MINUTE}
+                      startMinutes={entryStartTimes[entry.id]}
+                      onClick={() => onShowClick(entry, entryStartTimes[entry.id])}
+                      index={index}
+                      isDragging={dragSnapshot.isDragging}
+                      dragProvided={dragProvided}
+                    />
+                  )}
+                </Draggable>
+              ))
+            )}
+            {provided.placeholder}
+            {/* Current time indicator line for today's row */}
+            {currentTimePosition !== null && (
+              <div
+                className="absolute top-0 bottom-0 w-0.5 bg-secondary z-20 pointer-events-none"
+                style={{
+                  left: currentTimePosition,
+                  boxShadow: '0 0 10px rgba(139, 41, 66, 0.5)',
+                }}
+              />
+            )}
+          </div>
         )}
-      </div>
+      </Droppable>
     </div>
   );
 }
 
-// Show Block Component
+// Show Block Component with Draggable support
 interface ShowBlockProps {
   entry: EnrichedScheduleEntry;
-  left: number;
   width: number;
   startMinutes: number;
   onClick: () => void;
   index?: number;
+  isDragging?: boolean;
+  dragProvided?: DraggableProvided;
 }
 
-function ShowBlock({ entry, left, width, startMinutes, onClick, index = 0 }: ShowBlockProps) {
+function ShowBlock({ entry, width, startMinutes, onClick, index = 0, isDragging = false, dragProvided }: ShowBlockProps) {
   const startTimeStr = formatTime(startMinutes);
   const endTimeStr = formatTime(startMinutes + entry.runtime);
 
@@ -614,20 +738,27 @@ function ShowBlock({ entry, left, width, startMinutes, onClick, index = 0 }: Sho
   // Get genre color
   const genreColor = GENRE_COLORS.default;
 
+  // Calculate the actual display width (with spacing)
+  const displayWidth = Math.max(width - 8, 32);
+
   return (
-    <button
+    <div
+      ref={dragProvided?.innerRef}
+      {...dragProvided?.draggableProps}
+      {...dragProvided?.dragHandleProps}
       onClick={onClick}
       className={cn(
-        'absolute top-2 bottom-2 rounded-xl overflow-hidden border transition-all duration-200 cursor-pointer group',
+        'h-[104px] rounded-xl overflow-hidden border transition-all duration-200 cursor-grab flex-shrink-0',
         genreColor.bg,
         genreColor.border,
         'hover:scale-[1.02] hover:z-10',
-        genreColor.glow
+        genreColor.glow,
+        isDragging && 'dragging-card cursor-grabbing z-50'
       )}
       style={{
-        left,
-        width: Math.max(width - 8, 32), // -8 for spacing between blocks
+        width: displayWidth,
         animationDelay: `${index * 50}ms`,
+        ...dragProvided?.draggableProps.style,
       }}
       title={`${entry.title} ${episodeInfo ? `(${episodeInfo})` : ''} - ${startTimeStr} to ${endTimeStr}`}
     >
@@ -684,6 +815,6 @@ function ShowBlock({ entry, left, width, startMinutes, onClick, index = 0 }: Sho
 
       {/* Hover border glow */}
       <div className="absolute inset-0 border-2 border-primary/0 rounded-xl transition-colors group-hover:border-primary/30 pointer-events-none" />
-    </button>
+    </div>
   );
 }

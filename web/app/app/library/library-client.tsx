@@ -22,6 +22,7 @@ import type { MediaType } from '@/lib/database.types';
 interface Provider {
   name: string;
   logoPath: string;
+  link?: string;
 }
 
 interface LibraryTitle {
