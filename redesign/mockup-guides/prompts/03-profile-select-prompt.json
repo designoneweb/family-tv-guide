@@ -1,0 +1,113 @@
+{
+  "meta": {
+    "intent": "create",
+    "purpose": "UI/UX mockup for a family TV guide app profile selection screen - the 'Who's Watching?' page",
+    "search_grounding": false,
+    "notes_for_model": "This is the Netflix-style profile selection screen but with more personality and warmth. Think of entering a cozy family living room where everyone has their own special spot. The design should feel personal, playful, yet premium."
+  },
+  "story": {
+    "one_sentence_brief": "A warm, inviting profile selection screen displaying family member avatars in rounded square cards against a deep dark background with subtle ambient light orbs, asking 'Who's watching tonight?' in elegant serif typography.",
+    "additional_context": "This is the first interaction with the app interior after login. It should feel warm, personal, and slightly playful while maintaining the premium cinema aesthetic. Each profile represents a family member with their own avatar and viewing preferences."
+  },
+  "scene": {
+    "subject": "A centered profile selection interface showing 4 family profile cards arranged horizontally, each with a rounded-square avatar container displaying different playful icons (cat, star, rocket, flower), profile names below, and optional maturity badges. Above the profiles is the headline 'Who's watching tonight?' in elegant serif typography.",
+    "secondary_subjects": ["Full Family TV Guide wordmark logo at the top", "Subtle ambient gradient orbs in the background (gold and teal at very low opacity)", "An 'Add Profile' card with dashed border and plus icon", "'Manage Profiles' text link below the cards", "Film grain texture overlay"],
+    "action": "Static UI mockup showing the profile selection screen in its default state with subtle hover suggestion on one profile",
+    "location": "Digital web browser or app frame showing the profile selection at desktop/TV resolution",
+    "time_of_day": "Evening ambiance suggested through the dark background and warm accent lighting",
+    "mood": "Warm family gathering, playful yet sophisticated, like choosing your spot on the family couch"
+  },
+  "composition": {
+    "shot_type": "Full screen UI mockup centered on the profile selection interface",
+    "camera_angle": "Straight-on, flat UI presentation view",
+    "framing": "Centered composition with the profiles arranged horizontally in the middle of the screen, logo above, and supplementary links below. Generous negative space around the profiles.",
+    "aspect_ratio": "16:9",
+    "orientation": "landscape"
+  },
+  "style": {
+    "medium": "High-fidelity digital UI design mockup",
+    "aesthetic_keywords": ["cozy family interface", "profile selector", "avatar cards", "warm dark theme", "playful sophistication", "glassmorphic touches"],
+    "era_or_reference": "Netflix profile selection elevated with boutique hotel warmth - personalized yet premium",
+    "color_palette": "Deep night background (#0D0F14) with subtle ambient orbs, elevated surface cards (#1C2230), cinema gold accents (#D4A853) for hover states and active indicators, sage green for Kids badge, teal for Teen badge, warm white text (#F5F0E8)"
+  },
+  "lighting": {
+    "description": "Dark ambient background with very subtle, soft gradient orbs (gold and teal) floating in the background layer at extremely low opacity. Profile cards have subtle shadows suggesting depth. Hovered profile shows gold border glow.",
+    "color_and_contrast": "High contrast between the dark background and the profile cards. Avatar icons are in muted cream, becoming gold on hover."
+  },
+  "format": {
+    "resolution_hint": "4K",
+    "surface_or_output": "Desktop/TV web app mockup at 1920x1080 or higher, could also work as a smart TV interface"
+  },
+  "text": {
+    "has_text": true,
+    "language": "en",
+    "elements": [
+      {
+        "role": "headline",
+        "content": "Who's watching tonight?",
+        "placement": "Centered above the profile cards with generous spacing",
+        "style": "Playfair Display serif font, 600 weight, large size (2-3rem), warm white color"
+      },
+      {
+        "role": "label",
+        "content": "Family TV Guide",
+        "placement": "Top center of the screen, above the headline",
+        "style": "Playfair Display, regular weight, warm white color, smaller than headline"
+      },
+      {
+        "role": "label",
+        "content": "Mom",
+        "placement": "Below the first profile avatar",
+        "style": "DM Sans, 500 weight, warm white color, centered under avatar"
+      },
+      {
+        "role": "label",
+        "content": "Dad",
+        "placement": "Below the second profile avatar",
+        "style": "DM Sans, 500 weight, warm white color, centered under avatar"
+      },
+      {
+        "role": "label",
+        "content": "Emma",
+        "placement": "Below the third profile avatar",
+        "style": "DM Sans, 500 weight, warm white color, centered under avatar"
+      },
+      {
+        "role": "label",
+        "content": "Jake",
+        "placement": "Below the fourth profile avatar",
+        "style": "DM Sans, 500 weight, warm white color, centered under avatar"
+      },
+      {
+        "role": "badge",
+        "content": "Kids",
+        "placement": "Small pill badge below Jake's name",
+        "style": "Micro text, sage green background, dark text, pill shape"
+      },
+      {
+        "role": "label",
+        "content": "Add Profile",
+        "placement": "Below the add profile card (dashed border card)",
+        "style": "DM Sans, regular weight, muted cream color"
+      },
+      {
+        "role": "caption",
+        "content": "Manage Profiles",
+        "placement": "Below all profile cards, centered",
+        "style": "DM Sans, small size, muted cream color, underline on hover"
+      }
+    ]
+  },
+  "references": {
+    "images": []
+  },
+  "edit": {
+    "is_edit": false,
+    "instructions": ""
+  },
+  "constraints": {
+    "factual_accuracy": "Profile cards should be uniformly sized and properly spaced. Avatar icons should be clearly visible and playful but not childish.",
+    "safety_and_rights": "Avatar icons should be generic/conceptual (simple outlined icons like animals, objects, shapes), not copyrighted characters.",
+    "negative_elements": ["no photorealistic faces", "no cluttered interface", "no corporate feel", "no harsh edges on cards", "no cold color scheme", "no tiny hard-to-click profiles"]
+  }
+}

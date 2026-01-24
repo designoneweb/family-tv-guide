@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Pencil, Trash2, Loader2 } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,38 +38,33 @@ function getMaturityLabel(level: MaturityLevel): string {
 }
 
 /**
- * Get badge color based on maturity level
+ * Get badge variant for maturity level.
  */
-function getMaturityBadgeClass(level: MaturityLevel): string {
-  const classes: Record<MaturityLevel, string> = {
-    kids: 'bg-green-600/20 text-green-400 border-green-600/30',
-    teen: 'bg-yellow-600/20 text-yellow-400 border-yellow-600/30',
-    adult: 'bg-red-600/20 text-red-400 border-red-600/30',
+function getMaturityVariant(level: MaturityLevel): 'default' | 'secondary' | 'outline' {
+  const variants: Record<MaturityLevel, 'default' | 'secondary' | 'outline'> = {
+    kids: 'default',
+    teen: 'outline',
+    adult: 'secondary',
   };
-  return classes[level];
+  return variants[level];
 }
 
 /**
- * Get the avatar color class from stored value or derive from name
+ * Get the avatar color class using Cinema Lounge palette
  */
 function getAvatarColor(profile: Profile): string {
   const colors = [
-    'bg-blue-600',
-    'bg-green-600',
-    'bg-purple-600',
-    'bg-pink-600',
-    'bg-orange-600',
-    'bg-teal-600',
-    'bg-indigo-600',
-    'bg-red-600',
+    'bg-primary',
+    'bg-secondary',
+    'bg-tertiary',
+    'bg-genre-drama',
+    'bg-genre-action',
+    'bg-genre-scifi',
+    'bg-genre-documentary',
+    'bg-genre-animation',
   ];
 
-  // If avatar is a valid color class, use it
-  if (profile.avatar && colors.includes(profile.avatar)) {
-    return profile.avatar;
-  }
-
-  // Otherwise derive from name
+  // Derive from name
   const charCode = profile.name.charCodeAt(0) || 0;
   return colors[charCode % colors.length];
 }
@@ -120,54 +117,57 @@ export function ProfileListClient({ profiles: initialProfiles }: ProfileListClie
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {profiles.map((profile) => {
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 stagger-children">
+        {profiles.map((profile, index) => {
           const initial = profile.name.charAt(0).toUpperCase();
           const avatarColor = getAvatarColor(profile);
 
           return (
             <div
               key={profile.id}
-              className="flex flex-col p-6 rounded-xl border border-border bg-card"
+              className="flex flex-col p-6 rounded-xl border border-primary/10 bg-card shadow-cinema hover:shadow-cinema-lg hover:border-primary/20 transition-all duration-300"
+              style={{ animationDelay: `${index * 50}ms` }}
             >
               {/* Profile info */}
               <div className="flex items-center gap-4 mb-4">
                 <div
                   className={cn(
                     'flex items-center justify-center',
-                    'w-16 h-16 rounded-full',
-                    'text-2xl font-semibold text-white',
+                    'w-16 h-16 rounded-2xl',
+                    'text-2xl font-serif font-semibold text-primary-foreground',
+                    'shadow-cinema',
                     avatarColor
                   )}
                 >
                   {initial}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-lg truncate">{profile.name}</p>
-                  <span
-                    className={cn(
-                      'inline-block mt-1 px-2 py-0.5 text-xs rounded border',
-                      getMaturityBadgeClass(profile.maturity_level)
-                    )}
+                  <p className="font-medium text-lg text-foreground truncate">{profile.name}</p>
+                  <Badge
+                    variant={getMaturityVariant(profile.maturity_level)}
+                    size="sm"
+                    className="mt-1"
                   >
                     {getMaturityLabel(profile.maturity_level)}
-                  </span>
+                  </Badge>
                 </div>
               </div>
 
               {/* Actions */}
-              <div className="flex gap-2 mt-auto pt-4 border-t border-border">
+              <div className="flex gap-2 mt-auto pt-4 border-t border-primary/5">
                 <Link href={`/app/profiles/${profile.id}/edit`} className="flex-1">
-                  <Button variant="outline" size="sm" className="w-full">
+                  <Button variant="outline" size="sm" className="w-full gap-2">
+                    <Pencil className="h-4 w-4" />
                     Edit
                   </Button>
                 </Link>
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex-1 text-destructive hover:text-destructive hover:bg-destructive/10"
+                  className="flex-1 gap-2 text-destructive hover:text-destructive hover:bg-destructive/10 hover:border-destructive/30"
                   onClick={() => openDeleteDialog(profile)}
                 >
+                  <Trash2 className="h-4 w-4" />
                   Delete
                 </Button>
               </div>
@@ -180,7 +180,7 @@ export function ProfileListClient({ profiles: initialProfiles }: ProfileListClie
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Profile</AlertDialogTitle>
+            <AlertDialogTitle className="font-serif">Delete Profile</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete the profile &quot;{profileToDelete?.name}&quot;?
               This action cannot be undone and will remove all associated watch history and settings.
@@ -196,7 +196,14 @@ export function ProfileListClient({ profiles: initialProfiles }: ProfileListClie
               disabled={isDeleting}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {isDeleting ? 'Deleting...' : 'Delete'}
+              {isDeleting ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                'Delete'
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

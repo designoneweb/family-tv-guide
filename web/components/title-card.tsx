@@ -5,9 +5,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Film, Loader2, CheckCircle, Sparkles, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { ThinProgress } from '@/components/ui/progress';
 import { getPosterUrl, getStillUrl } from '@/lib/tmdb/images';
 import { ProviderLogos, type Provider } from '@/components/provider-logos';
 import { JumpToEpisodeDialog } from '@/components/jump-to-episode-dialog';
+import { cn } from '@/lib/utils';
 
 export interface CurrentEpisode {
   season: number;
@@ -41,11 +44,13 @@ export interface TitleCardProps {
   isFinale?: boolean;
   /** Show "Premiere" badge */
   isPremiere?: boolean;
+  /** Episode progress (for showing progress bar) */
+  progress?: { watched: number; total: number };
 }
 
 /**
  * Reusable title card component for displaying TV shows and movies.
- * Handles poster image, title, year, media type badge, and add/remove actions.
+ * Cinema Lounge styling with gold accents and glassmorphism.
  */
 export function TitleCard({
   tmdbId,
@@ -68,6 +73,7 @@ export function TitleCard({
   isNewEpisode = false,
   isFinale = false,
   isPremiere = false,
+  progress,
 }: TitleCardProps) {
   const [jumpDialogOpen, setJumpDialogOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -93,10 +99,7 @@ export function TitleCard({
   // Check if jump to episode is available (need trackedTitleId and profileId)
   const canJumpToEpisode = currentEpisode && trackedTitleId && profileId && onJumpToEpisode;
 
-  // Determine image link destination:
-  // - TV with currentEpisode: link to episode detail page
-  // - TV without currentEpisode: link to show detail page
-  // - Movie: no link (null)
+  // Determine image link destination
   const imageUrl = mediaType === 'tv'
     ? currentEpisode
       ? `/app/show/${tmdbId}/season/${currentEpisode.season}/episode/${currentEpisode.episode}`
@@ -111,12 +114,15 @@ export function TitleCard({
 
   return (
     <div
-      className="group bg-card rounded-xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl hover:shadow-black/20 hover:border-border transition-all duration-300 hover:-translate-y-1"
+      className={cn(
+        'group bg-elevated rounded-[20px] overflow-hidden border border-primary/10 shadow-cinema card-hover',
+        isHovered && 'shadow-gold-glow'
+      )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Image Container with gradient overlay */}
-      <div className={`${aspectRatioClass} relative bg-muted overflow-hidden`}>
+      <div className={cn(aspectRatioClass, 'relative overflow-hidden')}>
         {/* Clickable image area */}
         {imageUrl ? (
           <Link href={imageUrl} className="block absolute inset-0">
@@ -125,11 +131,11 @@ export function TitleCard({
                 src={displayImageUrl}
                 alt={currentEpisode ? `${title} - S${currentEpisode.season}E${currentEpisode.episode}` : title}
                 fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                className="object-cover transition-transform duration-500 group-hover:scale-105 img-hover"
                 unoptimized
               />
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center">
+              <div className="absolute inset-0 flex items-center justify-center bg-interactive">
                 <Film className="h-12 w-12 text-muted-foreground" />
               </div>
             )}
@@ -141,50 +147,45 @@ export function TitleCard({
                 src={displayImageUrl}
                 alt={title}
                 fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                className="object-cover transition-transform duration-500 group-hover:scale-105 img-hover"
                 unoptimized
               />
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center">
+              <div className="absolute inset-0 flex items-center justify-center bg-interactive">
                 <Film className="h-12 w-12 text-muted-foreground" />
               </div>
             )}
           </>
         )}
 
-        {/* Gradient overlay for text legibility */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+        {/* Card overlay gradient for text legibility */}
+        <div className="card-overlay absolute inset-0 pointer-events-none" />
 
         {/* Top badges row */}
-        <div className="absolute top-2 left-2 right-2 flex items-start justify-between pointer-events-none">
+        <div className="absolute top-3 left-3 right-3 flex items-start justify-between pointer-events-none">
           {/* Episode badge (New/Premiere/Finale) */}
           {badgeType && (
-            <div className={`
-              px-2 py-1 rounded-md text-xs font-semibold flex items-center gap-1 backdrop-blur-sm
-              ${badgeType === 'finale'
-                ? 'bg-amber-500/90 text-black'
-                : badgeType === 'premiere'
-                ? 'bg-violet-500/90 text-white'
-                : 'bg-emerald-500/90 text-white'
-              }
-            `}>
+            <Badge
+              variant={badgeType === 'finale' ? 'finale' : badgeType === 'premiere' ? 'premiere' : 'new'}
+              className="pointer-events-auto"
+            >
               {badgeType === 'finale' ? (
                 <>
-                  <Star className="h-3 w-3" />
+                  <Star className="h-3 w-3 mr-1" />
                   Finale
                 </>
               ) : badgeType === 'premiere' ? (
                 <>
-                  <Sparkles className="h-3 w-3" />
+                  <Sparkles className="h-3 w-3 mr-1" />
                   Premiere
                 </>
               ) : (
                 <>
-                  <Sparkles className="h-3 w-3" />
+                  <Sparkles className="h-3 w-3 mr-1" />
                   New
                 </>
               )}
-            </div>
+            </Badge>
           )}
 
           {/* Streaming provider badge - glass effect */}
@@ -193,15 +194,15 @@ export function TitleCard({
               {providers.slice(0, 3).map((provider, idx) => (
                 <div
                   key={provider.name}
-                  className="w-7 h-7 rounded-lg overflow-hidden ring-2 ring-black/20 backdrop-blur-sm bg-white/10"
+                  className="w-8 h-8 rounded-[8px] overflow-hidden ring-2 ring-background/50 glass-subtle"
                   style={{ zIndex: 3 - idx }}
                   title={provider.name}
                 >
                   <Image
                     src={`https://image.tmdb.org/t/p/w45${provider.logoPath}`}
                     alt={provider.name}
-                    width={28}
-                    height={28}
+                    width={32}
+                    height={32}
                     className="w-full h-full object-cover"
                     unoptimized
                   />
@@ -212,52 +213,57 @@ export function TitleCard({
         </div>
 
         {/* Bottom overlay with title on image */}
-        <div className="absolute bottom-0 left-0 right-0 p-3 pointer-events-none">
+        <div className="absolute bottom-0 left-0 right-0 p-4 pointer-events-none">
           {showDetailUrl ? (
             <Link href={showDetailUrl} className="block pointer-events-auto">
-              <h3 className="font-bold text-white text-lg leading-tight line-clamp-2 drop-shadow-lg hover:text-primary-foreground/80 transition-colors" title={title}>
+              <h3 className="font-serif font-bold text-foreground text-lg leading-tight line-clamp-2 drop-shadow-lg hover:text-primary transition-colors" title={title}>
                 {title}
               </h3>
             </Link>
           ) : (
-            <h3 className="font-bold text-white text-lg leading-tight line-clamp-2 drop-shadow-lg" title={title}>
+            <h3 className="font-serif font-bold text-foreground text-lg leading-tight line-clamp-2 drop-shadow-lg" title={title}>
               {title}
             </h3>
           )}
         </div>
       </div>
 
+      {/* Progress bar (if available) */}
+      {progress && progress.total > 0 && (
+        <ThinProgress value={(progress.watched / progress.total) * 100} className="rounded-none" />
+      )}
+
       {/* Info */}
-      <div className="p-4 space-y-3">
+      <div className="p-6 space-y-4">
         {/* Episode info for TV shows */}
         {currentEpisode && (
           canJumpToEpisode ? (
             <button
               onClick={() => setJumpDialogOpen(true)}
-              className="text-sm text-muted-foreground line-clamp-1 text-left hover:text-primary hover:underline cursor-pointer transition-colors"
+              className="episode-number text-sm line-clamp-1 text-left hover:underline cursor-pointer transition-colors"
               title="Click to change episode"
             >
               S{currentEpisode.season}E{currentEpisode.episode}: {currentEpisode.title}
             </button>
           ) : (
-            <p className="text-sm text-muted-foreground line-clamp-1" title={`S${currentEpisode.season}E${currentEpisode.episode}: ${currentEpisode.title}`}>
+            <p className="episode-number text-sm line-clamp-1" title={`S${currentEpisode.season}E${currentEpisode.episode}: ${currentEpisode.title}`}>
               S{currentEpisode.season}E{currentEpisode.episode}: {currentEpisode.title}
             </p>
           )
         )}
 
         {/* Year and media type row */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <div className="flex items-center gap-3 text-sm text-muted-foreground">
           {year && <span>{year}</span>}
-          <span className="px-2 py-0.5 bg-muted rounded-md text-xs font-medium uppercase tracking-wide">
+          <Badge variant="outline" size="sm">
             {mediaType === 'tv' ? 'TV' : 'Movie'}
-          </span>
+          </Badge>
         </div>
 
         {/* Mark Watched button for TV shows */}
         {currentEpisode && onMarkWatched && (
           isCaughtUp ? (
-            <div className="flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-emerald-500 bg-emerald-500/10 rounded-lg">
+            <div className="flex items-center justify-center gap-2 py-3 text-sm font-medium text-success bg-success/10 rounded-[8px] border border-success/20">
               <CheckCircle className="h-4 w-4" />
               All caught up!
             </div>
@@ -266,7 +272,7 @@ export function TitleCard({
               variant="outline"
               onClick={onMarkWatched}
               disabled={isAdvancing}
-              className="w-full transition-all active:scale-[0.98]"
+              className="w-full"
             >
               {isAdvancing ? (
                 <>
@@ -290,7 +296,7 @@ export function TitleCard({
               variant="ghost"
               onClick={onRemove}
               disabled={isLoading}
-              className="w-full transition-all active:scale-[0.98] text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+              className="w-full text-muted-foreground hover:text-destructive hover:bg-destructive/10"
             >
               {isLoading ? (
                 <>
@@ -306,7 +312,7 @@ export function TitleCard({
               In Library
             </Button>
           ) : onAdd ? (
-            <Button onClick={onAdd} disabled={isLoading} className="w-full transition-all active:scale-[0.98]">
+            <Button onClick={onAdd} disabled={isLoading} className="w-full">
               {isLoading ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />

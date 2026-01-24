@@ -1,0 +1,107 @@
+{
+  "meta": {
+    "intent": "create",
+    "purpose": "UI/UX mockup for the main 'Tonight' dashboard view of a family TV guide app - the hero screen users see daily",
+    "search_grounding": false,
+    "notes_for_model": "This is the most important screen of the app - the daily destination answering 'What are we watching tonight?' It should feel like the TV is already on, inviting you to sit down. Art-forward, glanceable, and actionable. Think premium streaming service meets personal TV guide."
+  },
+  "story": {
+    "one_sentence_brief": "An immersive 'Tonight' dashboard featuring a large hero section with a featured show's backdrop image, elegant overlay with show title and episode info, followed by a horizontal carousel of tonight's scheduled show cards with progress indicators and quick-action buttons.",
+    "additional_context": "This is the hero screen of the app - the daily destination for families. Users open this to see what's scheduled for tonight's viewing. The interface should be art-forward (dominated by show imagery) yet functional with clear actions."
+  },
+  "scene": {
+    "subject": "A full-screen dashboard with a large hero section (50% of viewport) showing a cinematic TV show backdrop with a gradient overlay. Overlaid text shows 'TONIGHT' label, the show title in large serif typography, episode information, a progress bar, and action buttons. Below is a horizontal carousel section titled 'Tonight's Lineup' with 4 show cards visible.",
+    "secondary_subjects": ["Glassmorphic top navigation bar with FTV logo and nav links", "Progress indicator showing current episode", "'Mark Watched' gold button and 'Jump to Episode' outline button", "Streaming provider badge (like Netflix logo)", "Show cards with episode stills, titles, and mini progress bars", "Ken Burns effect suggestion on the hero image"],
+    "action": "Static UI mockup showing the Tonight view with the hero section prominently featured and the carousel of shows below",
+    "location": "Digital web browser frame showing the Tonight dashboard at desktop resolution",
+    "time_of_day": "Evening viewing context - the interface suggests nighttime TV watching",
+    "mood": "Exciting yet relaxed, like settling onto the couch with the remote - anticipation of a good evening's entertainment"
+  },
+  "composition": {
+    "shot_type": "Full page screenshot/mockup view showing complete Tonight dashboard",
+    "camera_angle": "Straight-on, flat UI presentation view",
+    "framing": "Hero section dominates the top half with cinematic backdrop. The show cards carousel peeks from below, encouraging scroll. Navigation bar floats at top with glass effect.",
+    "aspect_ratio": "16:9",
+    "orientation": "landscape"
+  },
+  "style": {
+    "medium": "High-fidelity digital UI design mockup with cinematic imagery integration",
+    "aesthetic_keywords": ["streaming service dashboard", "art-forward interface", "cinematic hero", "card carousel", "glassmorphism", "warm dark theme", "premium entertainment UI"],
+    "era_or_reference": "Netflix/Disney+ quality streaming UI meets personalized TV guide - like if a luxury streaming service let you curate your own schedule",
+    "color_palette": "Deep backgrounds with hero image visible, cinema gold accents (#D4A853) for CTAs and active states, warm white text over images with text-shadow, elevated surface cards (#1C2230), genre-colored progress bars"
+  },
+  "lighting": {
+    "description": "The hero backdrop shows natural scene lighting (could be any genre - drama, comedy, etc.) with heavy gradient overlay from bottom ensuring text legibility. Cards below have subtle shadows. Navigation has subtle backdrop blur.",
+    "color_and_contrast": "Hero image is slightly desaturated to not compete with UI elements. High contrast between overlay text and background through gradient protection. Gold buttons have ambient glow."
+  },
+  "format": {
+    "resolution_hint": "4K",
+    "surface_or_output": "Desktop web browser mockup at 1920x1080 or higher, suitable for design presentation"
+  },
+  "text": {
+    "has_text": true,
+    "language": "en",
+    "elements": [
+      {
+        "role": "label",
+        "content": "TONIGHT",
+        "placement": "Hero section, above show title, with calendar icon",
+        "style": "All caps, micro text, letter-spacing, cinema gold color"
+      },
+      {
+        "role": "headline",
+        "content": "The Morning Show",
+        "placement": "Hero section, large and prominent over the backdrop",
+        "style": "Playfair Display serif font, 700 weight, very large, warm white with text-shadow"
+      },
+      {
+        "role": "subhead",
+        "content": "Season 3, Episode 7 • The Interview",
+        "placement": "Below the show title in the hero",
+        "style": "DM Sans font, regular weight, muted cream color"
+      },
+      {
+        "role": "caption",
+        "content": "4 of 30 episodes",
+        "placement": "Below the progress bar in hero section",
+        "style": "DM Sans, micro text, hint gray color"
+      },
+      {
+        "role": "badge",
+        "content": "Mark Watched",
+        "placement": "Primary action button in hero section",
+        "style": "DM Sans font, cinema gold background, dark text, with check icon"
+      },
+      {
+        "role": "badge",
+        "content": "Jump to Episode",
+        "placement": "Secondary action button next to Mark Watched",
+        "style": "DM Sans font, gold outline/border, gold text"
+      },
+      {
+        "role": "headline",
+        "content": "Tonight's Lineup",
+        "placement": "Section header above the show cards carousel",
+        "style": "Playfair Display, 600 weight, section size, warm white"
+      },
+      {
+        "role": "badge",
+        "content": "4 shows scheduled",
+        "placement": "Right of the Tonight's Lineup header",
+        "style": "Pill badge, glass background, muted cream text"
+      }
+    ]
+  },
+  "references": {
+    "images": []
+  },
+  "edit": {
+    "is_edit": false,
+    "instructions": ""
+  },
+  "constraints": {
+    "factual_accuracy": "UI elements should look functional. Progress bars should show realistic progress. Navigation should be clearly interactive. Cards should have proper aspect ratios (16:9 for episode stills).",
+    "safety_and_rights": "Use generic/conceptual TV show imagery for the hero and cards - no real show posters or stills. Streaming provider logos should be generic or omitted.",
+    "negative_elements": ["no cluttered information", "no small illegible text", "no flat design without depth", "no cold blue tech feel", "no visible scrollbars", "no misaligned elements"]
+  }
+}

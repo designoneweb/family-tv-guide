@@ -1,0 +1,113 @@
+{
+  "meta": {
+    "intent": "create",
+    "purpose": "UI/UX mockup for a TV library/collection page showing all tracked shows and movies in a poster grid",
+    "search_grounding": false,
+    "notes_for_model": "This is the household's collection of tracked shows and movies - a personal catalog of everything the family watches. It should feel like browsing a curated collection at a boutique video store or a beautifully organized entertainment shelf."
+  },
+  "story": {
+    "one_sentence_brief": "A visually stunning library page displaying a grid of movie and TV show posters with gradient overlays, progress indicators, and streaming provider badges, complete with filter controls and search functionality.",
+    "additional_context": "This is the 'shelf' of the family's home entertainment. Users browse their collection here, filter by TV vs Movies, and manage their tracked titles. The poster-forward design celebrates the artwork while providing useful metadata."
+  },
+  "scene": {
+    "subject": "A responsive grid of TV show and movie poster cards (2:3 aspect ratio) arranged in 5-6 columns. Each card shows a poster image with a subtle gradient overlay at the bottom, the title overlaid, and small badges for media type (TV/Movie) and streaming provider logos. A header section shows 'Library' title with filter buttons (All | TV Shows | Movies) and an 'Add Title' button.",
+    "secondary_subjects": ["Segmented filter buttons styled as pills with gold active state", "Sort dropdown (Recently Added, A-Z, etc.)", "Progress bars on TV show cards showing viewing progress", "Streaming provider logo badges in top corners of cards", "Subtle hover effects suggesting interactivity", "Search/Add FAB on mobile or header button on desktop"],
+    "action": "Static UI mockup showing the library page with approximately 15-20 poster cards visible in the grid",
+    "location": "Digital web browser frame showing the library page at desktop resolution",
+    "time_of_day": "Neutral - this is a collection view without specific time context",
+    "mood": "Curated and organized satisfaction, like admiring a well-organized movie collection - pride in one's entertainment library"
+  },
+  "composition": {
+    "shot_type": "Full page screenshot/mockup view showing the library grid with header",
+    "camera_angle": "Straight-on, flat UI presentation view",
+    "framing": "Header with title and filters at top, poster grid fills the main content area. Cards are uniformly sized with consistent gaps. One card could show a subtle hover state.",
+    "aspect_ratio": "16:9",
+    "orientation": "landscape"
+  },
+  "style": {
+    "medium": "High-fidelity digital UI design mockup with poster artwork integration",
+    "aesthetic_keywords": ["poster grid", "media library", "collection view", "streaming catalog", "glassmorphic filters", "warm dark theme", "art-forward"],
+    "era_or_reference": "Plex or Letterboxd library view meets boutique video store aesthetic - curated collection with visual emphasis on the art",
+    "color_palette": "Deep night background (#0D0F14), elevated surface cards (#1C2230) with poster images covering, cinema gold (#D4A853) for active filter states, warm white text overlay on posters, subtle gradient overlays from transparent to deep night"
+  },
+  "lighting": {
+    "description": "Poster images provide the main visual interest with their own lighting. Cards have subtle shadows suggesting depth. Hovered cards appear to lift with enhanced shadow. Background is uniformly dark.",
+    "color_and_contrast": "Posters are slightly desaturated (95%) to create cohesion. Text overlays have gradient protection for legibility. Gold active states pop against the dark backgrounds."
+  },
+  "format": {
+    "resolution_hint": "4K",
+    "surface_or_output": "Desktop web browser mockup at 1920x1080 or higher, suitable for design presentation"
+  },
+  "text": {
+    "has_text": true,
+    "language": "en",
+    "elements": [
+      {
+        "role": "headline",
+        "content": "Library",
+        "placement": "Page header, top-left",
+        "style": "Playfair Display, 600 weight, page title size, warm white"
+      },
+      {
+        "role": "badge",
+        "content": "All",
+        "placement": "First filter button in the filter row",
+        "style": "DM Sans, within pill-shaped segmented control, gold background when active"
+      },
+      {
+        "role": "badge",
+        "content": "TV Shows",
+        "placement": "Second filter button",
+        "style": "DM Sans, glass background when inactive, muted cream text"
+      },
+      {
+        "role": "badge",
+        "content": "Movies",
+        "placement": "Third filter button",
+        "style": "DM Sans, glass background when inactive, muted cream text"
+      },
+      {
+        "role": "badge",
+        "content": "Add Title",
+        "placement": "Header right side, primary action button",
+        "style": "DM Sans, gold background, dark text, with plus icon"
+      },
+      {
+        "role": "label",
+        "content": "TV",
+        "placement": "Top-left badge on TV show cards",
+        "style": "Micro text, glass pill background, warm white"
+      },
+      {
+        "role": "label",
+        "content": "MOVIE",
+        "placement": "Top-left badge on movie cards",
+        "style": "Micro text, glass pill background, warm white"
+      },
+      {
+        "role": "label",
+        "content": "Breaking Bad",
+        "placement": "Bottom of a poster card, over gradient",
+        "style": "DM Sans, 600 weight, warm white with text-shadow"
+      },
+      {
+        "role": "caption",
+        "content": "S2 E5",
+        "placement": "Progress indicator below show title on TV cards",
+        "style": "JetBrains Mono, micro, gold color"
+      }
+    ]
+  },
+  "references": {
+    "images": []
+  },
+  "edit": {
+    "is_edit": false,
+    "instructions": ""
+  },
+  "constraints": {
+    "factual_accuracy": "Grid should be properly aligned with consistent spacing. Poster aspect ratios should be 2:3. Cards should look clickable/interactive.",
+    "safety_and_rights": "Use generic/conceptual poster imagery, not real movie or TV show posters. Streaming provider logos should be generic or simplified shapes.",
+    "negative_elements": ["no misaligned grid", "no inconsistent card sizes", "no illegible text over bright poster areas", "no cluttered badges", "no harsh white elements", "no stretched or cropped posters"]
+  }
+}

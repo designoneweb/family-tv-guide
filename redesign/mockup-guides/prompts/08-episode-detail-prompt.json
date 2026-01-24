@@ -1,0 +1,143 @@
+{
+  "meta": {
+    "intent": "create",
+    "purpose": "UI/UX mockup for an individual episode detail page with synopsis, guest cast, and viewing actions",
+    "search_grounding": false,
+    "notes_for_model": "This is the deepest level of detail - a single episode's full information. It should feel like reading the back of a DVD case for that specific episode, or a detailed TV guide entry. Premium presentation of episode-specific content."
+  },
+  "story": {
+    "one_sentence_brief": "An episode detail page featuring an immersive hero with the episode still image, prominent episode number badge, title, runtime and air date, followed by a synopsis section and a horizontal gallery of guest stars with headshots and character names.",
+    "additional_context": "This is where users get all the details about a specific episode before or after watching. It includes the full synopsis, guest cast, and quick actions to mark as watched or navigate to adjacent episodes."
+  },
+  "scene": {
+    "subject": "An episode detail page with a hero section (50% viewport) showing an episode still image with gradient overlay. Overlaid content includes a breadcrumb back to the show, an 'S3 E7' badge in gold, the episode title 'The Interview' in large serif typography, meta info (45 min, Jan 15, 2024, Director, Writer), and action buttons. Below is a Synopsis section with the episode description, and a Guest Stars section showing a horizontal row of actor headshots with names and character roles.",
+    "secondary_subjects": ["Breadcrumb navigation '← The Morning Show > Season 3'", "Air date and runtime badges", "Action bar with 'Mark Watched' and streaming provider button", "Previous/Next episode navigation arrows", "AI Summary card (optional) with teal accent", "Guest star cards with 2:3 ratio headshots"],
+    "action": "Static UI mockup showing the complete episode detail page",
+    "location": "Digital web browser frame showing the episode detail page at desktop resolution",
+    "time_of_day": "The episode still sets the scene mood",
+    "mood": "Detailed and informative, like reading a comprehensive episode guide - preparation or reflection on viewing"
+  },
+  "composition": {
+    "shot_type": "Full page screenshot/mockup view showing the complete episode detail page",
+    "camera_angle": "Straight-on, flat UI presentation view",
+    "framing": "Hero section dominates top half with episode still. Synopsis section centered below with comfortable reading width. Guest stars gallery spans full width with horizontal scroll.",
+    "aspect_ratio": "16:9",
+    "orientation": "landscape"
+  },
+  "style": {
+    "medium": "High-fidelity digital UI design mockup with cinematic imagery",
+    "aesthetic_keywords": ["episode detail", "TV guide entry", "synopsis view", "guest cast gallery", "glassmorphic elements", "warm dark theme", "editorial layout"],
+    "era_or_reference": "Premium streaming service episode page meets detailed TV Guide entry - comprehensive yet beautifully presented",
+    "color_palette": "Episode still with gradient to deep night (#0D0F14), cinema gold (#D4A853) for episode badge and CTAs, screen teal (#2D8B8B) for AI summary card accent, elevated surface for cards (#1C2230), warm white text, muted cream for secondary"
+  },
+  "lighting": {
+    "description": "Episode still provides hero lighting with heavy gradient protection for text. Synopsis section on dark background. Guest star headshots have their own professional lighting. Overall interface is dark with content providing visual interest.",
+    "color_and_contrast": "High contrast text over gradient-protected hero. Gold badge pops against darker areas. Guest star cards have subtle shadows."
+  },
+  "format": {
+    "resolution_hint": "4K",
+    "surface_or_output": "Desktop web browser mockup at 1920x1080 or higher"
+  },
+  "text": {
+    "has_text": true,
+    "language": "en",
+    "elements": [
+      {
+        "role": "caption",
+        "content": "← The Morning Show > Season 3",
+        "placement": "Top-left of hero, breadcrumb navigation",
+        "style": "DM Sans, small, glass pill background, muted cream, hover gold"
+      },
+      {
+        "role": "badge",
+        "content": "S3 E7",
+        "placement": "Hero section, episode number badge",
+        "style": "JetBrains Mono, gold background, dark text, pill shape, prominent"
+      },
+      {
+        "role": "badge",
+        "content": "Jan 15, 2024",
+        "placement": "Next to episode badge, air date",
+        "style": "Glass pill, micro text, muted cream"
+      },
+      {
+        "role": "headline",
+        "content": "The Interview",
+        "placement": "Hero section, large episode title",
+        "style": "Playfair Display, 700 weight, page title size, warm white with text-shadow"
+      },
+      {
+        "role": "subhead",
+        "content": "From: The Morning Show",
+        "placement": "Below episode title",
+        "style": "DM Sans, regular, muted cream"
+      },
+      {
+        "role": "caption",
+        "content": "45 min • TV-MA • Dir. Mimi Leder • Written by Kerry Ehrin",
+        "placement": "Meta row below show name",
+        "style": "DM Sans, small, hint gray, separated by bullets"
+      },
+      {
+        "role": "badge",
+        "content": "Mark Watched",
+        "placement": "Action bar, primary button",
+        "style": "DM Sans, gold background, dark text, check icon"
+      },
+      {
+        "role": "badge",
+        "content": "Watch on Apple TV+",
+        "placement": "Action bar, secondary button with provider logo",
+        "style": "DM Sans, gold outline, gold text"
+      },
+      {
+        "role": "headline",
+        "content": "Synopsis",
+        "placement": "Section header below action bar",
+        "style": "Playfair Display, 600 weight, section size, warm white"
+      },
+      {
+        "role": "subhead",
+        "content": "Alex and Bradley face their toughest interview yet as the network prepares for sweeping changes. Meanwhile, Cory makes a decision that could alter the course of UBA forever.",
+        "placement": "Synopsis text content",
+        "style": "DM Sans, 1.125rem, muted cream, relaxed line-height 1.8"
+      },
+      {
+        "role": "headline",
+        "content": "Guest Stars",
+        "placement": "Section header for cast gallery",
+        "style": "Playfair Display, 600 weight, section size, warm white"
+      },
+      {
+        "role": "badge",
+        "content": "8 guests",
+        "placement": "Right of Guest Stars header",
+        "style": "Pill, glass background, muted cream, micro text"
+      },
+      {
+        "role": "label",
+        "content": "John Smith",
+        "placement": "Below guest star headshot",
+        "style": "DM Sans, 500 weight, warm white"
+      },
+      {
+        "role": "caption",
+        "content": "as Senator Williams",
+        "placement": "Below actor name",
+        "style": "DM Sans, small, 'as' in hint gray, character name in muted cream"
+      }
+    ]
+  },
+  "references": {
+    "images": []
+  },
+  "edit": {
+    "is_edit": false,
+    "instructions": ""
+  },
+  "constraints": {
+    "factual_accuracy": "UI should look functional with proper alignment. Guest star cards should be properly sized (2:3 ratio for headshots). Navigation should be clear.",
+    "safety_and_rights": "Use generic/conceptual episode still imagery, not real show content. Guest star faces should be generic silhouettes or artistic representations.",
+    "negative_elements": ["no cluttered layout", "no hard-to-read text", "no misaligned cards", "no bright backgrounds", "no missing gradient protection", "no cramped synopsis"]
+  }
+}

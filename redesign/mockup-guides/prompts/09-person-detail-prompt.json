@@ -1,0 +1,173 @@
+{
+  "meta": {
+    "intent": "create",
+    "purpose": "UI/UX mockup for an actor/person detail page with biography and filmography grid",
+    "search_grounding": false,
+    "notes_for_model": "This is a deep dive into an actor or crew member's career - their biography, filmography, and connections to shows in the user's library. It should feel like browsing an IMDb page but with premium magazine aesthetics."
+  },
+  "story": {
+    "one_sentence_brief": "An actor profile page featuring a large portrait photo on the left, biography and vital stats on the right, followed by a comprehensive filmography grid of poster cards with filters for role type (Acting/Crew) and media type (TV/Movies).",
+    "additional_context": "This is where users discover more about actors they see in shows. The filmography highlights which titles are already in the user's library, encouraging discovery of related content."
+  },
+  "scene": {
+    "subject": "A person/actor detail page with a hero section showing a large 2:3 ratio portrait photo on the left and biographical information on the right including name, birth date, birthplace, and a truncatable biography. Below is a filmography section with filter controls (All | Acting | Crew and All | TV | Movies) and a responsive grid of poster cards representing the actor's credits. Cards that are in the user's library have a gold bookmark badge.",
+    "secondary_subjects": ["Large professional portrait photo with gold border accent", "Vital stats (Born, Birthplace, Known For) with label/value styling", "Biography text with 'Read full biography' expansion link", "Quick stats badges ('In Your Library' count, Total Credits, Career Span)", "Sticky filter bar with segmented controls", "Filmography poster grid with 'In Library' gold bookmark badges", "Character/role and year information on poster cards"],
+    "action": "Static UI mockup showing the complete person detail page with hero and filmography grid",
+    "location": "Digital web browser frame showing the actor page at desktop resolution",
+    "time_of_day": "Neutral - portrait photography sets the mood",
+    "mood": "Informative and exploratory, like reading a feature profile in an entertainment magazine - appreciation and discovery"
+  },
+  "composition": {
+    "shot_type": "Full page screenshot/mockup view showing the complete actor detail page",
+    "camera_angle": "Straight-on, flat UI presentation view",
+    "framing": "Hero section with photo and bio takes top portion. Sticky filter bar below. Filmography grid fills remaining space with 5-6 columns of poster cards.",
+    "aspect_ratio": "16:9",
+    "orientation": "landscape"
+  },
+  "style": {
+    "medium": "High-fidelity digital UI design mockup with portrait photography integration",
+    "aesthetic_keywords": ["actor profile", "filmography grid", "entertainment biography", "poster collection", "filter interface", "warm dark theme", "magazine layout"],
+    "era_or_reference": "IMDB actor page meets Letterboxd aesthetics meets premium magazine profile - comprehensive career view with editorial quality",
+    "color_palette": "Gradient background from cinema dark to deep night, portrait photo as visual anchor, cinema gold (#D4A853) for 'In Library' badges and active filters, elevated surface cards (#1C2230), warm white text, muted cream for secondary, glass effect for filter bar"
+  },
+  "lighting": {
+    "description": "Portrait photo provides professional lighting as the main visual anchor. Filmography posters have their own imagery. Background is subtly gradient dark. Filter bar has glass blur effect.",
+    "color_and_contrast": "High contrast between dark background and portrait photo. Gold badges pop on poster cards. Text is highly legible."
+  },
+  "format": {
+    "resolution_hint": "4K",
+    "surface_or_output": "Desktop web browser mockup at 1920x1080 or higher"
+  },
+  "text": {
+    "has_text": true,
+    "language": "en",
+    "elements": [
+      {
+        "role": "headline",
+        "content": "Jennifer Aniston",
+        "placement": "Hero section, right of portrait, large and prominent",
+        "style": "Playfair Display, 700 weight, page title size, warm white"
+      },
+      {
+        "role": "label",
+        "content": "Born",
+        "placement": "Vital stats section, label",
+        "style": "DM Sans, small, muted cream"
+      },
+      {
+        "role": "caption",
+        "content": "February 11, 1969 (55 years old)",
+        "placement": "Vital stats section, value for Born",
+        "style": "DM Sans, 500 weight, warm white"
+      },
+      {
+        "role": "label",
+        "content": "Birthplace",
+        "placement": "Vital stats section, label",
+        "style": "DM Sans, small, muted cream"
+      },
+      {
+        "role": "caption",
+        "content": "Los Angeles, California, USA",
+        "placement": "Vital stats section, value",
+        "style": "DM Sans, 500 weight, warm white"
+      },
+      {
+        "role": "label",
+        "content": "Known For",
+        "placement": "Vital stats section, label",
+        "style": "DM Sans, small, muted cream"
+      },
+      {
+        "role": "caption",
+        "content": "Acting",
+        "placement": "Vital stats section, value",
+        "style": "DM Sans, 500 weight, warm white"
+      },
+      {
+        "role": "subhead",
+        "content": "Jennifer Joanna Aniston is an American actress. She rose to international fame for her role as Rachel Green on the television sitcom Friends...",
+        "placement": "Biography text area",
+        "style": "DM Sans, regular, muted cream, line-height 1.7, truncated"
+      },
+      {
+        "role": "caption",
+        "content": "Read full biography",
+        "placement": "Below truncated bio",
+        "style": "DM Sans, gold color, underline"
+      },
+      {
+        "role": "badge",
+        "content": "In Your Library",
+        "placement": "Quick stats badge",
+        "style": "Pill, gold background, dark text, with number"
+      },
+      {
+        "role": "badge",
+        "content": "156 Credits",
+        "placement": "Quick stats badge",
+        "style": "Pill, glass background, muted cream"
+      },
+      {
+        "role": "badge",
+        "content": "1988-Present",
+        "placement": "Quick stats badge, career span",
+        "style": "Pill, glass background, muted cream"
+      },
+      {
+        "role": "headline",
+        "content": "Filmography",
+        "placement": "Section header for filmography",
+        "style": "Playfair Display, 600 weight, section size, warm white"
+      },
+      {
+        "role": "badge",
+        "content": "All",
+        "placement": "Role filter, first button (active)",
+        "style": "DM Sans, gold background when active, pill segmented control"
+      },
+      {
+        "role": "badge",
+        "content": "Acting",
+        "placement": "Role filter, second button",
+        "style": "DM Sans, glass background when inactive"
+      },
+      {
+        "role": "badge",
+        "content": "Crew",
+        "placement": "Role filter, third button",
+        "style": "DM Sans, glass background when inactive"
+      },
+      {
+        "role": "label",
+        "content": "The Morning Show",
+        "placement": "Filmography card title",
+        "style": "DM Sans, 600 weight, warm white, over poster gradient"
+      },
+      {
+        "role": "caption",
+        "content": "as Alex Levy",
+        "placement": "Below title on filmography card",
+        "style": "DM Sans, small, muted cream"
+      },
+      {
+        "role": "caption",
+        "content": "2019-2024 • 50 episodes",
+        "placement": "Year and episode count on card",
+        "style": "JetBrains Mono + DM Sans, micro, hint gray"
+      }
+    ]
+  },
+  "references": {
+    "images": []
+  },
+  "edit": {
+    "is_edit": false,
+    "instructions": ""
+  },
+  "constraints": {
+    "factual_accuracy": "Filmography grid should be properly aligned. Poster aspect ratios should be 2:3. Filter controls should look functional. Badge counts should be realistic.",
+    "safety_and_rights": "Use generic silhouette or artistic representation for the actor portrait, not a real person's photo. Movie/TV posters should be conceptual, not real content.",
+    "negative_elements": ["no real celebrity photos", "no cluttered information", "no misaligned grid", "no cramped cards", "no harsh backgrounds", "no illegible text"]
+  }
+}

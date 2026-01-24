@@ -1,0 +1,83 @@
+{
+  "meta": {
+    "intent": "create",
+    "purpose": "UI/UX mockup for a premium family TV guide app landing page - marketing homepage design",
+    "search_grounding": false,
+    "notes_for_model": "This is a web app UI mockup. The design should feel like a luxury home theater experience - warm, inviting, and premium. The aesthetic blends 1970s cinema lobby elegance with modern smart home sophistication. Dark theme with warm gold accents throughout."
+  },
+  "story": {
+    "one_sentence_brief": "A stunning dark-themed landing page for Family TV Guide that evokes the feeling of entering a luxury home theater, with warm ambient lighting, elegant typography, and cinema-inspired design elements.",
+    "additional_context": "This is the public marketing page that introduces the app and convinces visitors to sign up. First impression matters - must communicate both premium quality and family-friendly warmth simultaneously."
+  },
+  "scene": {
+    "subject": "A full-page web design mockup showing a hero section with a cozy living room background featuring a large TV, plush seating, and warm ambient lighting. The hero displays elegant serif typography reading 'Your Family's TV Guide' with a gold call-to-action button.",
+    "secondary_subjects": ["Floating glassmorphic navigation bar with logo and login button", "Feature showcase section with bento grid layout below the fold", "Subtle film grain texture overlay", "Ambient golden light orbs in background"],
+    "action": "Static UI mockup presentation showing the complete landing page design with all sections visible in a scrollable layout preview",
+    "location": "Digital web browser frame or device mockup showing the landing page at desktop resolution",
+    "time_of_day": "Evening ambiance - the background image shows a dimly lit living room with warm lamp light, suggesting cozy evening TV viewing",
+    "mood": "Luxurious yet welcoming, sophisticated but approachable, premium but family-friendly - like entering a high-end home theater"
+  },
+  "composition": {
+    "shot_type": "Full page screenshot/mockup view showing complete landing page design",
+    "camera_angle": "Straight-on, flat UI presentation view",
+    "framing": "The hero section dominates the top 60% of the visible area, with the bento grid feature section partially visible below, encouraging scroll",
+    "aspect_ratio": "16:9",
+    "orientation": "landscape"
+  },
+  "style": {
+    "medium": "High-fidelity digital UI design mockup with photorealistic background imagery",
+    "aesthetic_keywords": ["cinema lounge aesthetic", "luxury home theater", "glassmorphism", "warm dark theme", "editorial typography", "premium web design"],
+    "era_or_reference": "Modern luxury streaming service UI meets 1970s cinema lobby elegance - think if a boutique hotel designed a TV guide app",
+    "color_palette": "Deep night backgrounds (#0D0F14, #141821), warm cinema gold accents (#D4A853), velvet crimson secondary (#8B2942), warm white text (#F5F0E8), muted cream for secondary text (#A8A199)"
+  },
+  "lighting": {
+    "description": "The hero background shows soft ambient lighting from wall sconces and a glowing TV screen in a dimly lit room. Heavy vignette darkening the edges. Subtle golden ambient glow emanates from the call-to-action button and accent elements.",
+    "color_and_contrast": "High contrast between the dark background and warm gold accents. The text has excellent legibility with subtle text shadows. Gold elements have a soft glow effect."
+  },
+  "format": {
+    "resolution_hint": "4K",
+    "surface_or_output": "Desktop web browser mockup at 1920x1080 or higher, suitable for design presentation"
+  },
+  "text": {
+    "has_text": true,
+    "language": "en",
+    "elements": [
+      {
+        "role": "headline",
+        "content": "Your Family's TV Guide",
+        "placement": "Hero section, center-left aligned, positioned over the background image",
+        "style": "Playfair Display serif font, 700 weight, very large (approximately 4-5rem), warm white color with subtle gold text-shadow glow"
+      },
+      {
+        "role": "subhead",
+        "content": "Track what you're watching, plan your evenings, and never miss an episode. One home, one schedule, everyone in sync.",
+        "placement": "Below the headline in the hero section",
+        "style": "DM Sans font, regular weight, medium size, muted cream color, relaxed line-height"
+      },
+      {
+        "role": "badge",
+        "content": "Get Started Free",
+        "placement": "Primary CTA button below the subheadline",
+        "style": "DM Sans font, semibold, cinema gold background (#D4A853), dark text, pill-shaped button with ambient glow effect"
+      },
+      {
+        "role": "label",
+        "content": "FTV",
+        "placement": "Top navigation bar, left side - this is the logo monogram",
+        "style": "Playfair Display, gold color, within a glassmorphic navigation bar"
+      }
+    ]
+  },
+  "references": {
+    "images": []
+  },
+  "edit": {
+    "is_edit": false,
+    "instructions": ""
+  },
+  "constraints": {
+    "factual_accuracy": "This is a UI mockup - all interface elements should look functional and properly aligned. Typography hierarchy should be clear and professional.",
+    "safety_and_rights": "Do not include any real streaming service logos or copyrighted show imagery. The TV screen in the background should show abstract colorful gradients, not specific content.",
+    "negative_elements": ["no bright white backgrounds", "no cold blue tech aesthetic", "no generic stock photography feel", "no cluttered interface", "no purple gradients on white", "no Inter or Roboto fonts"]
+  }
+}

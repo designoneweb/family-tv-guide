@@ -1,0 +1,161 @@
+{
+  "meta": {
+    "intent": "create",
+    "purpose": "UI/UX mockup for profile management pages including manage profiles list, create profile form, and edit profile form",
+    "search_grounding": false,
+    "notes_for_model": "This is a composite mockup showing the profile management flow - the administrative view for managing family profiles. Should feel organized, trustworthy, and family-friendly. Include all three states: profile list, create form, and edit form."
+  },
+  "story": {
+    "one_sentence_brief": "A profile management interface showing three states: a centered grid of editable profile cards with pencil overlay on hover, a create profile form card with avatar picker and maturity level selector, and an edit profile form with delete option - all maintaining the warm cinema aesthetic.",
+    "additional_context": "These pages handle family member setup and personalization. Creating a profile should feel welcoming - like adding a new family member to the TV room. Editing should be straightforward. The delete option should be present but not prominent."
+  },
+  "scene": {
+    "subject": "A triptych showing three profile management states: LEFT shows 'Manage Profiles' page with 4 profile cards in a centered grid, each showing avatar and name with edit overlay on hover, plus an 'Add Profile' dashed card. CENTER shows the 'Create Profile' form card with avatar display at top (with 'Choose Avatar' button), name input field, maturity level selector (Kids/Teen/Adult as styled cards), and 'Create Profile' gold button. RIGHT shows the 'Edit Profile' form similar to create but with 'Delete Profile' destructive button at bottom.",
+    "secondary_subjects": ["Profile cards with rounded-square avatars (icons like cat, star, rocket)", "'Done' back button in top-left of manage page", "Avatar picker suggestion (grid of icon options in a modal)", "Maturity level cards with icons and descriptions", "PIN protection toggle (optional feature)", "Form validation states", "Delete confirmation modal suggestion"],
+    "action": "Static UI mockup showing three states of profile management side by side or as a flow",
+    "location": "Digital web browser frames showing profile management at desktop resolution",
+    "time_of_day": "Neutral administrative context",
+    "mood": "Organized and welcoming, like setting up a family activity - administrative but not corporate"
+  },
+  "composition": {
+    "shot_type": "Multi-panel mockup showing three related page states",
+    "camera_angle": "Straight-on, flat UI presentation view",
+    "framing": "Three panels arranged horizontally or as an overlapping flow diagram. Each panel clearly shows its purpose. The create/edit forms are centered card layouts with generous padding.",
+    "aspect_ratio": "16:9",
+    "orientation": "landscape"
+  },
+  "style": {
+    "medium": "High-fidelity digital UI design mockup",
+    "aesthetic_keywords": ["profile management", "form design", "avatar picker", "settings interface", "card-based forms", "warm dark theme", "family-friendly admin"],
+    "era_or_reference": "Netflix profile management elevated with boutique quality - functional settings with delightful details",
+    "color_palette": "Deep night background (#0D0F14), elevated surface cards (#1C2230) for profile cards and form container, cinema gold (#D4A853) for active states and primary buttons, sage green for Kids badge, teal for Teen badge, coral error for delete button, warm white text"
+  },
+  "lighting": {
+    "description": "Dark ambient background with form cards providing visual focus. Profile avatars have consistent background color. Form inputs have subtle inner styling. Gold accents draw attention to actions.",
+    "color_and_contrast": "High contrast between dark backgrounds and card surfaces. Form elements clearly visible. Destructive actions (delete) in contrasting coral color."
+  },
+  "format": {
+    "resolution_hint": "4K",
+    "surface_or_output": "Desktop web mockup showing multiple states, suitable for design presentation"
+  },
+  "text": {
+    "has_text": true,
+    "language": "en",
+    "elements": [
+      {
+        "role": "headline",
+        "content": "Manage Profiles",
+        "placement": "Page title on manage profiles view",
+        "style": "Playfair Display, 600 weight, page title size, warm white, centered"
+      },
+      {
+        "role": "subhead",
+        "content": "Add, edit, or remove family profiles",
+        "placement": "Below manage profiles title",
+        "style": "DM Sans, regular, muted cream"
+      },
+      {
+        "role": "caption",
+        "content": "← Done",
+        "placement": "Top-left back button on manage page",
+        "style": "DM Sans, ghost button style, muted cream"
+      },
+      {
+        "role": "label",
+        "content": "Mom",
+        "placement": "Below first profile avatar",
+        "style": "DM Sans, 500 weight, warm white"
+      },
+      {
+        "role": "label",
+        "content": "Add Profile",
+        "placement": "Below the dashed add card",
+        "style": "DM Sans, regular, muted cream"
+      },
+      {
+        "role": "headline",
+        "content": "Create Profile",
+        "placement": "Form card title",
+        "style": "Playfair Display, 600 weight, section size, warm white"
+      },
+      {
+        "role": "badge",
+        "content": "Choose Avatar",
+        "placement": "Button below avatar display",
+        "style": "DM Sans, small secondary button, gold outline"
+      },
+      {
+        "role": "label",
+        "content": "Profile Name",
+        "placement": "Form field label",
+        "style": "DM Sans, small, floating label style, muted cream/gold"
+      },
+      {
+        "role": "label",
+        "content": "Content Rating",
+        "placement": "Maturity level section label",
+        "style": "DM Sans, small, muted cream"
+      },
+      {
+        "role": "label",
+        "content": "Kids",
+        "placement": "First maturity option card",
+        "style": "DM Sans, 600 weight, with balloon icon, sage green accent when selected"
+      },
+      {
+        "role": "caption",
+        "content": "Age-appropriate content only",
+        "placement": "Description under Kids option",
+        "style": "DM Sans, small, muted cream"
+      },
+      {
+        "role": "label",
+        "content": "Teen",
+        "placement": "Second maturity option card",
+        "style": "DM Sans, 600 weight, with game controller icon, teal accent when selected"
+      },
+      {
+        "role": "label",
+        "content": "Adult",
+        "placement": "Third maturity option card",
+        "style": "DM Sans, 600 weight, with film icon, gold accent when selected"
+      },
+      {
+        "role": "badge",
+        "content": "Create Profile",
+        "placement": "Form submit button",
+        "style": "DM Sans, gold background, dark text, full-width button"
+      },
+      {
+        "role": "headline",
+        "content": "Edit Profile",
+        "placement": "Edit form card title",
+        "style": "Playfair Display, 600 weight, section size, warm white"
+      },
+      {
+        "role": "badge",
+        "content": "Save Changes",
+        "placement": "Edit form submit button",
+        "style": "DM Sans, gold background, dark text"
+      },
+      {
+        "role": "badge",
+        "content": "Delete Profile",
+        "placement": "Destructive action at bottom of edit form",
+        "style": "DM Sans, ghost button, coral error color, trash icon"
+      }
+    ]
+  },
+  "references": {
+    "images": []
+  },
+  "edit": {
+    "is_edit": false,
+    "instructions": ""
+  },
+  "constraints": {
+    "factual_accuracy": "Form elements should look functional and properly aligned. Radio/selection states should be clear. Profile cards should be consistent sizes.",
+    "safety_and_rights": "Avatar icons should be generic playful icons (animals, objects, shapes), not copyrighted characters.",
+    "negative_elements": ["no corporate/sterile form design", "no harsh colors", "no cramped form fields", "no confusing maturity options", "no prominent delete button (should be secondary)", "no real face avatars"]
+  }
+}

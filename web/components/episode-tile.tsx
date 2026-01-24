@@ -1,8 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import { Film } from 'lucide-react';
+import { Film, Play } from 'lucide-react';
 import { getStillUrl } from '@/lib/tmdb/images';
+import { cn } from '@/lib/utils';
 
 export interface EpisodeTileProps {
   episodeNumber: number;
@@ -12,11 +13,12 @@ export interface EpisodeTileProps {
   stillPath: string | null;
   airDate: string;
   onClick?: () => void;
+  isWatched?: boolean;
 }
 
 /**
- * Episode tile component for displaying individual episodes in a grid.
- * Art-dominant layout with 16:9 still image, episode badge, title, and description.
+ * Episode tile component for displaying individual episodes.
+ * Cinema Lounge horizontal layout with gold episode number badge.
  */
 export function EpisodeTile({
   episodeNumber,
@@ -26,6 +28,7 @@ export function EpisodeTile({
   stillPath,
   airDate,
   onClick,
+  isWatched = false,
 }: EpisodeTileProps) {
   const stillUrl = getStillUrl(stillPath, 'medium');
 
@@ -40,39 +43,51 @@ export function EpisodeTile({
 
   return (
     <div
-      className={`bg-card rounded-lg overflow-hidden border ${onClick ? 'cursor-pointer hover:border-primary transition-colors' : ''}`}
+      className={cn(
+        'group flex gap-4 bg-elevated rounded-[12px] overflow-hidden border border-primary/10 p-3 shadow-cinema card-hover',
+        onClick && 'cursor-pointer',
+        isWatched && 'opacity-60'
+      )}
       onClick={onClick}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
       onKeyDown={onClick ? (e) => e.key === 'Enter' && onClick() : undefined}
     >
-      {/* Still image - 16:9 aspect ratio */}
-      <div className="aspect-video relative bg-muted">
+      {/* Still image - 16:9 aspect ratio, fixed width */}
+      <div className="relative flex-shrink-0 w-40 aspect-video rounded-[8px] overflow-hidden bg-interactive">
         {stillUrl ? (
           <Image
             src={stillUrl}
             alt={`${name} - S${seasonNumber}E${episodeNumber}`}
             fill
-            className="object-cover"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
             unoptimized
           />
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-muted-foreground">
-            <Film className="h-8 w-8" />
-            <span className="text-sm">E{episodeNumber}</span>
+            <Film className="h-6 w-6" />
           </div>
         )}
 
-        {/* Episode number badge overlay */}
-        <div className="absolute top-2 left-2 px-2 py-0.5 bg-black/70 rounded text-xs font-medium text-white">
+        {/* Episode number badge overlay - gold Cinema Lounge style */}
+        <div className="absolute top-2 left-2 px-2 py-0.5 bg-primary text-primary-foreground rounded-[6px] text-xs font-mono font-semibold tracking-wider">
           E{episodeNumber}
         </div>
+
+        {/* Play overlay on hover */}
+        {onClick && (
+          <div className="absolute inset-0 flex items-center justify-center bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="p-3 rounded-full bg-primary text-primary-foreground">
+              <Play className="h-5 w-5" />
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Info */}
-      <div className="p-3 space-y-1.5">
-        {/* Episode title - truncate to 1 line */}
-        <h4 className="font-medium line-clamp-1" title={name}>
+      {/* Info - horizontal layout */}
+      <div className="flex-1 min-w-0 py-1 space-y-2">
+        {/* Episode title */}
+        <h4 className="font-serif font-semibold text-foreground line-clamp-1" title={name}>
           {name}
         </h4>
 
@@ -85,7 +100,7 @@ export function EpisodeTile({
 
         {/* Air date */}
         {formattedDate && (
-          <p className="text-xs text-muted-foreground">{formattedDate}</p>
+          <p className="text-xs text-hint">{formattedDate}</p>
         )}
       </div>
     </div>

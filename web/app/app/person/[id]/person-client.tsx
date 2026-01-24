@@ -6,6 +6,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Loader2, User, Calendar, MapPin, Film, Tv } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 import { getProfileUrl, getPosterUrl } from '@/lib/tmdb/images';
 import type {
   TMDBPersonDetails,
@@ -53,7 +56,7 @@ function CreditCard({
 
   const cardContent = (
     <>
-      <div className="aspect-[2/3] relative bg-muted rounded-lg overflow-hidden">
+      <div className="aspect-[2/3] relative bg-elevated rounded-xl overflow-hidden border border-primary/5 transition-all duration-300 group-hover:scale-105 group-hover:shadow-gold-glow group-hover:border-primary/20">
         {posterUrl ? (
           <Image
             src={posterUrl}
@@ -63,35 +66,32 @@ function CreditCard({
             unoptimized
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-            {isTv ? <Tv className="h-8 w-8" /> : <Film className="h-8 w-8" />}
+          <div className="absolute inset-0 flex items-center justify-center bg-elevated">
+            {isTv ? <Tv className="h-10 w-10 text-muted-foreground/30" /> : <Film className="h-10 w-10 text-muted-foreground/30" />}
           </div>
         )}
         {/* Episode count badge for TV */}
         {episodeCount && episodeCount > 1 && (
-          <div className="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded">
+          <Badge variant="secondary" size="sm" className="absolute bottom-2 right-2 glass">
             {episodeCount} eps
-          </div>
+          </Badge>
         )}
         {/* Media type badge */}
-        <div className="absolute top-1 left-1 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded">
+        <Badge variant="outline" size="sm" className="absolute top-2 left-2 glass">
           {isTv ? 'TV' : 'Movie'}
-        </div>
+        </Badge>
       </div>
-      <div className="mt-2 text-sm">
-        <p className="font-medium line-clamp-1" title={title}>
+      <div className="mt-3">
+        <p className="font-medium text-sm text-foreground line-clamp-1 group-hover:text-primary transition-colors" title={title}>
           {title}
         </p>
         {role && (
-          <p
-            className="text-muted-foreground text-xs line-clamp-1"
-            title={role}
-          >
+          <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5" title={role}>
             {role}
           </p>
         )}
         {year && (
-          <p className="text-muted-foreground text-xs">{year}</p>
+          <p className="text-xs text-hint mt-0.5">{year}</p>
         )}
       </div>
     </>
@@ -99,17 +99,14 @@ function CreditCard({
 
   if (href) {
     return (
-      <Link
-        href={href}
-        className="block transition-transform duration-150 hover:scale-[1.02]"
-      >
+      <Link href={href} className="block group">
         {cardContent}
       </Link>
     );
   }
 
   return (
-    <div className="cursor-default" title="Movie pages coming soon">
+    <div className="cursor-default group" title="Movie pages coming soon">
       {cardContent}
     </div>
   );
@@ -167,8 +164,34 @@ export function PersonClient({ personId }: PersonClientProps) {
   // Loading state
   if (isLoading) {
     return (
-      <div className="container mx-auto py-8 px-4 flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      <div className="animate-fade-in-up">
+        {/* Back button */}
+        <div className="px-6 lg:px-8 py-4">
+          <Skeleton className="h-10 w-24" />
+        </div>
+        {/* Profile header skeleton */}
+        <div className="px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="bg-card rounded-xl border border-primary/10 p-6 shadow-cinema">
+              <div className="flex flex-col md:flex-row gap-8">
+                <Skeleton className="w-48 md:w-56 aspect-[2/3] rounded-xl flex-shrink-0 mx-auto md:mx-0" />
+                <div className="flex-1 space-y-4">
+                  <Skeleton className="h-10 w-64" />
+                  <Skeleton className="h-6 w-24" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-5 w-48" />
+                    <Skeleton className="h-5 w-40" />
+                  </div>
+                  <div className="space-y-2 pt-4">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-3/4" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -176,20 +199,26 @@ export function PersonClient({ personId }: PersonClientProps) {
   // Error state
   if (error || !person) {
     return (
-      <div className="container mx-auto py-8 px-4">
-        <h1 className="text-2xl font-bold text-destructive">
-          {error || 'Person not found'}
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          Unable to load person details. Please try again later.
-        </p>
-        <button
-          onClick={() => router.back()}
-          className="inline-flex items-center gap-1 text-primary hover:underline mt-4"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Go back
-        </button>
+      <div className="px-6 lg:px-8 py-8 animate-fade-in-up">
+        <div className="max-w-7xl mx-auto text-center py-16">
+          <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mb-4 mx-auto">
+            <User className="w-8 h-8 text-destructive" />
+          </div>
+          <h1 className="font-serif text-2xl font-semibold text-destructive mb-2">
+            {error || 'Person not found'}
+          </h1>
+          <p className="text-muted-foreground mb-6">
+            Unable to load person details. Please try again later.
+          </p>
+          <Button
+            variant="outline"
+            onClick={() => router.back()}
+            className="gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Go back
+          </Button>
+        </div>
       </div>
     );
   }
@@ -266,93 +295,97 @@ export function PersonClient({ personId }: PersonClientProps) {
   const filteredCredits = getFilteredCredits();
 
   return (
-    <div className="min-h-screen pb-8">
+    <div className="animate-fade-in-up">
       {/* Back navigation */}
-      <div className="container mx-auto px-4 py-4">
-        <button
-          onClick={() => router.back()}
-          className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span>Back</span>
-        </button>
+      <div className="px-6 lg:px-8 py-4">
+        <div className="max-w-7xl mx-auto">
+          <button
+            onClick={() => router.back()}
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span>Back</span>
+          </button>
+        </div>
       </div>
 
       {/* Profile header */}
-      <div className="container mx-auto px-4">
-        <div className="bg-card rounded-lg p-6 shadow-lg">
-          <div className="flex flex-col md:flex-row gap-6">
-            {/* Profile image */}
-            <div className="flex-shrink-0 mx-auto md:mx-0">
-              <div className="w-48 md:w-56 aspect-[2/3] relative bg-muted rounded-lg overflow-hidden">
-                {profileUrl ? (
-                  <Image
-                    src={profileUrl}
-                    alt={person.name}
-                    fill
-                    className="object-cover"
-                    unoptimized
-                    priority
-                  />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-                    <User className="h-16 w-16" />
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Info column */}
-            <div className="flex-1">
-              {/* Name */}
-              <h1 className="text-2xl md:text-3xl font-bold mb-2 text-center md:text-left">
-                {person.name}
-              </h1>
-
-              {/* Known for badge */}
-              {person.known_for_department && (
-                <div className="mb-4 text-center md:text-left">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                    {person.known_for_department}
-                  </span>
-                </div>
-              )}
-
-              {/* Dates and location */}
-              <div className="flex flex-col gap-2 text-sm text-muted-foreground mb-4">
-                {birthDate && (
-                  <div className="flex items-center gap-2 justify-center md:justify-start">
-                    <Calendar className="h-4 w-4" />
-                    <span>
-                      Born: {birthDate}
-                      {deathDate && ` — Died: ${deathDate}`}
-                    </span>
-                  </div>
-                )}
-                {person.place_of_birth && (
-                  <div className="flex items-center gap-2 justify-center md:justify-start">
-                    <MapPin className="h-4 w-4" />
-                    <span>{person.place_of_birth}</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Biography */}
-              {bio && (
-                <div className="mt-4">
-                  <p className="text-foreground leading-relaxed whitespace-pre-line">
-                    {displayBio}
-                  </p>
-                  {shouldTruncateBio && (
-                    <button
-                      onClick={() => setBioExpanded(!bioExpanded)}
-                      className="text-primary hover:underline mt-2 text-sm"
-                    >
-                      {bioExpanded ? 'Show less' : 'Read more'}
-                    </button>
+      <div className="px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-card rounded-xl border border-primary/10 p-6 md:p-8 shadow-cinema">
+            <div className="flex flex-col md:flex-row gap-8">
+              {/* Profile image */}
+              <div className="flex-shrink-0 mx-auto md:mx-0">
+                <div className="w-48 md:w-56 aspect-[2/3] relative bg-elevated rounded-xl overflow-hidden border border-primary/10 shadow-cinema">
+                  {profileUrl ? (
+                    <Image
+                      src={profileUrl}
+                      alt={person.name}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                      priority
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center bg-elevated">
+                      <User className="h-16 w-16 text-muted-foreground/30" />
+                    </div>
                   )}
                 </div>
-              )}
+              </div>
+
+              {/* Info column */}
+              <div className="flex-1">
+                {/* Name */}
+                <h1 className="font-serif text-page-title text-foreground mb-3 text-center md:text-left">
+                  {person.name}
+                </h1>
+
+                {/* Known for badge */}
+                {person.known_for_department && (
+                  <div className="mb-4 text-center md:text-left">
+                    <Badge variant="default">
+                      {person.known_for_department}
+                    </Badge>
+                  </div>
+                )}
+
+                {/* Dates and location */}
+                <div className="flex flex-col gap-2 text-sm text-muted-foreground mb-4">
+                  {birthDate && (
+                    <div className="flex items-center gap-2 justify-center md:justify-start">
+                      <Calendar className="h-4 w-4 text-primary/60" />
+                      <span>
+                        Born: {birthDate}
+                        {deathDate && ` — Died: ${deathDate}`}
+                      </span>
+                    </div>
+                  )}
+                  {person.place_of_birth && (
+                    <div className="flex items-center gap-2 justify-center md:justify-start">
+                      <MapPin className="h-4 w-4 text-primary/60" />
+                      <span>{person.place_of_birth}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Biography */}
+                {bio && (
+                  <div className="mt-4">
+                    <p className="text-foreground/90 leading-relaxed whitespace-pre-line">
+                      {displayBio}
+                    </p>
+                    {shouldTruncateBio && (
+                      <button
+                        onClick={() => setBioExpanded(!bioExpanded)}
+                        className="text-primary hover:text-primary-light mt-2 text-sm font-medium transition-colors"
+                      >
+                        {bioExpanded ? 'Show less' : 'Read more'}
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -360,81 +393,93 @@ export function PersonClient({ personId }: PersonClientProps) {
 
       {/* Filmography section */}
       {credits && (credits.cast.length > 0 || credits.crew.length > 0) && (
-        <div className="container mx-auto px-4 mt-8">
-          <div className="bg-card rounded-lg p-6 shadow-lg">
-            <h2 className="text-xl font-semibold mb-4">Filmography</h2>
+        <div className="px-6 lg:px-8 mt-8 pb-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="bg-card rounded-xl border border-primary/10 p-6 md:p-8 shadow-cinema">
+              <h2 className="font-serif text-section text-foreground mb-6">Filmography</h2>
 
-            {/* Filter row */}
-            <div className="flex flex-wrap gap-4 mb-6">
-              {/* Role filter */}
-              <div className="flex gap-1">
-                <Button
-                  variant={roleFilter === 'all' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setRoleFilter('all')}
-                >
-                  All
-                </Button>
-                <Button
-                  variant={roleFilter === 'acting' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setRoleFilter('acting')}
-                >
-                  Acting
-                </Button>
-                <Button
-                  variant={roleFilter === 'crew' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setRoleFilter('crew')}
-                >
-                  Crew
-                </Button>
+              {/* Filter row */}
+              <div className="flex flex-wrap gap-4 mb-6">
+                {/* Role filter */}
+                <div className="inline-flex p-1 rounded-full glass border border-primary/10">
+                  {(['all', 'acting', 'crew'] as RoleFilter[]).map((filter) => (
+                    <button
+                      key={filter}
+                      onClick={() => setRoleFilter(filter)}
+                      className={cn(
+                        'px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 capitalize',
+                        roleFilter === filter
+                          ? 'bg-primary text-primary-foreground shadow-md'
+                          : 'text-muted-foreground hover:text-foreground'
+                      )}
+                    >
+                      {filter}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Media filter */}
+                <div className="inline-flex p-1 rounded-full glass border border-primary/10">
+                  <button
+                    onClick={() => setMediaFilter('all')}
+                    className={cn(
+                      'px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
+                      mediaFilter === 'all'
+                        ? 'bg-primary text-primary-foreground shadow-md'
+                        : 'text-muted-foreground hover:text-foreground'
+                    )}
+                  >
+                    All
+                  </button>
+                  <button
+                    onClick={() => setMediaFilter('tv')}
+                    className={cn(
+                      'flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
+                      mediaFilter === 'tv'
+                        ? 'bg-primary text-primary-foreground shadow-md'
+                        : 'text-muted-foreground hover:text-foreground'
+                    )}
+                  >
+                    <Tv className="h-4 w-4" />
+                    TV
+                  </button>
+                  <button
+                    onClick={() => setMediaFilter('movie')}
+                    className={cn(
+                      'flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
+                      mediaFilter === 'movie'
+                        ? 'bg-primary text-primary-foreground shadow-md'
+                        : 'text-muted-foreground hover:text-foreground'
+                    )}
+                  >
+                    <Film className="h-4 w-4" />
+                    Movies
+                  </button>
+                </div>
               </div>
 
-              {/* Media filter */}
-              <div className="flex gap-1">
-                <Button
-                  variant={mediaFilter === 'all' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setMediaFilter('all')}
-                >
-                  All
-                </Button>
-                <Button
-                  variant={mediaFilter === 'tv' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setMediaFilter('tv')}
-                >
-                  <Tv className="h-4 w-4 mr-1" />
-                  TV
-                </Button>
-                <Button
-                  variant={mediaFilter === 'movie' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setMediaFilter('movie')}
-                >
-                  <Film className="h-4 w-4 mr-1" />
-                  Movies
-                </Button>
-              </div>
+              {/* Credits grid */}
+              {filteredCredits.length > 0 ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 stagger-children">
+                  {filteredCredits.map((item, idx) => (
+                    <CreditCard
+                      key={`${item.credit.id}-${item.type}-${idx}`}
+                      credit={item.credit}
+                      type={item.type}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-16 text-center">
+                  <div className="w-16 h-16 rounded-full bg-elevated flex items-center justify-center mb-4 border border-primary/10">
+                    <Film className="w-8 h-8 text-muted-foreground/40" />
+                  </div>
+                  <p className="text-muted-foreground">
+                    No credits found for the selected filters.
+                  </p>
+                </div>
+              )}
             </div>
-
-            {/* Credits grid */}
-            {filteredCredits.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {filteredCredits.map((item, idx) => (
-                  <CreditCard
-                    key={`${item.credit.id}-${item.type}-${idx}`}
-                    credit={item.credit}
-                    type={item.type}
-                  />
-                ))}
-              </div>
-            ) : (
-              <p className="text-muted-foreground text-center py-8">
-                No credits found for the selected filters.
-              </p>
-            )}
           </div>
         </div>
       )}

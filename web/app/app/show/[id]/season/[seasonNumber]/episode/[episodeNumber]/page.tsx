@@ -16,10 +16,12 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
   const { id, seasonNumber, episodeNumber } = await params;
 
   return (
-    <EpisodeClient
-      showId={parseInt(id, 10)}
-      seasonNumber={parseInt(seasonNumber, 10)}
-      episodeNumber={parseInt(episodeNumber, 10)}
-    />
+    <div className="min-h-screen pb-20 md:pb-0">
+      <EpisodeClient
+        showId={parseInt(id, 10)}
+        seasonNumber={parseInt(seasonNumber, 10)}
+        episodeNumber={parseInt(episodeNumber, 10)}
+      />
+    </div>
   );
 }

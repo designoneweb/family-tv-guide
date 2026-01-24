@@ -1,0 +1,113 @@
+{
+  "meta": {
+    "intent": "create",
+    "purpose": "UI/UX mockup for a weekly TV schedule/TV Guide grid page showing shows scheduled across the week",
+    "search_grounding": false,
+    "notes_for_model": "This is the weekly planning view - a visual TV Guide that lets families see and manage their entire week's viewing. It should feel like a beautiful wall calendar meets a cinema marquee. The grid shows days as rows with time-based columns, and show blocks positioned by their scheduled time."
+  },
+  "story": {
+    "one_sentence_brief": "A sophisticated weekly schedule grid showing Monday through Sunday as rows with time slots as columns, where colorful genre-coded show blocks with poster thumbnails and episode info are positioned along a timeline, with a glowing current-time indicator on today's row.",
+    "additional_context": "This is the 'control room' for household TV coordination. Families plan their whole week here, assigning shows to specific days. The design needs to be both informative and beautiful - functional data visualization with cinema aesthetics."
+  },
+  "scene": {
+    "subject": "A full-width weekly schedule grid interface with a sticky time header row showing hours (5PM-12AM), seven day rows (Monday-Sunday) with day labels on the left, and colorful show blocks positioned along the timeline. Each show block has a small poster thumbnail, title, and episode number. A vertical red/crimson line with glow effect marks the current time on today's row.",
+    "secondary_subjects": ["Page header with 'Weekly Schedule' title and week navigation arrows", "Time markers at top (5 PM, 6 PM, 7 PM, etc.)", "Day labels sticky on left (Monday, Tuesday, etc.) with date", "Gold 'Today' indicator dot next to the current day", "Floating gold FAB button in bottom-right for 'Add Show'", "Genre-colored show blocks (drama=dusty rose, comedy=gold, action=terracotta, sci-fi=steel blue)"],
+    "action": "Static UI mockup showing the weekly schedule with multiple shows distributed across different days",
+    "location": "Digital web browser frame showing the schedule page at desktop resolution with horizontal scroll capability",
+    "time_of_day": "The interface suggests evening viewing times (schedule shows 5PM-12AM range)",
+    "mood": "Organized and satisfying, like looking at a well-planned week - control and anticipation combined"
+  },
+  "composition": {
+    "shot_type": "Full page screenshot/mockup view showing the complete weekly schedule grid",
+    "camera_angle": "Straight-on, flat UI presentation view with slight horizontal scroll visible",
+    "framing": "Header at top, time row sticky below, day rows fill the main content area. The grid extends horizontally suggesting scrollable timeline. Day labels anchor the left side.",
+    "aspect_ratio": "16:9",
+    "orientation": "landscape"
+  },
+  "style": {
+    "medium": "High-fidelity digital UI design mockup with data visualization elements",
+    "aesthetic_keywords": ["TV guide grid", "timeline interface", "schedule visualization", "genre color coding", "glassmorphic header", "warm dark theme", "calendar view"],
+    "era_or_reference": "Classic TV Guide grid reimagined with streaming service polish - like if the Sunday newspaper TV grid was designed by Apple",
+    "color_palette": "Deep night background (#0D0F14), alternating row backgrounds, genre-coded show blocks (dusty rose #8B4D6B for drama, gold #D4A853 for comedy, terracotta #C25B4D for action, steel blue #4D7B8B for sci-fi), velvet crimson (#8B2942) for current time indicator, warm white text"
+  },
+  "lighting": {
+    "description": "Dark background with show blocks providing color interest. The current time indicator has a subtle glow effect. Sticky headers have glass effect with subtle blur. Show block hover states would show enhanced shadows.",
+    "color_and_contrast": "High contrast between dark background and colorful show blocks. Time indicator stands out with crimson glow. Day labels clearly readable against darker left column."
+  },
+  "format": {
+    "resolution_hint": "4K",
+    "surface_or_output": "Desktop web browser mockup at 1920x1080 or higher, suitable for design presentation"
+  },
+  "text": {
+    "has_text": true,
+    "language": "en",
+    "elements": [
+      {
+        "role": "headline",
+        "content": "Weekly Schedule",
+        "placement": "Page header, top-left",
+        "style": "Playfair Display, 600 weight, page title size, warm white"
+      },
+      {
+        "role": "subhead",
+        "content": "Plan your viewing week",
+        "placement": "Below the page title",
+        "style": "DM Sans, regular weight, muted cream"
+      },
+      {
+        "role": "label",
+        "content": "Jan 20 - 26, 2025",
+        "placement": "Header right side, week date range",
+        "style": "DM Sans, 500 weight, warm white"
+      },
+      {
+        "role": "label",
+        "content": "5 PM",
+        "placement": "Time header row, first major time marker",
+        "style": "JetBrains Mono, micro text, hint gray"
+      },
+      {
+        "role": "label",
+        "content": "Monday",
+        "placement": "First day row label, sticky left column",
+        "style": "DM Sans, 600 weight, warm white"
+      },
+      {
+        "role": "caption",
+        "content": "Jan 20",
+        "placement": "Below Monday label",
+        "style": "DM Sans, small, muted cream"
+      },
+      {
+        "role": "label",
+        "content": "The Office",
+        "placement": "Inside a show block on the grid",
+        "style": "DM Sans, 600 weight, warm white (or dark if light genre color)"
+      },
+      {
+        "role": "caption",
+        "content": "S2 E5",
+        "placement": "Below show title in block",
+        "style": "JetBrains Mono, small, slightly transparent white"
+      },
+      {
+        "role": "caption",
+        "content": "7:32 PM",
+        "placement": "Current time indicator pill at top of the time line",
+        "style": "JetBrains Mono, micro, white on velvet crimson pill"
+      }
+    ]
+  },
+  "references": {
+    "images": []
+  },
+  "edit": {
+    "is_edit": false,
+    "instructions": ""
+  },
+  "constraints": {
+    "factual_accuracy": "Schedule grid should have proper alignment and time calculations. Show blocks should be realistically sized based on typical show runtime (30-60 min). Days should be in correct order.",
+    "safety_and_rights": "Use generic show titles or clearly fictional shows. No real show logos or copyrighted imagery.",
+    "negative_elements": ["no cramped illegible text", "no clashing colors", "no misaligned grid elements", "no harsh white backgrounds", "no overwhelming visual complexity", "no tiny show blocks that can't be read"]
+  }
+}

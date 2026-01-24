@@ -1,0 +1,101 @@
+{
+  "meta": {
+    "intent": "create",
+    "purpose": "UI/UX mockup for a premium family TV guide app login/authentication page",
+    "search_grounding": false,
+    "notes_for_model": "This is a split-screen login page design. The left panel shows a cinematic decorative image of a luxury home theater, while the right panel contains the login form. The design should feel like entering a private screening room - exclusive yet welcoming."
+  },
+  "story": {
+    "one_sentence_brief": "An elegant split-screen login page where a cinematic home theater image on the left meets a clean, dark login form on the right, creating the feeling of entering an exclusive cinema club.",
+    "additional_context": "This is the authentication gateway that maintains the premium cinema aesthetic while providing a straightforward login experience. Users should feel they're entering something special."
+  },
+  "scene": {
+    "subject": "A split-screen web page design with the left 60% showing an elegant home theater setup with plush velvet crimson seats, soft golden wall sconces, and a large screen displaying abstract colorful gradients. The right 40% contains a clean login form with email and password fields on a deep dark background.",
+    "secondary_subjects": ["Glassmorphic form inputs with gold focus states", "FTV monogram logo above the form", "Welcome back headline in elegant serif typography", "Primary gold sign-in button", "Subtle film grain texture"],
+    "action": "Static UI mockup presentation showing the complete login page design",
+    "location": "Digital web browser frame showing the login page at desktop resolution",
+    "time_of_day": "Evening cinema ambiance - the theater image shows dim ambient lighting with warm golden sconces",
+    "mood": "Exclusive and sophisticated, like entering a members-only cinema club, yet warm and welcoming"
+  },
+  "composition": {
+    "shot_type": "Full page screenshot/mockup view showing complete login page design",
+    "camera_angle": "Straight-on, flat UI presentation view",
+    "framing": "Split screen - left panel (60%) shows decorative theater image with brand text at bottom, right panel (40%) shows centered login form with generous padding",
+    "aspect_ratio": "16:9",
+    "orientation": "landscape"
+  },
+  "style": {
+    "medium": "High-fidelity digital UI design mockup",
+    "aesthetic_keywords": ["cinema lounge aesthetic", "split-screen layout", "luxury authentication", "glassmorphism", "warm dark theme", "editorial elegance"],
+    "era_or_reference": "Modern luxury web app login meets classic cinema lobby - the feeling of presenting a membership card at an exclusive screening",
+    "color_palette": "Deep night right panel (#0D0F14), cinema dark left overlay, warm cinema gold accents (#D4A853) for form focus states and buttons, velvet crimson (#8B2942) in the theater seats, warm white text (#F5F0E8)"
+  },
+  "lighting": {
+    "description": "The left theater image shows soft warm lighting from wall sconces creating pools of golden light. Heavy vignette and gradient overlay fades the image edges. The right panel is uniformly dark with the form elements creating subtle visual interest through their styling.",
+    "color_and_contrast": "High contrast between the warm theater image and the dark form panel. Gold accents pop against the dark backgrounds."
+  },
+  "format": {
+    "resolution_hint": "4K",
+    "surface_or_output": "Desktop web browser mockup at 1920x1080 or higher, suitable for design presentation"
+  },
+  "text": {
+    "has_text": true,
+    "language": "en",
+    "elements": [
+      {
+        "role": "headline",
+        "content": "Welcome back",
+        "placement": "Top of the right panel login form area",
+        "style": "Playfair Display serif font, 600 weight, large size (approximately 2rem), warm white color"
+      },
+      {
+        "role": "subhead",
+        "content": "Sign in to continue to your household",
+        "placement": "Below the welcome headline",
+        "style": "DM Sans font, regular weight, muted cream color"
+      },
+      {
+        "role": "label",
+        "content": "Email address",
+        "placement": "Floating label for email input field",
+        "style": "DM Sans font, small size, muted cream when inactive, gold when active"
+      },
+      {
+        "role": "label",
+        "content": "Password",
+        "placement": "Floating label for password input field",
+        "style": "DM Sans font, small size, muted cream when inactive, gold when active"
+      },
+      {
+        "role": "badge",
+        "content": "Sign In",
+        "placement": "Primary button below the form fields",
+        "style": "DM Sans font, semibold, cinema gold background, dark text, full-width button with rounded corners"
+      },
+      {
+        "role": "caption",
+        "content": "Family TV Guide",
+        "placement": "Bottom-left of the left theater panel",
+        "style": "Playfair Display, warm white with subtle gold text-shadow, positioned over the theater image with gradient protection"
+      },
+      {
+        "role": "caption",
+        "content": "Your evening, perfectly planned.",
+        "placement": "Below the brand name in the left panel",
+        "style": "DM Sans italic, muted cream color"
+      }
+    ]
+  },
+  "references": {
+    "images": []
+  },
+  "edit": {
+    "is_edit": false,
+    "instructions": ""
+  },
+  "constraints": {
+    "factual_accuracy": "Form elements should look functional with proper input styling. The split-screen layout should be clear and well-proportioned.",
+    "safety_and_rights": "The theater image should be generic/conceptual, not showing any real cinema or copyrighted content on the screen.",
+    "negative_elements": ["no bright backgrounds", "no corporate/sterile feel", "no generic login page styling", "no blue tech aesthetic", "no visible passwords in the mockup", "no social login buttons unless styled premium"]
+  }
+}

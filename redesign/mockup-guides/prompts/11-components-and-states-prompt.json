@@ -1,0 +1,167 @@
+{
+  "meta": {
+    "intent": "create",
+    "purpose": "UI/UX component library mockup showing shared components, navigation, modals, forms, and various states",
+    "search_grounding": false,
+    "notes_for_model": "This is a design system component sheet showing all the reusable UI components in the Family TV Guide app. It should display components in their various states and serve as a reference for the overall design language."
+  },
+  "story": {
+    "one_sentence_brief": "A comprehensive UI component library sheet displaying navigation bars (desktop top and mobile bottom), buttons in all states, form inputs, modals, toast notifications, card components, badges, loading skeletons, and empty states - all following the warm cinema aesthetic.",
+    "additional_context": "This serves as a design system reference showing how all UI components look and behave. It's essential for maintaining consistency across the app and for developer handoff."
+  },
+  "scene": {
+    "subject": "A organized component library sheet showing: TOP ROW - Navigation components (desktop glass top nav with logo and links, mobile bottom nav bar with icons). SECOND ROW - Button variants (primary gold, secondary outline, ghost, destructive) in default, hover, and disabled states. THIRD ROW - Form elements (text input with floating label, select dropdown, checkbox, radio, toggle switch). FOURTH ROW - Modal example with overlay, card structures (poster card, episode card, profile card). FIFTH ROW - Toast notifications (success, info, warning, error), loading states (skeleton, spinner), and an empty state illustration.",
+    "secondary_subjects": ["Desktop navigation with FTV logo, Tonight/Schedule/Library links, profile avatar", "Mobile bottom nav with four icon+label items", "Gold primary buttons with glow effect", "Glassmorphic input fields with gold focus borders", "Modal with overlay showing dialog structure", "Toast notifications with colored left borders and icons", "Skeleton loaders with shimmer animation suggestion", "Empty state with illustration and CTA"],
+    "action": "Static design system sheet showing all components in organized rows/sections",
+    "location": "Design system documentation layout - organized grid of component examples",
+    "time_of_day": "N/A - component reference sheet",
+    "mood": "Organized and systematic, like a well-documented design system - clarity and consistency"
+  },
+  "composition": {
+    "shot_type": "Design system component sheet layout",
+    "camera_angle": "Straight-on, flat presentation",
+    "framing": "Components organized in logical sections/rows with labels. Each component shown with multiple states where applicable. Dark background with components displayed on slightly lighter sections.",
+    "aspect_ratio": "16:9",
+    "orientation": "landscape"
+  },
+  "style": {
+    "medium": "High-fidelity digital design system documentation",
+    "aesthetic_keywords": ["component library", "design system", "UI kit", "button states", "form elements", "navigation patterns", "warm dark theme"],
+    "era_or_reference": "Modern design system documentation like Figma component libraries - organized, labeled, comprehensive",
+    "color_palette": "Deep night background (#0D0F14), cinema gold for primary actions (#D4A853), sage green for success (#4CAF7C), amber for warning (#E89B3C), coral for error (#CF5C5C), teal for info (#2D8B8B), elevated surfaces for cards (#1C2230), warm white text"
+  },
+  "lighting": {
+    "description": "Flat, even lighting for clear component visibility. Each component is clearly separated with consistent backgrounds. No dramatic lighting - focus on clarity.",
+    "color_and_contrast": "High contrast for all text elements. Component states clearly differentiated through color and opacity changes."
+  },
+  "format": {
+    "resolution_hint": "4K",
+    "surface_or_output": "Design system documentation sheet, suitable for design handoff"
+  },
+  "text": {
+    "has_text": true,
+    "language": "en",
+    "elements": [
+      {
+        "role": "headline",
+        "content": "Navigation",
+        "placement": "Section label for navigation components",
+        "style": "DM Sans, 600 weight, small caps, gold color"
+      },
+      {
+        "role": "label",
+        "content": "FTV",
+        "placement": "Logo in desktop nav",
+        "style": "Playfair Display, gold"
+      },
+      {
+        "role": "label",
+        "content": "Tonight",
+        "placement": "Nav link (active state)",
+        "style": "DM Sans, gold with underline indicator"
+      },
+      {
+        "role": "label",
+        "content": "Schedule",
+        "placement": "Nav link",
+        "style": "DM Sans, muted cream"
+      },
+      {
+        "role": "headline",
+        "content": "Buttons",
+        "placement": "Section label for button components",
+        "style": "DM Sans, 600 weight, small caps, gold"
+      },
+      {
+        "role": "badge",
+        "content": "Primary",
+        "placement": "Primary button example",
+        "style": "DM Sans, gold background, dark text"
+      },
+      {
+        "role": "badge",
+        "content": "Secondary",
+        "placement": "Secondary button example",
+        "style": "DM Sans, gold outline, gold text"
+      },
+      {
+        "role": "badge",
+        "content": "Ghost",
+        "placement": "Ghost button example",
+        "style": "DM Sans, transparent, muted cream text"
+      },
+      {
+        "role": "badge",
+        "content": "Destructive",
+        "placement": "Destructive button example",
+        "style": "DM Sans, coral error background"
+      },
+      {
+        "role": "headline",
+        "content": "Form Elements",
+        "placement": "Section label",
+        "style": "DM Sans, 600 weight, small caps, gold"
+      },
+      {
+        "role": "label",
+        "content": "Email address",
+        "placement": "Floating label on text input",
+        "style": "DM Sans, small, gold when focused"
+      },
+      {
+        "role": "headline",
+        "content": "Modals & Cards",
+        "placement": "Section label",
+        "style": "DM Sans, 600 weight, small caps, gold"
+      },
+      {
+        "role": "headline",
+        "content": "Feedback & States",
+        "placement": "Section label for toasts, loading, empty",
+        "style": "DM Sans, 600 weight, small caps, gold"
+      },
+      {
+        "role": "label",
+        "content": "Success",
+        "placement": "Success toast label",
+        "style": "DM Sans, sage green left border"
+      },
+      {
+        "role": "label",
+        "content": "Warning",
+        "placement": "Warning toast label",
+        "style": "DM Sans, amber left border"
+      },
+      {
+        "role": "label",
+        "content": "Error",
+        "placement": "Error toast label",
+        "style": "DM Sans, coral left border"
+      },
+      {
+        "role": "caption",
+        "content": "Loading...",
+        "placement": "Near spinner component",
+        "style": "DM Sans, muted cream"
+      },
+      {
+        "role": "subhead",
+        "content": "Nothing here yet",
+        "placement": "Empty state headline",
+        "style": "Playfair Display, warm white"
+      }
+    ]
+  },
+  "references": {
+    "images": []
+  },
+  "edit": {
+    "is_edit": false,
+    "instructions": ""
+  },
+  "constraints": {
+    "factual_accuracy": "Components should be accurately represented in their various states. Sizing should be realistic. All interactive elements should look appropriately interactive.",
+    "safety_and_rights": "All components are original UI elements, no copyrighted icons or images.",
+    "negative_elements": ["no disorganized layout", "no inconsistent styling between components", "no missing states", "no unclear labels", "no bright backgrounds", "no components that don't match the design system"]
+  }
+}

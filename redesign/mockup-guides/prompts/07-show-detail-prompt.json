@@ -1,0 +1,143 @@
+{
+  "meta": {
+    "intent": "create",
+    "purpose": "UI/UX mockup for a TV show detail page with immersive hero, metadata, seasons, and cast information",
+    "search_grounding": false,
+    "notes_for_model": "This is the deep-dive into a specific TV show - showcasing all metadata, seasons, cast, and providing actions like scheduling and progress tracking. It should feel like opening a premium Blu-ray case or reading a film magazine feature spread."
+  },
+  "story": {
+    "one_sentence_brief": "An immersive show detail page featuring a cinematic hero section with backdrop image and poster, show metadata and overview, a sticky action bar with progress tracking and watch buttons, followed by tabbed content sections for Seasons (episode grid), Cast & Crew, and Details.",
+    "additional_context": "This is where users explore everything about a show before deciding what to watch. The design needs to celebrate the show's imagery while providing comprehensive information and easy actions."
+  },
+  "scene": {
+    "subject": "A full show detail page with a large hero section (60% viewport height) showing a cinematic TV show backdrop with heavy gradient overlay. In the hero, a show poster is displayed on the left (200x300px) with the show title, year, rating, seasons count, and overview text on the right. Below the hero is a sticky action bar showing current episode progress with 'Mark Watched' and 'Add to Schedule' buttons. Below that are tabs (Seasons | Cast & Crew | Details) with an episode grid visible in the default Seasons tab.",
+    "secondary_subjects": ["Show poster with gold border accent", "Meta badges (year, TV-MA rating, 5 Seasons, 45 min)", "Streaming provider logos showing where to watch", "Season selector pills (Season 1, Season 2, etc.)", "Episode cards in a grid showing still images, episode numbers in gold circles, titles and descriptions", "Cast section preview with actor headshots"],
+    "action": "Static UI mockup showing the show detail page with hero, action bar, and Seasons tab content visible",
+    "location": "Digital web browser frame showing the show detail page at desktop resolution",
+    "time_of_day": "The hero image sets the mood - could be any scene from the show",
+    "mood": "Informative yet cinematic, like reading a premium entertainment magazine profile - appreciation and anticipation"
+  },
+  "composition": {
+    "shot_type": "Full page screenshot/mockup view showing the complete show detail page",
+    "camera_angle": "Straight-on, flat UI presentation view",
+    "framing": "Hero section dominates top portion with poster on left and info on right. Action bar sits below hero. Tab content fills remaining space with episode grid visible.",
+    "aspect_ratio": "16:9",
+    "orientation": "landscape"
+  },
+  "style": {
+    "medium": "High-fidelity digital UI design mockup with cinematic imagery integration",
+    "aesthetic_keywords": ["show detail page", "entertainment profile", "cinematic hero", "tabbed interface", "episode grid", "glassmorphic elements", "warm dark theme"],
+    "era_or_reference": "IMDB meets high-end streaming service detail page - comprehensive information with magazine-quality presentation",
+    "color_palette": "Backdrop image with heavy gradient to deep night (#0D0F14), cinema gold accents (#D4A853) for buttons and episode number badges, elevated surface (#1C2230) for episode cards, warm white text, muted cream for secondary info"
+  },
+  "lighting": {
+    "description": "Hero backdrop provides scene lighting, heavily muted by gradient overlay. Poster has subtle shadow. Episode cards have consistent lighting from their still images. Action bar has glass effect with blur.",
+    "color_and_contrast": "Hero image desaturated to 80% to not compete with UI. High contrast text over gradients. Gold elements provide accent and call-to-action prominence."
+  },
+  "format": {
+    "resolution_hint": "4K",
+    "surface_or_output": "Desktop web browser mockup at 1920x1080 or higher, suitable for design presentation"
+  },
+  "text": {
+    "has_text": true,
+    "language": "en",
+    "elements": [
+      {
+        "role": "headline",
+        "content": "The Morning Show",
+        "placement": "Hero section, right of poster, large and prominent",
+        "style": "Playfair Display, 700 weight, page title size, warm white with text-shadow"
+      },
+      {
+        "role": "badge",
+        "content": "2019-2024",
+        "placement": "Meta row below title, year badge",
+        "style": "Glass pill, micro text, muted cream"
+      },
+      {
+        "role": "badge",
+        "content": "TV-MA",
+        "placement": "Meta row, rating badge",
+        "style": "Glass pill, micro text, muted cream"
+      },
+      {
+        "role": "badge",
+        "content": "5 Seasons",
+        "placement": "Meta row, seasons count badge",
+        "style": "Glass pill, micro text, muted cream"
+      },
+      {
+        "role": "subhead",
+        "content": "A behind-the-scenes look at the lives of the people who help America wake up in the morning...",
+        "placement": "Overview text below meta badges",
+        "style": "DM Sans, regular, muted cream, line-height 1.6, truncated with 'Read more' link"
+      },
+      {
+        "role": "label",
+        "content": "Your Progress",
+        "placement": "Action bar, left side label",
+        "style": "DM Sans, small, muted cream"
+      },
+      {
+        "role": "caption",
+        "content": "Season 3, Episode 7",
+        "placement": "Action bar, progress indicator",
+        "style": "JetBrains Mono (numbers) + DM Sans, warm white"
+      },
+      {
+        "role": "badge",
+        "content": "Mark Watched",
+        "placement": "Action bar, primary button",
+        "style": "DM Sans, gold background, dark text, with check icon"
+      },
+      {
+        "role": "badge",
+        "content": "Add to Schedule",
+        "placement": "Action bar, secondary button",
+        "style": "DM Sans, gold outline, gold text, with calendar icon"
+      },
+      {
+        "role": "label",
+        "content": "Seasons",
+        "placement": "Tab bar, first tab (active)",
+        "style": "DM Sans, warm white, gold underline indicator"
+      },
+      {
+        "role": "label",
+        "content": "Cast & Crew",
+        "placement": "Tab bar, second tab",
+        "style": "DM Sans, muted cream"
+      },
+      {
+        "role": "badge",
+        "content": "Season 3",
+        "placement": "Season selector, active pill",
+        "style": "DM Sans, gold background, dark text, pill shape"
+      },
+      {
+        "role": "label",
+        "content": "7",
+        "placement": "Episode number badge on episode card",
+        "style": "DM Sans, 700 weight, gold circle, dark text"
+      },
+      {
+        "role": "label",
+        "content": "The Interview",
+        "placement": "Episode card title",
+        "style": "DM Sans, 600 weight, warm white"
+      }
+    ]
+  },
+  "references": {
+    "images": []
+  },
+  "edit": {
+    "is_edit": false,
+    "instructions": ""
+  },
+  "constraints": {
+    "factual_accuracy": "UI elements should be properly aligned. Episode grid should show proper card layout. Tab interface should look functional. Progress indicators should be realistic.",
+    "safety_and_rights": "Use generic/conceptual TV show imagery, not real show backdrops or posters. Actor faces should be generic silhouettes or avoid faces entirely.",
+    "negative_elements": ["no cluttered information hierarchy", "no misaligned elements", "no hard-to-read text over images", "no cold tech aesthetic", "no cramped episode cards", "no missing gradient protections for text"]
+  }
+}

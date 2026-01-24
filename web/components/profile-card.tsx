@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 import type { Profile, MaturityLevel } from '@/lib/database.types';
 
 interface ProfileCardProps {
@@ -11,18 +12,18 @@ interface ProfileCardProps {
 
 /**
  * Get the color for a profile avatar based on the first character of the name.
- * Creates a deterministic color from the profile name.
+ * Cinema Lounge palette with rich, warm colors.
  */
 function getAvatarColor(name: string): string {
   const colors = [
-    'bg-blue-600',
-    'bg-green-600',
-    'bg-purple-600',
-    'bg-pink-600',
-    'bg-orange-600',
-    'bg-teal-600',
-    'bg-indigo-600',
-    'bg-red-600',
+    'bg-primary', // Cinema Gold
+    'bg-secondary', // Velvet Crimson
+    'bg-tertiary', // Screen Teal
+    'bg-genre-drama',
+    'bg-genre-action',
+    'bg-genre-scifi',
+    'bg-genre-documentary',
+    'bg-genre-animation',
   ];
   const charCode = name.charCodeAt(0) || 0;
   return colors[charCode % colors.length];
@@ -41,8 +42,20 @@ function getMaturityLabel(level: MaturityLevel): string {
 }
 
 /**
+ * Get badge variant for maturity level.
+ */
+function getMaturityVariant(level: MaturityLevel): 'default' | 'secondary' | 'outline' {
+  const variants: Record<MaturityLevel, 'default' | 'secondary' | 'outline'> = {
+    kids: 'default',
+    teen: 'outline',
+    adult: 'secondary',
+  };
+  return variants[level];
+}
+
+/**
  * Profile card component for the profile picker grid.
- * Displays avatar (colored circle with initial), name, and optional maturity badge.
+ * Cinema Lounge styling with 120px avatar, hover glow, and maturity badges.
  */
 export function ProfileCard({ profile, onSelect, isActive = false }: ProfileCardProps) {
   const initial = profile.name.charAt(0).toUpperCase();
@@ -53,20 +66,20 @@ export function ProfileCard({ profile, onSelect, isActive = false }: ProfileCard
       type="button"
       onClick={() => onSelect(profile)}
       className={cn(
-        'group flex flex-col items-center gap-3 p-6 rounded-xl',
-        'transition-all duration-200 ease-in-out',
-        'hover:bg-muted/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-        isActive && 'bg-muted ring-2 ring-primary'
+        'group flex flex-col items-center gap-4 p-8 rounded-[20px]',
+        'transition-all duration-300 ease-out',
+        'hover:bg-interactive focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+        isActive && 'bg-interactive ring-2 ring-primary'
       )}
     >
-      {/* Avatar */}
+      {/* Avatar - 120px with hover glow */}
       <div
         className={cn(
           'relative flex items-center justify-center',
-          'w-24 h-24 rounded-full',
-          'text-3xl font-semibold text-white',
-          'transition-transform duration-200',
-          'group-hover:scale-105',
+          'w-[120px] h-[120px] rounded-full',
+          'text-4xl font-serif font-semibold text-primary-foreground',
+          'transition-all duration-300',
+          'group-hover:scale-105 group-hover:shadow-gold-glow',
           avatarColor
         )}
       >
@@ -79,14 +92,14 @@ export function ProfileCard({ profile, onSelect, isActive = false }: ProfileCard
       </div>
 
       {/* Name */}
-      <span className="text-lg font-medium text-foreground">
+      <span className="font-serif text-xl font-semibold text-foreground">
         {profile.name}
       </span>
 
-      {/* Maturity badge (subtle) */}
-      <span className="text-xs text-muted-foreground">
+      {/* Maturity badge */}
+      <Badge variant={getMaturityVariant(profile.maturity_level)} size="sm">
         {getMaturityLabel(profile.maturity_level)}
-      </span>
+      </Badge>
     </button>
   );
 }
